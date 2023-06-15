@@ -28,6 +28,7 @@
 
         
         var roinc = 0
+        
         console.log("ajax");
         // var place = document.getElementById('pos').value;
 
@@ -546,8 +547,9 @@
             var RowCount = table.rows.length;
             console.log(RowCount);
             var newRow = $(`
-            <tr id='row${RowCount}' >
-                <td class='text-right'>
+            <tr id='row${RowCount}' >  
+                <td>${RowCount}</td>              
+               <td class='text-right'>
                     <div class='form-group mt-3'>
                         <select
                             class='form-control  text-black border-0 item_select' name='item[]'
@@ -700,22 +702,18 @@
               </div>
             </div>
             <div class="col-md-3 mt-3">
-              <label class="col-form-label">Terms </label>
+              <label class="col-form-label">Challan Type </label>
               <div>
                 <select class="custom-select" name="terms" required style="background-color: #2f516f; color: white;" id="termadd" onclick="showinp('newtrm', this)">
                   <option selected id="trmopt"></option>
-                  <option value="0">Due on Receipt</option>
-                  <option value="15">NET15</option>
-                  <option value="30">NET30</option>
-                  <option value="60">NET60</option>
-                  <option value="Add New Term">Add New Term</option>
+                  <option value="Supply of Liquid Gas">Supply of Liquid Gas</option>
+                  <option value="Job Work">Job Work</option>
+                  <option value="Supply on Approval">Supply on Approval</option>
+                  <option value="Others">Others</option>
                 </select>
               </div>
             </div>
-            <div class="col-md-3 mt-3">
-              <label class="col-form-label">Due Date:</label>
-              <input type="text" id="duedat" class="form-control" name="duedate" style="background-color: #2f516f; color: white; " required>
-            </div>
+            
             <div class="col-md-3 mt-3"></div>
             <div class="col-md-3 mt-3"></div>
           </div>
@@ -786,6 +784,7 @@
               <table class="table table-bordered table-hover mt-3 text-white" id="item_table"  onchange="calc()">
                 <thead >
                     <tr>
+                        <th>no</th>
                         <th>Product</th>
                         <th class="text-right">Hsn</th>
                         <th class="text-right">Quantity</th>
@@ -797,6 +796,7 @@
                 <tbody>
           
                     <tr id='row1'>
+                     <td>1</td>
                         <td class="text-right">
                            
                             <div class='form-group mt-3'><select

@@ -1674,6 +1674,7 @@ class Otp_password(models.Model):
 
 
 class challancreate(models.Model):
+    cid = models.ForeignKey(company, on_delete=models.CASCADE)
     chal_no=models.CharField(max_length=100)
     challan_date=models.DateField()
     customer=models.CharField(max_length=100)
@@ -1690,13 +1691,16 @@ class challancreate(models.Model):
     file = models.FileField(upload_to='challan',default="default.png")
 
 
-class dlchallan(models.Model):
-    product=models.TextField(max_length=100)
-    hsn=models.IntegerField()
-    dsc=models.TextField(max_length=100)
-    qty=models.IntegerField()
-    tax=models.TextField(max_length=100)
+
+class dlitem(models.Model):
+    product=models.TextField(max_length=255)
+    quantity=models.IntegerField()
+    hsn=models.TextField(max_length=255)
+    tax=models.IntegerField()
     total=models.FloatField()
+    desc=models.TextField(max_length=255)
+    rate=models.TextField(max_length=255)
+    dl=models.ForeignKey(challancreate,on_delete=models.CASCADE)
 
 
    
