@@ -128,14 +128,14 @@
                     <thead>
                     <tr>
                         
-                        <th style="text-align: center;">INVOICE DATE</th>
-                        <th style="text-align: center;">INVOICE NO</th>
+                        <th style="text-align: center;">DELIVERY CHALLAN DATE</th>
+                        <th style="text-align: center;">CHALLAN NO</th>
                         
                         <th style="text-align: center;">CUSTOMER</th>
                         <th style="text-align: center;">STATUS</th>
-                        <th style="text-align: center;">DUE DATE</th>
+                        
                         <th style="text-align: center;">GRAND TOTAL</th>
-                        <th style="text-align: center;">BALANCE DUE</th>
+                        
                         
                     </tr>
                     </thead>
@@ -143,15 +143,13 @@
                     {% for invoices in invoice %}
                         {% if invoices.cid_id == cmp1.cid %}
 
-                            <tr tr class="table-row " data-href="{% url 'invoice_view' invoices.invoiceid %}">
-                                <td style="text-align: center;">{{ invoices.invoicedate }}</td>
-                                <th style="text-align: center;">{{ invoices.invoiceno }}</th>
+                            <tr tr class="table-row " data-href="">
+                                <td style="text-align: center;">{{ invoices.dl.challan_date }}</td>
+                                <th style="text-align: center;">{{ invoices.dl.chal_no }}</th>
                           
-                                <td style="text-align: center;">{{ invoices.customername }}</td>
-                                <td style="text-align: center;">{{ invoices.status }}</td>
-                                <td style="text-align: center;">{{ invoices.duedate }}</td>
-                                <td style="text-align: center;">{{ invoices.grandtotal }}</td>
-                                <td style="text-align: center;">{{ invoices.baldue }}</td>
+                                <td style="text-align: center;">{{ invoices.dl.customer }}</td>
+                                <td style="text-align: center;">{{ invoices.dl.status }}</td>
+                                <td style="text-align: center;">{{ invoices.dl.grand }}</td>
                                 
 
                             </tr>

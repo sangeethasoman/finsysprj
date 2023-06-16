@@ -857,6 +857,7 @@ urlpatterns = [
     path('delivery_view',views.delivery_view,name='delivery_view'),
     path('add_cx',views.add_cx,name='add_cx'),
     path('dl_create_item',views.dl_create_item,name="dl_create_item"),
+    path('challancreate',views.challancreate,name='challancreate'),
 
 
 
