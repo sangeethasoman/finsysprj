@@ -318,7 +318,7 @@ function uplodfile(){
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form action="{% url 'estimate_add_file' estimate.estimateid %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <form action="{% url 'challan_add_file' estimate.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <div class="modal-body">
           <input type="file" class="form-control" name="file">
         </div>
@@ -336,18 +336,18 @@ function uplodfile(){
         <div class="card radius-15">
             <div class="card-body">
                 <div class="card-title">
-                    <center><h2 class="mb-0">Delivery Challan VIEW</h2> <h4></h4></center>
+                    <center><h2 class="mb-0">DELIVERY CHALLAN VIEW</h2> <h4></h4></center>
                     <hr>
                 </div>
                 <div class="btn-group" style="float: right; ">
 
                    
-                <a href="{% url 'editestimate' estimate.estimateid %}" class=" fa fa-pencil" style="padding: 10px; cursor: pointer;"> Edit</a>
+                <a href="{% url 'editchallan' estimate.id %}" class=" fa fa-pencil" style="padding: 10px; cursor: pointer;"> Edit</a>
 
                 
                 <a   style="padding: 10px; margin-top: -5px; cursor: pointer;" > 
 
-                 <form  action="{% url 'deleteestimate' estimate.estimateid %}"   > 
+                 <form  action="{% url 'deletechallan' estimate.id %}"   > 
                     <i class="fa fa-trash-o delete"> Delete</i>
                     <input name="_method" type="hidden" value="DELETE">
                     
@@ -364,9 +364,8 @@ function uplodfile(){
                             <a class="dropdown-item fa fa-envelope-o" href=""> &nbsp;Email</a> -->
 
                          
-                            <!-- <li style="margin-left: 50px;" > {% post_to_whatsapp object_or_url "WhatsApp" %}</li> -->
-                            <li style="margin-left: 50px;" ><a href="">WhatsApp </a></li>
-                            <li style="margin-left: 50px;" >{% send_email object.title "New Song: {{object.title}}. Check it out!" object_or_url "Email" %}</li>
+                            <li style="margin-left: 50px;" > {% post_to_whatsapp  object_or_url "WhatsApp" %}</li>
+                            <li style="margin-left: 50px;" >{% send_email object.title "New Delivery Challan: {{object.title}}. Check it out!" object_or_url "Email" %}</li>
                             
                            
                           
@@ -375,16 +374,14 @@ function uplodfile(){
                 </div>
                     
                 
-                <a class="fa fa-print" style="padding: 10px; cursor: pointer;"  href="{% url 'render_pdfestimate_view' estimate.estimateid %}" > PDF</a>
+                <a class="fa fa-print" style="padding: 10px; cursor: pointer;"  href="{% url 'render_pdfchallan_view' estimate.id %}" > PDF</a>
 
                   <div class="dropdown  " style="padding: 10px; cursor: pointer; margin-top: -14px;">
                     <li  class=" dropdown-toggle  "data-toggle="dropdown"> &nbsp;Convert
                 </li>
                     <ul class="dropdown-menu" style="background-color: black;">
-                        <a class="dropdown-item " href="{% url 'convert1' estimate.estimateid %}"> &nbsp;Approved </a>
-                        {% if estimate.status != 'Sales' %}
-                        <a class="dropdown-item " href="{% url 'convert2' estimate.estimateid %}"> &nbsp;Sales</a>
-                        {% endif %}
+                        <a class="dropdown-item " href="{% url 'challan_convert1' estimate.id %}"> &nbsp;Approved </a>
+                      
                         
                     </ul>
             </div>
@@ -423,10 +420,10 @@ function uplodfile(){
                             </div>
                             <div class="top-left">
                                 <div class="graphic-path">
-                                    <p>Estimate</p>
+                                    <p>Delivery Challan</p>
                                 </div>
                                 <div class="position-relative">
-                                    <p>Estimate No. <span>{{estimate.estimateno }}</span></p>
+                                    <p>Challan No. <span>{{estimate.chal_no }}</span></p>
                                 </div>
                             </div>
                         </section>
@@ -447,16 +444,16 @@ function uplodfile(){
                                     <div class="col-5">
                                         <p>TO,</p>
                                         <h5>{{estimate.customer}}</h5>
-                                        <p class="address col-6" style="margin-left: -14px;" > {{ estimate.billingaddress}} </p>
+                                        <p class="address col-6" style="margin-left: -14px;" > {{ estimate.billto}} </p>
                                         
                                     </div>
                                 </div>
                                 <div class="row extra-info pt-3">
                                     <div class="col-7">
-                                        <p>Estimate Date: <span>{{estimate.estimatedate | date:'d-m-Y'}}</span></p>
+                                        <p>Challan  Date: <span>{{estimate.challan_date | date:'d-m-Y'}}</span></p>
                                     </div>
                                     <div class="col-5">
-                                        <p>Expiration Date : <span>{{estimate.expirationdate | date:'d-m-Y'}}</span></p>
+                                        <!-- <p>Expiration Date : <span>{{estimate.expirationdate | date:'d-m-Y'}}</span></p> -->
                                     </div>
                                 </div>
                             </div>
@@ -481,7 +478,7 @@ function uplodfile(){
                                             <div class="media">
                                                 
                                                 <div class="media-body">
-                                                    <p class="mt-0 title" style="color:black">{{j.item}}</p>
+                                                    <p class="mt-0 title" style="color:black">{{j.product}}</p>
                                                     <span style="color:black">{{j.description}}</span>
                                                 </div>
                                             </div>
@@ -516,31 +513,31 @@ function uplodfile(){
                                         {% if estimate.IGST != "" %}
                                         <tr>
                                             <td style="color:black; font-weight:bold">IGST :</td>
-                                            <td style="color:black; font-weight:bold">{{estimate.IGST}}</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.igst}}</td>
                                         </tr>
                                         {% endif %}
                                         {% if estimate.CGST != "" %}
                                         <tr>
                                             <td style="color:black; font-weight:bold">CGST :</td>
-                                            <td style="color:black; font-weight:bold">{{estimate.CGST}}</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.cgst}}</td>
                                         </tr>
                                         {% endif %}
                                         {% if estimate.SGST != "" %}
                                         <tr>
                                             <td style="color:black; font-weight:bold">SGST:</td>
-                                            <td style="color:black; font-weight:bold">{{estimate.SGST}}</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.sgst}}</td>
                                         </tr>
                                         {% endif %}
                                         {% if estimate.TCS != "" %}
                                         <tr style="display: none;">
-                                            <td style="color:black; font-weight:bold">TCS:</td>
-                                            <td style="color:black; font-weight:bold">{{estimate.TCS}}</td>
+                                            <td style="color:black; font-weight:bold">Total Tax:</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.taxamount}}</td>
                                         </tr>
                                         {% endif %}
                                         <tfoot>
                                             <tr>
-                                                <td style="color:black; font-weight:bold">Estimate Total:</td>
-                                                <td style="color:black; font-weight:bold ;">{{estimate.estimatetotal}}</td>
+                                                <td style="color:black; font-weight:bold"> Challan Total:</td>
+                                                <td style="color:black; font-weight:bold ;">{{estimate.grand}}</td>
                                             </tr>
                                         </tfoot>
                                     </table>

@@ -37476,7 +37476,7 @@ def create_new(request):
 
 
 
-# muhammed ashiq 
+# muhammed ashiq estimate_view
 
 
 def delivery_challan(request):
@@ -37514,10 +37514,41 @@ def goadd_dl_challan(request):
         return redirect('delivery_challan') 
     
 
-def delivery_view(request):
-        
+def delivery_view(request,id):
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = challan.objects.get(id=id, cid=cmp1)
+
+    estitem = challanitem.objects.filter(dl_id=id)
+
+    context ={
+        'estimate':upd,
+        'cmp1':cmp1,
+        'estitem':estitem,
+
+    }
     
     return render(request,'app1/delivery_challan_view.html', context)
+
+def challan_add_file(request,id):
+    cmp1 = company.objects.get(id=request.session['uid'])
+    est = challan.objects.get(id=id,cid=cmp1)
+
+    if request.method == 'POST':
+        
+        if len(request.FILES) != 0:
+           
+            if est.file != "default.jpg":
+                 os.remove(est.file.path)
+                
+            est.file=request.FILES['file']
+        
+        est.save()
+        return redirect('delivery_view',id)
+
+
+
+
+
 
 def add_cx(request):
     try:
@@ -37642,3 +37673,82 @@ def challancreate(request):
         return render(request,'app1/add_deliver_challan.html')
     except:
         return render(request,'app1/add_deliver_challan.html')
+
+
+def editchallan(request,id):
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = challan.objects.get(id=id, cid=cmp1)
+    item = itemtable.objects.filter(cid=cmp1).all()
+
+    estitem = challanitem.objects.filter(dl_id=id)
+
+    context ={
+        'ch':upd,
+        'cmp1':cmp1,
+        'chitem':estitem,
+        'item':item,
+    }
+    
+    return render(request,'app1/editchallan.html',context)
+
+def deletechallan(request,id):
+    try:
+        cmp1 = company.objects.get(id=request.session['uid'])
+        upd = estimate.objects.get(estimateid=id, cid=cmp1)
+        
+        upd.delete()
+        os.remove(upd.estimate.path)
+        return redirect('delivery_challan')
+    except:
+        return redirect('delivery_challan')
+
+
+def render_pdfchallan_view(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = challan.objects.get(id=id, cid=cmp1)
+
+    estitem = challanitem.objects.filter(dl_id=id)
+
+    total = upd.grand
+    words_total = num2words(total)
+    template_path = 'app1/pdfchallan.html'
+    context ={
+        'estimate':upd,
+        'cmp1':cmp1,
+        'estitem':estitem,
+    
+    }
+    fname=upd.chal_no
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+
+def challan_convert1(request,id):
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = challan.objects.get(id=id, cid=cmp1)
+
+    upd.status = 'Approved'
+    upd.save()
+
+
+
+    return redirect(delivery_view,id)

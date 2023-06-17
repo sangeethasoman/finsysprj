@@ -854,10 +854,15 @@ urlpatterns = [
 # muhammed ashiq 
     path('delivery_challan',views.delivery_challan,name='delivery_challan'),
     path('goadd_dl_challan',views.goadd_dl_challan,name='goadd_dl_challan'),
-    path('delivery_view',views.delivery_view,name='delivery_view'),
+    path('delivery_view/<int:id>',views.delivery_view,name='delivery_view'),
     path('add_cx',views.add_cx,name='add_cx'),
     path('dl_create_item',views.dl_create_item,name="dl_create_item"),
     path('challancreate',views.challancreate,name='challancreate'),
+    path('challan_add_file/<int:id>',views.challan_add_file,name='challan_add_file'),
+    path('editchallan/<int:id>',views.editchallan,name='editchallan'),
+    path('deletechallan/<int:id>',views.deletechallan,name='deletechallan'),
+    path('render_pdfchallan_view/<int:id>', views.render_pdfchallan_view, name='render_pdfchallan_view'),
+    path('challan_convert1/<int:id>',views.challan_convert1,name='challan_convert1'),
 
 
 

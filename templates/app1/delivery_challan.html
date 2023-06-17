@@ -143,7 +143,7 @@
                     {% for invoices in invoice %}
                         {% if invoices.cid_id == cmp1.cid %}
 
-                            <tr tr class="table-row " data-href="">
+                            <tr tr class="table-row " data-href="{% url 'delivery_view' invoices.id %}">
                                 <td style="text-align: center;">{{ invoices.dl.challan_date }}</td>
                                 <th style="text-align: center;">{{ invoices.dl.chal_no }}</th>
                           
