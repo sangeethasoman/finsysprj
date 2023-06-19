@@ -1689,10 +1689,17 @@ class challan(models.Model):
     grand=models.CharField(max_length=100)
     pl=models.CharField(max_length=100)
     note=models.TextField(max_length=100)
-    file = models.FileField(upload_to='challan',default="default.png")
-    status = models.TextField(max_length=100,default='Draft')
+    file = models.FileField(upload_to='challan/',default="default.png")
+    
+    invoice_status = (
+        ('Draft','Draft'),
+        
+        ('Invoiced','Invoiced'),
 
-
+    )
+    
+    status =models.CharField(max_length=150,choices=invoice_status,default='Draft')
+    ref=models.TextField(max_length=100)
 
 class challanitem(models.Model):
     product=models.TextField(max_length=255)

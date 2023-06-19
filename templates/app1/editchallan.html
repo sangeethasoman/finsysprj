@@ -569,13 +569,13 @@
                 <td class='text-right'><input type='number' id='qty${RowCount}'
                         class='form-control border-0 text-black text-right qty' name='quantity[]' value='0' onchange="calc()">
                 </td>
-                <td class='text-right'><input type='number' id='rate${RowCount}'
+                <td class='text-right'><input type='number' id='rate${RowCount}' onchange="calc()"
                         class='form-control border-0 text-black text-right rate' name='rate[]' value='0.00'
                         ></td>
-                <input type='hidden' id='desc${RowCount}'
+                <input type='hidden' id='desc${RowCount}' onchange="calc()"
                         class='form-control border-0 text-black text-right desc' name='desc[]' >
                
-                <td class='text-right'> <select name='tax[]' id='tax${RowCount}'
+                <td class='text-right'> <select name='tax[]' id='tax${RowCount}'onclick="calc()"
                         class="form-control  text-black text-right border-0 tax">
                   <optgroup label="GST">
                     <option value="0">GST 0%</option>
@@ -599,11 +599,9 @@
                 <td class='text-right'><input type='number' id='amount${RowCount}'
                         class='form-control border-0 text-black text-right amount' name='amount[]' value='0.00'></td>
                 <td class='text-center'><button type='button' id='del_btn${RowCount}'
-                        class='btn btn-transparent mt-1 text-danger btn-sm btn-outline-danger rounded-circle delete-row'
+                        class='btn btn-transparent mt-1 text-danger btn-sm btn-outline-danger remove_row rounded-circle delete-row'
                         style='width:30px'>--</button>
-                        <button type='button' id='del_btn${RowCount}'
-                        class='btn btn-transparent mt-1 text-danger btn-sm btn-outline-danger rounded-circle delete-row'
-                        style='width:30px'>C</button>
+                      
                         </td>
             </tr>`);
 
@@ -641,7 +639,7 @@
     color: white;
   }
 </style>
-<form action="challancreate" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+<form action="{% url 'edited_challan' ch.id %}" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
   {% csrf_token %}
   <div class="page-content">
     <!--breadcrumb-->
@@ -674,10 +672,13 @@
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Select Customer</label>
               <div class="d-flex">
-                <select name="customername" id="select" class="form-control" style="background-color: #2f516f; color: white;">
-                 
-                  <option  value="{{ch.customer}}">{{ch.customer}}</option>
-                  
+                <select name="customername" id="select" class="form-control" style="background-color: #2f516f; color: white;" onclick="calc()">
+                  <option value="{{ch.customer}}"  selected>{{ch.customer}}</option>
+                  {% for cust in customers %}
+                  {% if cust.cid_id == cmp1.cid %}
+                  <option text="{{ cust.customerid }}" value="{{ cust.firstname }} {{ cust.lastname }}">{{ cust.firstname }} {{ cust.lastname }}</option>
+                  {% endif %}
+                  {% endfor %}
                 </select>
                 <a data-toggle="modal" href="#newcust">
                   <button type="button" class="btn btn-outline-secondary ml-1">+</button>
@@ -686,7 +687,7 @@
             </div>
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Email </label>
-              <input class="custom-select" name="email" placeholder="Email" value="{{ch.cx_mail}}" required style="background-color: #2f516f; color: white;" id="email">
+              <input class="custom-select" name="email" placeholder="Email" value="{{ch.cx_mail}}" required style="background-color: #2f516f; color: white;"  onclick="calc()" id="email">
             </div>
             <div class="col-md-3 mt-3"></div>
             <div class="col-md-3 mt-3"></div>
@@ -695,15 +696,14 @@
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Challan Date:</label>
               <div>
-                <input type="date" value="{{ch.challan_date | date:'Y-m-d'}}" class="form-control" name="challandate" style="background-color: #2f516f; color: white;">
+                <input type="date" value="{{ ch.challan_date |date:'Y-m-d'}}" class="form-control" name="challandate" style="background-color: #2f516f; color: white;">
               </div>
             </div>
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Challan Type </label>
               <div>
-                <select class="custom-select" name="terms" required style="background-color: #2f516f; color: white;" id="termadd" onclick="showinp('newtrm', this)">
+                <select class="custom-select"  onclick="calc()" name="terms" required style="background-color: #2f516f; color: white;" id="termadd" onclick="showinp('newtrm', this)">
                   <option selected value="{{ch.challan_type}}">{{ch.challan_type}}</option>
-                  <option  id="trmopt"></option>
                   <option value="Supply of Liquid Gas">Supply of Liquid Gas</option>
                   <option value="Job Work">Job Work</option>
                   <option value="Supply on Approval">Supply on Approval</option>
@@ -711,7 +711,10 @@
                 </select>
               </div>
             </div>
-            
+            <div class="col-md-3 mt-3">
+                <label class="col-form-label">Refrence number</label>
+                <input type="text"  id="ref" value="{{ch.ref}}" class="form-control" name="ref" style="background-color: #2f516f; color: white;" onselect="calc()">
+              </div>
             <div class="col-md-3 mt-3"></div>
             <div class="col-md-3 mt-3"></div>
           </div>
@@ -719,7 +722,7 @@
           <div class="row">
             <div class="col-md-3">
               <label class="text-gray-light">Bill To:</label>
-              <textarea class="form-control mb-4" name="bname" valeu="{{ch.billto}}"  id="bname" rows="7" type="text"  style="background-color: #2f516f; color: white;">{{ch.billto}}</textarea>
+              <textarea class="form-control mb-4" name="bname" id="bname"  onclick="calc()" rows="7" type="text" value="{{ch.billto}}" style="background-color: #2f516f; color: white;">{{ch.billto}}</textarea>
             </div>
             <div class="col-md-3 mt-3">
               <input type="number" class="form-control mt-4" id="newtrm" placeholder="0" onchange="addtemopt(this)" style="display: none;">
@@ -731,7 +734,7 @@
           <div class="row">
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Place of supply</label>
-              <select type="text" class="form-control " id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onchange="state(this)">
+              <select type="text" class="form-control " id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onclick="calc()">
                 <option value="{{ cmp1.state }}" selected> {{ cmp1.state }}</option>
                 <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
                 <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -793,120 +796,288 @@
                 </thead>
                 <tbody>
                     {% for k in chitem %}
-                    <tr id='row{{forloop.counter}}'>
-                    <input type="hidden" name="id[]" value="{{k.id}}">
-                    <td>1</td>
-                        <td>
-
-                            <div class='form-group'><select
-                                    class='form-control  text-black border-0 item_select itm'
-                                    name='item[]' id='item{{forloop.counter}}'style="width: 8rem;">
-                                    <option class="text-dark" selected value="{{k.product}}">{{k.product}}</option>
-                                    {% for i in item %}
-                                    {% if i.cid_id == cmp1.cid %}
-                                        <option 
-                                                value="{{ i.name  }}">{{ i.name  }} </option>
-                                    {% endif %}
-                                    {% endfor %}
+                    <tr>
+                    <td>{{ forloop.counter }}
+                        <input type="text"  name='id[]' value="{{ k.id }}" hidden>
+                      </td>
+                        <td class="text-right">
+                           
+                            <div class='form-group mt-3'><select
+                                    class='form-control border-0 mt-1 text-black text-right  itm'
+                                    name='item[]' id='item{{ forloop.counter }}'>
+                                    <option value="{{ k.product }}" selected>{{ k.product }}</option>
+                        {% for i in item %}
+                        {% if i.cid_id == cmp1.cid %}
+                            <option 
+                                    value="{{ i.name  }}">{{ i.name  }} </option>
+                        {% endif %}
+                        {% endfor %}
                                 </select></div>
                         </td>
                        
-                        <td class='text-right'><input type='text' 
-                          class='form-control border-0 text-black text-right ' name='hsn[]'
-                          value="{{k.hsn}}" style="width: 8rem;"  >
+                        <td class='text-right '><div>
+                            <input type='text' id='hsn{{ forloop.counter }}'
+                          class='form-control mt-3 border-0 text-black text-right hsn' name='hsn[]'
+                          value={{k.hsn}}  >
+                        </div>
+                          <span class='hsn-validation'></span>
+                        </td>
+                   <script>
+                   $(document).on("input", ".hsn", function() {
+                          var hsn_value = $(this).val();
+                          var hsn_length = hsn_value.length;
+                          if (hsn_length > 6) {
+                              $(this).val(hsn_value.substring(0, 6));
+                              alert("HSN should not be more than 6 digits!");
+                          }
+                      });
+                 
+         
+        </script>
+        
+        
+                        <td class='text-right'><input type='number' id='qty{{ forloop.counter }}'
+                          class='form-control border-0 text-black text-right qty' name='quantity[]'
+                          value='{{k.quantity}}' onchange="calc()"  >
                         </td>
         
-                        <style>
-                          .is-invalid {
-                            border-color: red;
-                          }
-                        </style>
-                        <script>
-                          var inputField = document.querySelector('input[name="hsn[]"]');
-                          var tickmark = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="#28a745"><path d="M15.23 3.3a1.08 1.08 0 0 0-1.46.1L6.45 11.6 2.23 7.37A1.08 1.08 0 1 0 .77 8.83l5.16 5.16a1.08 1.08 0 0 0 1.46.1l8.46-7.87a1.08 1.08 0 0 0-.1-1.56z"></path></svg>';
-                          
-                          function validateHsn() {
-                            var inputValue = inputField.value.trim();
-                            
-                            if (inputValue.length === 6 && /^\d+$/.test(inputValue)) {
-                              inputField.classList.remove('is-invalid');
-                              inputField.classList.add('is-valid');
-                              inputField.insertAdjacentHTML('afterend', tickmark);
-                            } else if (inputValue.length < 6) {
-                              inputField.classList.remove('is-invalid');
-                              inputField.classList.remove('is-valid');
-                              inputField.nextElementSibling && inputField.nextElementSibling.remove();
-                            } else {
-                              inputField.classList.add('is-invalid');
-                              inputField.classList.remove('is-valid');
-                              inputField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Code should be less than 7 digits</div>');
-                            }
-                          }
-                          
-                          inputField.addEventListener('input', function() {
-                            var inputValue = inputField.value.trim();
-                            
-                            if (inputValue.length > 6) {
-                              inputField.value = inputValue.substr(0, 6);
-                              inputField.classList.add('is-invalid');
-                              inputField.classList.remove('is-valid');
-                              inputField.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Code should be less than 7 digits</div>');
-                            } else {
-                              validateHsn();
-                            }
-                          });
-                          
-                          document.querySelector('form').addEventListener('submit', function(event) {
-                            validateHsn();
-                            
-                            if (inputField.classList.contains('is-invalid')) {
-                              event.preventDefault(); // prevent the form from submitting
-                            }
-                          });
-                        </script>
-                        
-        
-                        <td class='text-right'><input type='number' id='qty{{forloop.counter}}'
-                          class='form-control border-0 text-black text-right qty'  name='quantity[]'
-                          value="{{k.quantity}}" onchange="calc()" style="width: 8rem;" >
-                        </td>
-        
-                        <td class='text-right'><input type='number' id='rate{{forloop.counter}}'
+                        <td class='text-right'><input type='number' id='rate{{ forloop.counter }}'
                                 class='form-control border-0 text-black text-right rate' name='rate[]'
-                                value="{{k.rate}}" style="width: 8rem;">
+                                value='{{k.rate}}' >
                         </td>
-                       
-                        <td class='text-right'> <select name='tax[]' id='tax{{forloop.counter}}'style="width: 8rem;"
-                                class='form-control  text-black text-right border-0 tax'>
-                                <option value="{{k.tax}}">{{k.tax}}</option>
-                                <option value=0>Non Taxable</option>
-                                <option value=0>0% GST</option>
-                                <option value=5>5% GST</option>
-                                <option value=12>12% GST</option>
-                                <option value=18>18% GST</option>
-                                <option value=28>28% GST</option>
-                                <option value=0>0% IGST</option>
-                                <option value=5>5% IGST</option>
-                                <option value=12>12% IGST</option>
-                                <option value=18>18% IGST</option>
-                                <option value=28>28% IGST</option>
-          
-                                <option value=0>Out of Scope(0%)</option>
-                            </select></td>
+                         <input type='hidden' id='desc{{ forloop.counter }}'
+                                class='form-control border-0 text-black text-right desc' name='desc[]'
+                                >
+                        
+                        <td class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax' onclick="calc()"  >
+                          <option value="{{k.tax}}" selected>{{k.tax}}</option>
+                            <optgroup label="GST">
+                            <option value="0">GST 0%</option>
+                              <option value="5">GST 5%</option>
+                              <option value="12">GST 12%</option>
+                              <option value="18" >GST 18%</option>
+                              <option value="28">GST 28%</option>
+                          </optgroup>
+                          <optgroup label="IGST">
+                            <option value="0">IGST 0%</option>
+                              <option value="5">IGST 5%</option>
+                              <option value="12">IGST 12%</option>
+                              <option value="18" >IGST 18%</option>
+                              <option value="28">IGST 28%</option>
+                          </optgroup>
+                      </select>
+                      
+        <script>
+          function validateHSN(hsnInput) {
+            var hsn = hsnInput.value;
+            var errorSpan = hsnInput.nextElementSibling;
+            var valid = true;
+        
+            if (hsn.length != 6) {
+                errorSpan.innerHTML = "HSN must be 6 digits long";
+                valid = false;
+            } else {
+                errorSpan.innerHTML = "&#x2713;"; // Check mark
+            }
+        
+            return valid;
+        }
+        
+        </script>
+
+
+<script>
+  
+ $(document).ready(function() {
+    // add event listener to trigger calc() function whenever a change is made to input fields
+    $('#item_table').on('input', 'input', calc);
+});
+
+function calc() {
+    // loop through each row in the table
+    $('#item_table tbody tr').each(function() {
+        // get the values of the input fields for this row
+        var qty = $(this).find('.qty').val();
+        var rate = $(this).find('.rate').val();
+        var desc = $(this).find('.desc').val();
+        var tax = $(this).find('.tax').val();
+        
+        // calculate the tax amount and total amount for this row
+        var taxamount = (qty * rate) * (tax / 100);
+        var amount = qty * rate;
+        
+        // update the tax amount and total amount input fields for this row
+        $(this).find('.taxamount').val(taxamount.toFixed(2));
+        $(this).find('.amount').val(amount.toFixed(2));
+    });
+    
+    // calculate the total amount and total tax amount for all rows
+    var total = 0;
+    var taxamount = 0;
+    $('.amount').each(function() {
+        total += parseFloat($(this).val());
+    });
+    $('.taxamount').each(function() {
+        taxamount += parseFloat($(this).val());
+    });
+    
+    // update the subtotal and total tax amount input fields
+    $('#subtotal').val(total.toFixed(2));
+    $('#total_taxamount').val(taxamount.toFixed(2));
+
+    var total_with_tax = total + taxamount;
+    
+    // display the total amount including tax on the page
+    $('#total_with_tax').val(total_with_tax.toFixed(2));
+    var pos = document.getElementById('plosu').value;
+    var comp = "{{cmp1.state}}"
+                  
+                   // Assuming you have the customer state and company state values in variables
+                   
+               
+    $(document).ready(function() {
+        if (pos === comp) {
+            $('#tax{{ forloop.counter }} optgroup[label="GST"]').show();
+            $('#tax{{ forloop.counter }} optgroup[label="IGST"]').hide();
+        } else {
+            $('#tax{{ forloop.counter }} optgroup[label="GST"]').hide();
+            $('#tax{{ forloop.counter }} optgroup[label="IGST"]').show();
+                       }
+                   });
+  test(taxamount);
+
+}
+
+  // Update subtotal when a row is deleted
+    $(document).ready(function dlt () {
+        $('#item_table').on('click', '.delete-row', function () {
+            var tr = $(this).closest('tr');
+            var taxamount= parseFloat(tr.find('input[name^="taxamount"]').val());
+            var amount = parseFloat(tr.find('input[name^="amount"]').val());
+            var subtotal = parseFloat($('#subtotal').val());
+
+            var total_taxamount = parseFloat($('#total_taxamount').val());
+            $('#total_taxamount').val((total_taxamount-taxamount).toFixed(2));
+
+            $('#subtotal').val((subtotal - amount).toFixed(2));
+
+            var total_with_tax= parseFloat($('#total_with_tax').val());
+            $('#total_with_tax').val((total_with_tax  - amount - taxamount).toFixed(2));
+            
+            
+           
+
+            tr.remove();
+            
+           
+        });
+    });
+
+
+function test(taxamount) {
+        console.log('test333');
+        console.log(taxamount)
+        d = 0;
+        var pos = document.getElementById('plosu').value;
+        var state = "{{cmp1.state}}";
+        console.log(pos)
+        console.log('state')
+        console.log(state)
+        console.log('state')
+        console.log('----------')
+        if (pos == state) {
+            console.log(pos);
+            console.log(state);
+            console.log(taxamount);
+            gst = taxamount / 2;
+            console.log(gst);
+            $('#cgst').val(parseFloat(gst.toFixed(2)));
+            $('#sgst').val(parseFloat(gst.toFixed(2)));
+            $('#igst').val(parseFloat(d.toFixed(2)));
+            
+            // document.getElementById('tr_cgst').style= ('display: flex');
+            
+            // document.getElementById('tr_sgst').style= ('display: flex');
+            // document.getElementById('tr_igst').style= ('display: none');
+
+           
+        }
+        else{
+            gst = taxamount ;
+            console.log(gst);
+            $('#cgst').val(parseFloat(d.toFixed(2)));
+            $('#sgst').val(parseFloat(d.toFixed(2)));
+            $('#igst').val(parseFloat(gst.toFixed(2)));
+        }
+
+        if (pos != state) {
+            console.log(pos);
+            console.log(state);
+            document.getElementById('tr_cgst').style=('display: none');
+            document.getElementById('tr_sgst').style= ('display: none');
+            document.getElementById('tr_igst').style= ('display: block');
+        }
+        else{
+          document.getElementById('tr_cgst').style=('display: block');
+            document.getElementById('tr_sgst').style= ('display: block');
+            document.getElementById('tr_igst').style= ('display: none');
+        }
+        var pos = document.getElementById('plosu').value;
+    var comp = "{{cmp1.state}}"
+                  
+                   // Assuming you have the customer state and company state values in variables
+                   
+               
+    $(document).ready(function() {
+        if (pos === comp) {
+            $('#tax{{ forloop.counter }} optgroup[label="GST"]').show();
+            $('#tax{{ forloop.counter }} optgroup[label="IGST"]').hide();
+        } else {
+            $('#tax{{ forloop.counter }} optgroup[label="GST"]').hide();
+            $('#tax{{ forloop.counter }} optgroup[label="IGST"]').show();
+                       }
+                   });
+    }
+</script>
+</script>
+        <style>
+          .hsn-validation {
+            font-size: 1.2em;
+            color: red;
+        }
+        
+        .hsn-validation::before {
+            display: inline-block;
+            content: attr(data-content);
+            width: 1em;
+            height: 1em;
+            margin-right: 0.2em;
+            text-align: center;
+            vertical-align: middle;
+            color: green;
+        }
+        
+        </style>
+                      
+                      </td>
                         <td style="display: none;">
-                            <input type="text" name='taxamount1' value="{{k.tax}}" id="taxamount{{forloop.counter}}" class="form-control taxamount" />
+                            <input type="text" name='taxamount1' id="taxamount{{ forloop.counter }}" class="form-control taxamount" />
                         </td>
-                        <td class='text-right'><input type='number' id='amount{{forloop.counter}}'
-                                class='form-control border-0 text-black text-right amount' name='amount[]'
-                                value="{{k.total}}" style="width: 8rem;" readonly></td>
-                        <td class='text-center'><button type='button' id='del_btn{{forloop.counter}}'
-                                class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
-                                style='width:30px'>--</button></td>
+                        <td class='text-right'><input type='number' id='amount{{ forloop.counter }}'
+                          class='form-control border-0 text-black text-right amount' name='amount[]' value='{{k.total}}'></td>
+                        <td class='text-center'><button type='button' id='del_btn1'
+                                class='btn btn-transparent mb-1 text-danger btn-sm btn-outline-danger remove_row rounded-circle delete-row'
+                                style='width:30px'>--</button>
+                        
+                            </td>
+                               
+                        
                     </tr>
                     {% endfor %}
                 </tbody>
+          
             </table>
-            <button type="button" class="btn btn-success  text-white" style="background-color: rgb(6, 122, 6) ;"
+            <button type="button" class="btn btn-success  text-white" onclick="calc()" style="background-color: rgb(6, 122, 6) ;"
             id="add-row">Add Row</button>
 
             <a href="#">
@@ -919,9 +1090,10 @@
           <div class="row clearfix" style="margin-top:20px">
             <div class="col-md-6">
 
-                <textarea class="form-control"  id="" name="Note" placeholder="Note" style="height: 190px;"></textarea>
+                <textarea class="form-control" value="{{ch.note}}"  id="" name="Note" placeholder="Note" style="height: 190px;">
+                {{ch.note}}</textarea>
 
-                <input type="file" name="file"  style="margin-top: 10px; width: 70%;">
+                <input type="file" name="file"   style="margin-top: 10px; width: 70%;">
             </div>
 
            
@@ -932,42 +1104,35 @@
                     <div>
                     
                         <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Sub Total</label>
-                        <input  type="number" step="any" placeholder=0 class="form-control" value="{{ch.subtotal}}" id="subtotal" name="subtotal"
+                        <input  type="number" value="{{ch.subtotal}}" step="any" placeholder=0 class="form-control" id="subtotal" name="subtotal"
                         style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
                     </div>
                   </tr>
-                  {% if ch.igst != "" %}
+            
                   <tr>
-                    <div id="tr_igst">  
-                        <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; " >IGST</label>
-                        <input type="number" value="{{ch.igst}}"
-                        id='igst' name="igst"
-                        placeholder='0.00'
-                        class="form-control"
-                         style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
-    
+                    <div id="tr_igst">
+                        <label class="text-center form-control" style="width: 35%; font-weight: 10; background-color: #2f516f; color: white;">IGST</label>
+                        <input type="number" value="{{ch.igst}}" id="igst" name="igst" placeholder="0.00"
+                        class="form-control" style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;" readonly/>
                     </div>
-                  </tr>
-                  {% endif %}
-               <tr>
-                <div id="tr_cgst" >
-                    <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">CGST</label>
-                    <input type="number" id='cgst' name="cgst" step="any" placeholder=0 value="{{ch.cgst}}"
-                    class="form-control"
-                     style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
-
-                </div>
-               </tr>
-                <tr>
-                    <div id="tr_sgst" >
-                        <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">SGST</label>
-                        <input type="number" id='sgst' name="sgst" step="any" placeholder=0 value="{{ch.sgst}}"
-                        class="form-control"
-                         style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
-    
-                    </div>
-    
                 </tr>
+          
+              <tr>
+                <div id="tr_cgst">
+                    <label class="text-center form-control" style="width: 35%; font-weight: 10; background-color: #2f516f; color: white;">CGST</label>
+                    <input type="number" id="cgst" name="cgst" step="any" placeholder="0" value="{{ch.cgst}}"
+                    class="form-control" style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;" readonly/>
+                </div>
+            </tr>
+            <tr>
+                <div id="tr_sgst">
+                    <label class="text-center form-control" style="width: 35%; font-weight: 10; background-color: #2f516f; color: white;">SGST</label>
+                    <input type="number" id="sgst" name="sgst" step="any" placeholder="0" value="{{ch.sgst}}"
+                    class="form-control" style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;" readonly/>
+                </div>
+            </tr>
+                
+          
                 <tr>
                     <div style="margin-top: 8px;">
                         <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Total Tax</label>
@@ -980,7 +1145,7 @@
                     <tr>
                         <div style="margin-top: 8px;">
                             <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Grand Total</label>
-                            <input type="number" id="total_with_tax" name="t_total" value="{{ch.grand}}" step="any"
+                            <input type="number" id="total_with_tax" name="t_total" value={{ch.grand}} step="any" 
                             class="form-control"
                             style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
           
@@ -1015,7 +1180,7 @@
               Fin sYs Terms and Conditions Apply
             </div>
           </div>
-          <footer class="text-muted">Invoice was created on a computer and is valid without the
+          <footer class="text-muted">Delivery Challan was created on a computer and is valid without the
             signature and seal.
           </footer>
         </div>
@@ -1023,7 +1188,40 @@
     </div>
   </div>
 </form>
+<script>
+      $(document).on('click','.remove_row',function(){
 
+        const response = confirm("Are you sure you want to do that?");
+
+    if (response) {
+        var row_id = $(this).closest('tr');
+        var rowprd = document.getElementById('item'+row_id).value
+        var crdid='{{ch.id}}'
+        console.log('remove')
+        console.log(crdid)
+        $.ajax({
+            type: "GET",
+            url: "{% url 'removecl' %}",
+            data: {
+            id: rowprd,
+            cr:crdid
+            
+            }});
+        $('#addr0'+row_id+'').remove();
+        calc()
+    } else {
+        pass;
+    }
+  
+  // var row_id = $(this).attr("id");
+  
+  // $('#'+row_id).remove();
+  // $('#addr0'+row_id).remove();
+  // calc()
+
+  
+  });
+</script>
 <!-- modal hsncode edit -->
 
 

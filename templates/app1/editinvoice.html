@@ -1413,7 +1413,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                   {% for j in invitem %}
                   <tr id='addr0{{ forloop.counter }}'>
                     <td>{{ forloop.counter }}
-                      <input type="text"  name='id[]' value="{{ j.id }}" hidden>
+                      <input type="hidden"  name='id[]' value="{{ j.id }}" hidden>
                     </td>
                     <td>
                       <select name='product[]' id="product{{ forloop.counter }}" class="form-control" style="background-color: #2f516f; color: white;">

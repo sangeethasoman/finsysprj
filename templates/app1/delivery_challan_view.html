@@ -464,6 +464,7 @@ function uplodfile(){
                                 <thead>
                                     <tr>
                                         <td>Item Description</td>
+                                        <td>Hsn</td>
                                         <td>Price</td>
                                         <td>Quantity</td>
                                         <td>Tax</td>
@@ -483,6 +484,7 @@ function uplodfile(){
                                                 </div>
                                             </div>
                                         </td>
+                                        <td style="color:black">{{j.hsn}}</td>
                                         <td style="color:black">{{j.rate}}</td>
                                         <td style="color:black">{{j.quantity}}</td>
                                         <td style="color:black">{{j.tax}} %</td>
@@ -510,30 +512,30 @@ function uplodfile(){
                                             <td style="color:black; font-weight:bold">Sub Total :</td>
                                             <td style="color:black; font-weight:bold">{{estimate.subtotal}}</td>
                                         </tr>
-                                        {% if estimate.IGST != "" %}
+                                        {% if estimate.igst != "0" %}
                                         <tr>
                                             <td style="color:black; font-weight:bold">IGST :</td>
                                             <td style="color:black; font-weight:bold">{{estimate.igst}}</td>
                                         </tr>
                                         {% endif %}
-                                        {% if estimate.CGST != "" %}
+                                        {% if estimate.cgst != "0" %}
                                         <tr>
                                             <td style="color:black; font-weight:bold">CGST :</td>
                                             <td style="color:black; font-weight:bold">{{estimate.cgst}}</td>
                                         </tr>
                                         {% endif %}
-                                        {% if estimate.SGST != "" %}
+                                        {% if estimate.sgst != "0" %}
                                         <tr>
                                             <td style="color:black; font-weight:bold">SGST:</td>
                                             <td style="color:black; font-weight:bold">{{estimate.sgst}}</td>
                                         </tr>
                                         {% endif %}
-                                        {% if estimate.TCS != "" %}
-                                        <tr style="display: none;">
+                                        
+                                        <tr>
                                             <td style="color:black; font-weight:bold">Total Tax:</td>
                                             <td style="color:black; font-weight:bold">{{estimate.taxamount}}</td>
                                         </tr>
-                                        {% endif %}
+                                      
                                         <tfoot>
                                             <tr>
                                                 <td style="color:black; font-weight:bold"> Challan Total:</td>
@@ -543,12 +545,13 @@ function uplodfile(){
                                     </table>
             
                                     <!-- Signature -->
-                                    <!-- <div class="col-12">
-                                        <img src="signature.png" class="img-fluid" alt="">
-                                        <p class="text-center m-0" style="color:black"> Director Signature </p>
-                                    </div> -->
+                                    <div class="col-12 mt-5">
+                                        <!-- <img src="signature.png" class="img-fluid" alt=""> -->
+                                        <p class="text-center m-0 mt-5" style="color:black"> Authorised Signature </p>
+                                    </div>
                                 </div>
                             </div>
+                            
                         </section>
             
                         <!-- Cart BG -->

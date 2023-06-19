@@ -37482,7 +37482,7 @@ def create_new(request):
 def delivery_challan(request):
     cmp1 = company.objects.get(id=request.session["uid"])
     customers = customer.objects.filter(cid=cmp1).all()
-    invs = challanitem.objects.filter(cid=cmp1).all()
+    invs = challan.objects.filter(cid=cmp1).all()
     context = {'invoice': invs, 'customers': customers, 'cmp1': cmp1}
     return render(request,'app1/delivery_challan.html', context)
     
@@ -37643,13 +37643,14 @@ def challancreate(request):
                         cgst = request.POST['cgst'],
                         sgst = request.POST['sgst'],
                         taxamount = request.POST['totaltax'],
-                        grand=request.POST['t_total']
+                        grand=request.POST['t_total'],
+                        ref=request.POST['ref'],
                         )
             if len(request.FILES) != 0:
                 inv2.file=request.FILES['file'] 
-            chal_no = 'OR'+str(random.randint(1111111,9999999))
+            chal_no = 'DL'+str(random.randint(1111111,9999999))
             while challan.objects.filter(chal_no=chal_no ) is None:
-                chal_no = 'OR'+str(random.randint(1111111,9999999))
+                chal_no = 'DL'+str(random.randint(1111111,9999999))
             inv2.chal_no =chal_no
             inv2.save()
             
@@ -37679,7 +37680,7 @@ def editchallan(request,id):
     cmp1 = company.objects.get(id=request.session['uid'])
     upd = challan.objects.get(id=id, cid=cmp1)
     item = itemtable.objects.filter(cid=cmp1).all()
-
+    customers = customer.objects.filter(cid=cmp1).all()
     estitem = challanitem.objects.filter(dl_id=id)
 
     context ={
@@ -37687,17 +37688,71 @@ def editchallan(request,id):
         'cmp1':cmp1,
         'chitem':estitem,
         'item':item,
+        'customers':customers,
     }
     
     return render(request,'app1/editchallan.html',context)
 
+def edited_challan(request,id):
+    if request.method == 'POST':
+       
+            cmp1 = company.objects.get(id=request.session['uid'])
+            ch = challan.objects.get(id=id, cid=cmp1)
+            ch.customer=request.POST['customername']
+            ch.cx_mail = request.POST['email']
+            ch.challan_date=request.POST['challandate']
+            ch.challan_type=request.POST['terms']
+            ch.billto=request.POST['bname']
+            ch.pl=request.POST['placosupply']
+            ch.subtotal=float(request.POST['subtotal'])
+            ch.note = request.POST['Note']
+            ch.igst = request.POST['igst']
+            ch.cgst = request.POST['cgst']
+            ch.sgst = request.POST['sgst']
+            ch.taxamount = request.POST['totaltax']
+            ch.grand=request.POST['t_total']
+            if len(request.FILES) != 0:
+                if len(ch.file) != "default.jpg" :
+                    os.remove(ch.file.path)                    
+                    ch.file = request.FILES.get('file')
+
+            ch.save()
+            
+            product=request.POST.getlist('item[]')
+            hsn=request.POST.getlist('hsn[]')
+            quantity=request.POST.getlist('quantity[]')
+            rate=request.POST.getlist('rate[]')
+            desc=request.POST.getlist('desc[]')
+            tax=request.POST.getlist('tax[]')
+            total=request.POST.getlist('amount[]')
+            itemid = request.POST.getlist("id[]")
+            chid=challan.objects.get(id =ch.id)
+            count = challanitem.objects.filter(dl=chid).count()
+            obj_dele=challanitem.objects.filter(dl=ch.id)
+            obj_dele.delete()
+       
+            if len(product)==len(hsn)==len(quantity)==len(desc)==len(tax)==len(total)==len(rate):
+
+                mapped = zip(product,hsn,quantity,desc,tax,total,rate)
+                mapped = list(mapped)
+                for element in mapped:
+                    created = challanitem.objects.get_or_create(dl=chid,cid=cmp1,product=element[0],hsn=element[1],
+                                    quantity=element[2],desc=element[3],tax=element[4],total=element[5],rate=element[6])
+                
+                return redirect('delivery_view',id)
+
+
+        
+    else:
+        return redirect('delivery_challan')
+
 def deletechallan(request,id):
     try:
         cmp1 = company.objects.get(id=request.session['uid'])
-        upd = estimate.objects.get(estimateid=id, cid=cmp1)
+        upd = challan.objects.get(id=id, cid=cmp1)
         
         upd.delete()
-        os.remove(upd.estimate.path)
+        os.remove(upd.challan.path)
         return redirect('delivery_challan')
     except:
         return redirect('delivery_challan')
@@ -37752,3 +37807,38 @@ def challan_convert1(request,id):
 
 
     return redirect(delivery_view,id)
+
+def removecl(request):
+    print("sadsad")
+    id = request.GET.get('id')
+    crid = request.GET.get('cr')
+    dbs=challanitem.objects.filter(product=id,invoice=crid)
+    dbs.delete()
+    print("fine")
+    return JsonResponse({'crid':crid,})
+
+def gochallan(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        pbill = purchasebill.objects.filter(cid=cmp1)
+        return render(request,'app1/gobilling.html',{'cmp1': cmp1,'pbill':pbill})
+    return redirect('gobilling')
+
+
+def gochallan1(request):
+    cmp1 = company.objects.get(id=request.session["uid"])
+    customers = customer.objects.filter(cid=cmp1).all()
+    invs = challan.objects.filter(cid=cmp1,status='Draft').all()
+    context = {'invoice': invs, 'customers': customers, 'cmp1': cmp1}
+    return render(request,'app1/delivery_challan.html', context)
+
+def gochallan2(request):
+    cmp1 = company.objects.get(id=request.session["uid"])
+    customers = customer.objects.filter(cid=cmp1).all()
+    invs = challan.objects.filter(cid=cmp1,status='Approved').all()
+    context = {'invoice': invs, 'customers': customers, 'cmp1': cmp1}
+    return render(request,'app1/delivery_challan.html', context)
