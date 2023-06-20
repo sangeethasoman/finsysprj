@@ -865,7 +865,6 @@ urlpatterns = [
     path('challan_convert1/<int:id>',views.challan_convert1,name='challan_convert1'),
     path('edited_challan/<int:id>',views.edited_challan,name='edited_challan'),
     path('removecl', views.removecl, name='removecl'),
-    path('gochallan', views.gochallan, name='gochallan'),
     path('gochallan1',views.gochallan1,name='gochallan1'),
     path('gochallan2',views.gochallan2,name='gochallan2'),
 

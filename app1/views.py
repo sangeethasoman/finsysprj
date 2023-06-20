@@ -37478,6 +37478,7 @@ def create_new(request):
 
 # muhammed ashiq estimate_view
 
+@login_required(login_url='regcomp')
 
 def delivery_challan(request):
     cmp1 = company.objects.get(id=request.session["uid"])
@@ -37513,6 +37514,7 @@ def goadd_dl_challan(request):
     except:
         return redirect('delivery_challan') 
     
+@login_required(login_url='regcomp')
 
 def delivery_view(request,id):
     cmp1 = company.objects.get(id=request.session['uid'])
@@ -37623,6 +37625,7 @@ def dl_create_item(request):
         return render(request,'app1/delivery_challan.html')
     return redirect('/') 
 
+@login_required(login_url='regcomp')
 
 def challancreate(request):
     try:
@@ -37710,6 +37713,7 @@ def edited_challan(request,id):
             ch.cgst = request.POST['cgst']
             ch.sgst = request.POST['sgst']
             ch.taxamount = request.POST['totaltax']
+            ch.ref=request.POST['ref']
             ch.grand=request.POST['t_total']
             if len(request.FILES) != 0:
                 if len(ch.file) != "default.jpg" :
@@ -37817,16 +37821,7 @@ def removecl(request):
     print("fine")
     return JsonResponse({'crid':crid,})
 
-def gochallan(request):
-    if 'uid' in request.session:
-        if request.session.has_key('uid'):
-            uid = request.session['uid']
-        else:
-            return redirect('/')
-        cmp1 = company.objects.get(id=request.session['uid'])
-        pbill = purchasebill.objects.filter(cid=cmp1)
-        return render(request,'app1/gobilling.html',{'cmp1': cmp1,'pbill':pbill})
-    return redirect('gobilling')
+
 
 
 def gochallan1(request):

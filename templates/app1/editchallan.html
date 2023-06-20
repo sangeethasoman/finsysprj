@@ -63,7 +63,8 @@
                     // console.log('pos:'+place_of_supply);
                     document.getElementById('rate1').value = data3
                     document.getElementById('desc1').value = data1
-                    
+                    document.getElementById('hsn1').value = data
+
                     document.getElementById('qty1').value = data2
                     var pos = document.getElementById('plosu').value;
                     var comp = "{{cmp1.state}}"
@@ -117,6 +118,7 @@
                     document.getElementById('rate2').value = data3
                     document.getElementById('desc2').value = data1                    
                     document.getElementById('qty2').value = data2
+                    document.getElementById('hsn2').value = data
 
                     var pos = document.getElementById('plosu').value;
                     var comp = "{{cmp1.state}}"
@@ -173,7 +175,8 @@
                     // console.log('pos:'+place_of_supply);
                     document.getElementById('rate3').value = data3
                     document.getElementById('desc3').value = data1
-                    
+                    document.getElementById('hsn3').value = data
+
                     document.getElementById('qty3').value = data2
                     var pos = document.getElementById('plosu').value;
                     var comp = "{{cmp1.state}}"
@@ -227,7 +230,8 @@
                     // console.log('pos:'+place_of_supply);
                     document.getElementById('rate4').value = data3
                     document.getElementById('desc4').value = data1
-                    
+                    document.getElementById('hsn4').value = data
+
                     document.getElementById('qty4').value = data2
                     var pos = document.getElementById('plosu').value;
                     var comp = "{{cmp1.state}}"
@@ -281,7 +285,8 @@
                     // console.log('pos:'+place_of_supply);
                     document.getElementById('rate5').value = data3
                     document.getElementById('desc5').value = data1
-                    
+                    document.getElementById('hsn5').value = data
+
                     document.getElementById('qty5').value = data2
                     var pos = document.getElementById('plosu').value;
                     var comp = "{{cmp1.state}}"
@@ -336,7 +341,8 @@
                     // console.log('pos:'+place_of_supply);
                     document.getElementById('rate6').value = data3
                     document.getElementById('desc6').value = data1
-                    
+                    document.getElementById('hsn6').value = data
+
                     document.getElementById('qty6').value = data2
                     var pos = document.getElementById('plosu').value;
                     var comp = "{{cmp1.state}}"
@@ -392,7 +398,8 @@
                     // console.log('pos:'+place_of_supply);
                     document.getElementById('rate7').value = data3
                     document.getElementById('desc7').value = data1
-                    
+                    document.getElementById('hsn7').value = data
+
                     document.getElementById('qty7').value = data2
                     var pos = document.getElementById('plosu').value;
                     var comp = "{{cmp1.state}}"
@@ -446,6 +453,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn8').value = data
+
                     document.getElementById('rate8').value = data3
                     document.getElementById('desc8').value = data1
                     
@@ -502,6 +511,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn9').value = data
+
                     document.getElementById('rate9').value = data3
                     document.getElementById('desc9').value = data1
                     
@@ -575,10 +586,11 @@
                 <input type='hidden' id='desc${RowCount}' onchange="calc()"
                         class='form-control border-0 text-black text-right desc' name='desc[]' >
                
-                <td class='text-right'> <select name='tax[]' id='tax${RowCount}'onclick="calc()"
+                <td class='text-right'> <select name='tax[]' id='tax${RowCount}'onclick="calc()" onclick="state()"
                         class="form-control  text-black text-right border-0 tax">
                   <optgroup label="GST">
                     <option value="0">GST 0%</option>
+                    <option value="3">GST 3%</option>
                       <option value="5">GST 5%</option>
                       <option value="12">GST 12%</option>
                       <option value="18">GST 18%</option>
@@ -586,6 +598,7 @@
                   </optgroup>
                   <optgroup label="IGST">
                     <option value="0">GST 0%</option>
+                    <option value="3">IGST 3%</option>
                       <option value="5">IGST 5%</option>
                       <option value="12">IGST 12%</option>
                       <option value="18" >IGST 18%</option>
@@ -734,7 +747,7 @@
           <div class="row">
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Place of supply</label>
-              <select type="text" class="form-control " id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onclick="calc()">
+              <select type="text" class="form-control " id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onclick="calc()" onclick="state">
                 <option value="{{ cmp1.state }}" selected> {{ cmp1.state }}</option>
                 <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
                 <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -849,10 +862,11 @@
                                 class='form-control border-0 text-black text-right desc' name='desc[]'
                                 >
                         
-                        <td class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax' onclick="calc()"  >
+                        <td class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax' onclick="calc()" onclick="state()"   >
                           <option value="{{k.tax}}" selected>{{k.tax}}</option>
                             <optgroup label="GST">
                             <option value="0">GST 0%</option>
+                            <option value="3">GST 3%</option>
                               <option value="5">GST 5%</option>
                               <option value="12">GST 12%</option>
                               <option value="18" >GST 18%</option>
@@ -860,6 +874,7 @@
                           </optgroup>
                           <optgroup label="IGST">
                             <option value="0">IGST 0%</option>
+                            <option value="3">IGST 3%</option>
                               <option value="5">IGST 5%</option>
                               <option value="12">IGST 12%</option>
                               <option value="18" >IGST 18%</option>
@@ -1023,7 +1038,7 @@ function test(taxamount) {
             document.getElementById('tr_igst').style= ('display: none');
         }
         var pos = document.getElementById('plosu').value;
-    var comp = "{{cmp1.state}}"
+        var comp = "{{cmp1.state}}"
                   
                    // Assuming you have the customer state and company state values in variables
                    
@@ -1077,13 +1092,10 @@ function test(taxamount) {
                 </tbody>
           
             </table>
-            <button type="button" class="btn btn-success  text-white" onclick="calc()" style="background-color: rgb(6, 122, 6) ;"
-            id="add-row">Add Row</button>
+            <button type="button" class="btn btn-outline-secondary ml-1" onclick="calc()" 
+            id="add-row">+</button>
 
-            <a href="#">
-                <button type="button" class="btn btn-outline-secondary ml-1" 
-                data-target="#newitem" data-toggle="modal">+</button>
-            </a>
+          
             
             </div>
           </div>

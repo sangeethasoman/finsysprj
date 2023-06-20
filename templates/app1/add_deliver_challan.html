@@ -61,6 +61,7 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn1').value = data
                     document.getElementById('rate1').value = data3
                     document.getElementById('desc1').value = data1
                     
@@ -114,6 +115,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn2').value = data
+
                     document.getElementById('rate2').value = data3
                     document.getElementById('desc2').value = data1                    
                     document.getElementById('qty2').value = data2
@@ -171,6 +174,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn3').value = data
+
                     document.getElementById('rate3').value = data3
                     document.getElementById('desc3').value = data1
                     
@@ -225,6 +230,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn4').value = data
+
                     document.getElementById('rate4').value = data3
                     document.getElementById('desc4').value = data1
                     
@@ -279,6 +286,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn5').value = data
+
                     document.getElementById('rate5').value = data3
                     document.getElementById('desc5').value = data1
                     
@@ -334,6 +343,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn6').value = data
+
                     document.getElementById('rate6').value = data3
                     document.getElementById('desc6').value = data1
                     
@@ -390,6 +401,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn7').value = data
+
                     document.getElementById('rate7').value = data3
                     document.getElementById('desc7').value = data1
                     
@@ -446,6 +459,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn9').value = data
+
                     document.getElementById('rate8').value = data3
                     document.getElementById('desc8').value = data1
                     
@@ -502,6 +517,8 @@
                     console.log('there')
                     // place_of_supply=data3;
                     // console.log('pos:'+place_of_supply);
+                    document.getElementById('hsn9').value = data
+
                     document.getElementById('rate9').value = data3
                     document.getElementById('desc9').value = data1
                     
@@ -550,7 +567,7 @@
             <tr id='row${RowCount}' >  
                 <td>${RowCount}</td>              
                <td class='text-right'>
-                    <div class='form-group mt-3'>
+                    <div class='form-group mt-3 d-flex align-items-center'>
                         <select
                             class='form-control  text-black border-0 item_select' name='item[]'
                             id='item${RowCount}'>
@@ -560,7 +577,11 @@
                                             value="{{ i.name  }}">{{ i.name  }} </option>
                                 {% endif %}
                             {% endfor %}
-                        </select></div>
+                        </select>
+                        <a href="#">
+            <button type="button" class="btn btn-outline-secondary ml-1" data-target="#newitem" data-toggle="modal">+</button>
+        </a>
+                        </div>
                 </td>
                 <td class='text-right '>
             <input type='text' id='hsn${RowCount}'  class='form-control mt-4 border-0 text-black text-right hsn' name='hsn[]' value='' onchange="validateHSN(this)">
@@ -576,21 +597,23 @@
                         class='form-control border-0 text-black text-right desc' name='desc[]' >
                
                 <td class='text-right'> <select name='tax[]' id='tax${RowCount}'
-                        class="form-control  text-black text-right border-0 tax">
-                  <optgroup label="GST">
-                    <option value="0">GST 0%</option>
-                      <option value="5">GST 5%</option>
-                      <option value="12">GST 12%</option>
-                      <option value="18">GST 18%</option>
-                      <option value="28">GST 28%</option>
-                  </optgroup>
-                  <optgroup label="IGST">
-                    <option value="0">GST 0%</option>
-                      <option value="5">IGST 5%</option>
-                      <option value="12">IGST 12%</option>
-                      <option value="18" >IGST 18%</option>
-                      <option value="28">GST 28%</option>
-                  </optgroup>
+                        class="form-control  text-black text-right border-0 tax" onclick='state()' onclick='calc()' >
+                        <optgroup  label="GST">
+                            <option value="0">GST 0%</option>
+                            <option value="3">GST 3%</option>
+                              <option value="5">GST 5%</option>
+                              <option value="12">GST 12%</option>
+                              <option value="18" >GST 18%</option>
+                              <option value="28">GST 28%</option>
+                          </optgroup>
+                          <optgroup  label="IGST">
+                            <option value="0">IGST 0%</option>
+                            <option value="3">IGST 3%</option>
+                              <option value="5">IGST 5%</option>
+                              <option value="12">IGST 12%</option>
+                              <option value="18" >IGST 18%</option>
+                              <option value="28">IGST 28%</option>
+                          </optgroup>
                        
                     </select></td>
                 <td style="display: none;">
@@ -601,9 +624,7 @@
                 <td class='text-center'><button type='button' id='del_btn${RowCount}'
                         class='btn btn-transparent mt-1 text-danger btn-sm btn-outline-danger rounded-circle delete-row'
                         style='width:30px'>--</button>
-                        <button type='button' id='del_btn${RowCount}'
-                        class='btn btn-transparent mt-1 text-danger btn-sm btn-outline-danger rounded-circle delete-row'
-                        style='width:30px'>C</button>
+                        
                         </td>
             </tr>`);
 
@@ -616,6 +637,9 @@
     }
 });
             $('#item_table').append(newRow);
+            for (var i = 2; i <= 10; i++) {
+            $('#tax' + i).on('change', state);
+        }
         });
 
         $('#item_table').on('click', '.delete-row', function () {
@@ -625,7 +649,29 @@
         });
 
     });
-    
+    function state() {
+    var pos = $('#plosu').val(); // Get the selected state value
+    var defaultPos = $('#plosu option[selected]').val(); // Get the value of the default selected option
+    var comp = '{{cmp1.state}}'; // Provide the comparison value
+
+    if (pos === null || pos === "") {
+        pos = defaultPos; // Use the default selected option value if no state is manually selected
+    }
+
+    for (var i = 1; i <= 10; i++) {
+        var taxElement = $('#tax' + i);
+
+        if (pos === comp) {
+            taxElement.find('optgroup[label="GST"]').show();
+            taxElement.find('optgroup[label="IGST"]').hide();
+        } else {
+            taxElement.find('optgroup[label="GST"]').hide();
+            taxElement.find('optgroup[label="IGST"]').show();
+        }
+    }
+}
+
+  
 </script>
 
 </script>
@@ -736,7 +782,7 @@
           <div class="row">
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Place of supply</label>
-              <select type="text" class="form-control " id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onchange="state(this)">
+              <select type="text" class="form-control " id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onclick="state()" onclick='calc()'>
                 <option value="{{ cmp1.state }}" selected> {{ cmp1.state }}</option>
                 <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
                 <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -800,19 +846,25 @@
           
                     <tr id='row1'>
                      <td>1</td>
-                        <td class="text-right">
-                           
-                            <div class='form-group mt-3'><select
-                                    class='form-control border-0 mt-1 text-black text-right  itm'
-                                    name='item[]' id='item1'>
-                                    {% for i in item %}
+                     <td class="text-right">
+                        <div class='form-group mt-3 d-flex align-items-center'>
+                            <select class='form-control border-0 mt-1 text-black text-right itm' name='item[]' id='item1'>
+                                {% for i in item %}
                                     {% if i.cid_id == cmp1.cid %}
-                                        <option 
-                                                value="{{ i.name  }}">{{ i.name  }} </option>
+                                        <option value="{{ i.name  }}">{{ i.name  }}</option>
                                     {% endif %}
                                 {% endfor %}
-                                </select></div>
-                        </td>
+                            </select>
+                            <a href="#">
+                                <button type="button" class="btn btn-outline-secondary ml-1" data-target="#newitem" data-toggle="modal">+</button>
+                            </a>
+                        </div>
+                    </td>
+                   
+                    
+                    
+                    
+                    
                        
                         <td class='text-right '><div>
                             <input type='text' id='hsn1'
@@ -848,16 +900,18 @@
                                 class='form-control border-0 text-black text-right desc' name='desc[]'
                                 >
                         
-                        <td class='text-right'> <select name="tax[]" id="tax1" class='form-control border-0 text-black text-right tax'  >
+                        <td class='text-right'> <select name="tax[]" id="tax1" class='form-control border-0 text-black text-right tax' onclick="state()" onclick="calc()"  >
                           <optgroup label="GST">
                             <option value="0">GST 0%</option>
+                            <option value="3">GST 3%</option>
                               <option value="5">GST 5%</option>
                               <option value="12">GST 12%</option>
                               <option value="18" >GST 18%</option>
                               <option value="28">GST 28%</option>
                           </optgroup>
-                          <optgroup label="IGST">
+                          <optgroup   label="IGST">
                             <option value="0">IGST 0%</option>
+                            <option value="3">IGST 3%</option>
                               <option value="5">IGST 5%</option>
                               <option value="12">IGST 12%</option>
                               <option value="18" >IGST 18%</option>
@@ -1037,9 +1091,7 @@ function test(taxamount) {
                         <td class='text-center'><button type='button' id='del_btn1'
                                 class='btn btn-transparent mb-1 text-danger btn-sm btn-outline-danger rounded-circle delete-row'
                                 style='width:30px'>--</button>
-                                <button type='button' id='del_btn1'
-                                class='btn btn-transparent mt-1 text-danger btn-sm btn-outline-danger rounded-circle delete-row'
-                                style='width:30px'>C</button>
+                               
                             </td>
                                
                         
@@ -1050,10 +1102,7 @@ function test(taxamount) {
             <button type="button" class="btn btn-success  text-white" style="background-color: rgb(6, 122, 6) ;"
             id="add-row">Add Row</button>
 
-            <a href="#">
-                <button type="button" class="btn btn-outline-secondary ml-1" 
-                data-target="#newitem" data-toggle="modal">+</button>
-            </a>
+           
             
             </div>
           </div>
@@ -1210,7 +1259,7 @@ function test(taxamount) {
                 </div>
             <div class="modal-body">
 
-                <form action="new_customers3" method="POST" autocomplete="off">{% csrf_token %}
+                <form action="add_cx" method="POST" autocomplete="off">{% csrf_token %}
 
                     <div class="row">
                         <div class="col-md-4 mt-3">
