@@ -37633,7 +37633,6 @@ def challancreate(request):
             cmp1 = company.objects.get(id=request.session["uid"])
             
             inv2 = challan(customer=request.POST['customername'], cx_mail=request.POST['email'],
-                        chal_no='1000',
                         challan_date=request.POST['challandate'],
 
                         challan_type=request.POST['terms'],  billto=request.POST['bname'],
@@ -37647,14 +37646,10 @@ def challancreate(request):
                         sgst = request.POST['sgst'],
                         taxamount = request.POST['totaltax'],
                         grand=request.POST['t_total'],
-                        ref=request.POST['ref'],
+                        shipping=request.POST['ship'],
+                        chal_no =request.POST['chal_no'],
+
                         )
-            if len(request.FILES) != 0:
-                inv2.file=request.FILES['file'] 
-            chal_no = 'DL'+str(random.randint(1111111,9999999))
-            while challan.objects.filter(chal_no=chal_no ) is None:
-                chal_no = 'DL'+str(random.randint(1111111,9999999))
-            inv2.chal_no =chal_no
             inv2.save()
             
             product=request.POST.getlist('item[]')
@@ -37664,14 +37659,15 @@ def challancreate(request):
             desc=request.POST.getlist('desc[]')
             tax=request.POST.getlist('tax[]')
             total=request.POST.getlist('amount[]')
+            discount=request.POST.getlist('[]')
             cl_id=challan.objects.get(id=inv2.id)
-            if len(product)==len(hsn)==len(quantity)==len(desc)==len(tax)==len(total)==len(rate):
+            if len(product)==len(hsn)==len(quantity)==len(desc)==len(tax)==len(total)==len(rate)==len(discount):
 
-                mapped = zip(product,hsn,quantity,desc,tax,total,rate)
+                mapped = zip(product,hsn,quantity,desc,tax,total,rate,discount)
                 mapped = list(mapped)
                 for element in mapped:
                     created = challanitem.objects.get_or_create(dl=cl_id,product=element[0],hsn=element[1],
-                                            quantity=element[2],desc=element[3],tax=element[4],total=element[5],rate=element[6],cid=cmp1)
+                                            quantity=element[2],desc=element[3],tax=element[4],total=element[5],rate=element[6],cid=cmp1,discount=element[7])
             return redirect('delivery_challan')
     
         return render(request,'app1/add_deliver_challan.html')
@@ -37714,6 +37710,7 @@ def edited_challan(request,id):
             ch.sgst = request.POST['sgst']
             ch.taxamount = request.POST['totaltax']
             ch.ref=request.POST['ref']
+            ch.chal_no=request.POST['chal_no']
             ch.grand=request.POST['t_total']
             if len(request.FILES) != 0:
                 if len(ch.file) != "default.jpg" :
@@ -37730,18 +37727,19 @@ def edited_challan(request,id):
             tax=request.POST.getlist('tax[]')
             total=request.POST.getlist('amount[]')
             itemid = request.POST.getlist("id[]")
+            discount=request.POST.getlist('discount[]')
             chid=challan.objects.get(id =ch.id)
             count = challanitem.objects.filter(dl=chid).count()
             obj_dele=challanitem.objects.filter(dl=ch.id)
             obj_dele.delete()
        
-            if len(product)==len(hsn)==len(quantity)==len(desc)==len(tax)==len(total)==len(rate):
+            if len(product)==len(hsn)==len(quantity)==len(desc)==len(tax)==len(total)==len(rate)==len(discount):
 
-                mapped = zip(product,hsn,quantity,desc,tax,total,rate)
+                mapped = zip(product,hsn,quantity,desc,tax,total,rate,discount)
                 mapped = list(mapped)
                 for element in mapped:
                     created = challanitem.objects.get_or_create(dl=chid,cid=cmp1,product=element[0],hsn=element[1],
-                                    quantity=element[2],desc=element[3],tax=element[4],total=element[5],rate=element[6])
+                                    quantity=element[2],desc=element[3],tax=element[4],total=element[5],rate=element[6],discount=element[7])
                 
                 return redirect('delivery_view',id)
 
@@ -37837,3 +37835,74 @@ def gochallan2(request):
     invs = challan.objects.filter(cid=cmp1,status='Approved').all()
     context = {'invoice': invs, 'customers': customers, 'cmp1': cmp1}
     return render(request,'app1/delivery_challan.html', context)
+
+
+def dummy(request):
+        customers = customer.objects.all()
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        cmp1 = company.objects.get(id=request.session["uid"])
+        inv = inventory.objects.filter(cid=cmp1)
+        bun = bundle.objects.filter(cid=cmp1)
+        noninv = noninventory.objects.filter(cid=cmp1)
+        ser = service.objects.filter(cid=cmp1)
+        item = itemtable.objects.filter(cid=cmp1).all()
+
+        unit = unittable.objects.filter(cid=cmp1)
+        acc  = accounts1.objects.filter(acctype='Cost of Goods Sold',cid=cmp1)
+        acc1  = accounts1.objects.filter(acctype='Sales',cid=cmp1)
+
+
+
+        context = {'cmp1': cmp1, 'customers': customers, 'inv': inv, 'bun': bun, 'noninv': noninv,'item' :item,
+                   'ser': ser,
+                   'tod': tod,
+                   'unit':unit,'acc':acc,'acc1':acc1,
+                   }
+
+        return render(request,'app1/dummy.html',context)
+
+
+def additem_challan(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+    cmp1 = company.objects.get(id=request.session['uid'])
+    types=request.GET.get('types')
+    inters=request.GET.get('inters')
+    intras=request.GET.get('intras')
+    names=request.GET.get('names')
+    units=request.GET.get('units')
+    sel_prices=request.GET.get('sel_prices')
+    sel_accs=request.GET.get('sel_accs')
+    s_descs=request.GET.get('s_descs')
+    cost_prices=request.GET.get('cost_prices')
+    cost_accs=request.GET.get('cost_accs')      
+    p_descs=request.GET.get('p_descs')
+    status=request.GET.get('status')
+    invacc=request.GET.get('invacc')
+    stock=request.GET.get('stock')
+    hsn=request.GET.get('hsn')
+    taxType=request.GET.get('taxType')
+    print(names)
+    item = itemtable(name=names,item_type=types,unit=units,
+                                hsn=hsn,tax_reference=taxType,
+                                purchase_cost=cost_prices,
+                                sales_cost=sel_prices,
+                                #tax_rate=itrate,
+                                acount_pur=cost_accs,
+                                account_sal=sel_accs,
+                                pur_desc=p_descs,
+                                sale_desc=s_descs,
+                                intra_st=intras,
+                                inter_st=inters,
+                                inventry=invacc,
+                                stock=stock,
+                                status=status,
+                                cid=cmp1)
+    item.save()   
+    print('done!!!!!!!!!!!')
+
+    return JsonResponse({"status": " not", 'names': names})

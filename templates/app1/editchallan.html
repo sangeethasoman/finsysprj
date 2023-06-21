@@ -560,7 +560,7 @@
             var newRow = $(`
             <tr id='row${RowCount}' >  
                 <td>${RowCount}</td>              
-               <td class='text-right'>
+               <td style="width: 18%;" class='text-right'>
                     <div class='form-group mt-3'>
                         <select
                             class='form-control  text-black border-0 item_select' name='item[]'
@@ -574,8 +574,7 @@
                         </select></div>
                 </td>
                 <td class='text-right '>
-            <input type='text' id='hsn${RowCount}'  class='form-control mt-4 border-0 text-black text-right hsn' name='hsn[]' value='' onchange="validateHSN(this)">
-            <span class='hsn-validation'></span>
+            <input type='text' id='hsn${RowCount}'  class='form-control  border-0 text-black text-right hsn' name='hsn[]' value='' onchange="validateHSN(this)">
         </td>
                 <td class='text-right'><input type='number' id='qty${RowCount}'
                         class='form-control border-0 text-black text-right qty' name='quantity[]' value='0' onchange="calc()">
@@ -585,8 +584,10 @@
                         ></td>
                 <input type='hidden' id='desc${RowCount}' onchange="calc()"
                         class='form-control border-0 text-black text-right desc' name='desc[]' >
-               
-                <td class='text-right'> <select name='tax[]' id='tax${RowCount}'onclick="calc()" onclick="state()"
+                        <td style="width:10%;">
+                    <input type="text" name='discount[]' id="discount${RowCount}" class="form-control discount" />
+                            </td>
+                <td style="width:13%" class='text-right'> <select name='tax[]' id='tax${RowCount}'onclick="calc()" onclick="state()"
                         class="form-control  text-black text-right border-0 tax">
                   <optgroup label="GST">
                     <option value="0">GST 0%</option>
@@ -684,7 +685,7 @@
           <div class="row">
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Select Customer</label>
-              <div class="d-flex">
+              <div class="">
                 <select name="customername" id="select" class="form-control" style="background-color: #2f516f; color: white;" onclick="calc()">
                   <option value="{{ch.customer}}"  selected>{{ch.customer}}</option>
                   {% for cust in customers %}
@@ -693,15 +694,17 @@
                   {% endif %}
                   {% endfor %}
                 </select>
-                <a data-toggle="modal" href="#newcust">
-                  <button type="button" class="btn btn-outline-secondary ml-1">+</button>
-              </a>
+               
               </div>
             </div>
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Email </label>
               <input class="custom-select" name="email" placeholder="Email" value="{{ch.cx_mail}}" required style="background-color: #2f516f; color: white;"  onclick="calc()" id="email">
             </div>
+            <div class="col-md-3 mt-3">
+                <label class="col-form-label">Challan number</label>
+                <input type="text"  id="ref" class="form-control" name="chal_no" value="{{ch.chal_no}}" style="background-color: #2f516f; color: white;" onselect="calc()">
+              </div>
             <div class="col-md-3 mt-3"></div>
             <div class="col-md-3 mt-3"></div>
           </div>
@@ -803,6 +806,7 @@
                         <th class="text-right">Hsn</th>
                         <th class="text-right">Quantity</th>
                         <th class="text-right">Rate</th>
+                        <th class="text-right">Discount</th>
                         <th class="text-right">Tax %</th>
                         <th class="text-right">Total</th>
                     </tr>
@@ -813,9 +817,9 @@
                     <td>{{ forloop.counter }}
                         <input type="text"  name='id[]' value="{{ k.id }}" hidden>
                       </td>
-                        <td class="text-right">
+                        <td style="width: 18%;" class="text-right">
                            
-                            <div class='form-group mt-3'><select
+                            <div class='form-group mt-3 d-flex'><select
                                     class='form-control border-0 mt-1 text-black text-right  itm'
                                     name='item[]' id='item{{ forloop.counter }}'>
                                     <option value="{{ k.product }}" selected>{{ k.product }}</option>
@@ -825,15 +829,19 @@
                                     value="{{ i.name  }}">{{ i.name  }} </option>
                         {% endif %}
                         {% endfor %}
-                                </select></div>
+                                </select>
+                                <a href="#">
+                                    <button type="button" class="btn btn-outline-secondary ml-1" data-target="#create_item" data-toggle="modal">+</button>
+                                </a>
+                            </div>
+
                         </td>
                        
                         <td class='text-right '><div>
                             <input type='text' id='hsn{{ forloop.counter }}'
-                          class='form-control mt-3 border-0 text-black text-right hsn' name='hsn[]'
+                          class='form-control  border-0 text-black text-right hsn' name='hsn[]'
                           value={{k.hsn}}  >
                         </div>
-                          <span class='hsn-validation'></span>
                         </td>
                    <script>
                    $(document).on("input", ".hsn", function() {
@@ -861,8 +869,10 @@
                          <input type='hidden' id='desc{{ forloop.counter }}'
                                 class='form-control border-0 text-black text-right desc' name='desc[]'
                                 >
-                        
-                        <td class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax' onclick="calc()" onclick="state()"   >
+                                <td style='width:10%'>
+                                    <input type="text" name='discount[]' id="discount1" class="form-control discount" />
+                                </td>
+                        <td style="width: 13%;" class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax' onclick="calc()" onclick="state()"   >
                           <option value="{{k.tax}}" selected>{{k.tax}}</option>
                             <optgroup label="GST">
                             <option value="0">GST 0%</option>
@@ -916,10 +926,13 @@ function calc() {
         var rate = $(this).find('.rate').val();
         var desc = $(this).find('.desc').val();
         var tax = $(this).find('.tax').val();
+        var discount = $(this).find('.discount').val();
+
         
         // calculate the tax amount and total amount for this row
         var taxamount = (qty * rate) * (tax / 100);
-        var amount = qty * rate;
+        var dis = qty * rate;
+        var amount = dis - discount
         
         // update the tax amount and total amount input fields for this row
         $(this).find('.taxamount').val(taxamount.toFixed(2));
@@ -935,33 +948,30 @@ function calc() {
     $('.taxamount').each(function() {
         taxamount += parseFloat($(this).val());
     });
-    
+
+    // get the shipping charge value
+    var shippingCharge = parseFloat($('#ship').val());
+
     // update the subtotal and total tax amount input fields
     $('#subtotal').val(total.toFixed(2));
     $('#total_taxamount').val(taxamount.toFixed(2));
 
-    var total_with_tax = total + taxamount;
-    
-    // display the total amount including tax on the page
+    // calculate the total amount including tax and shipping charge
+    var total_with_tax = total + taxamount + shippingCharge;
+
+    // display the total amount including tax and shipping charge on the page
     $('#total_with_tax').val(total_with_tax.toFixed(2));
-    var pos = document.getElementById('plosu').value;
-    var comp = "{{cmp1.state}}"
-                  
-                   // Assuming you have the customer state and company state values in variables
-                   
-               
-    $(document).ready(function() {
-        if (pos === comp) {
-            $('#tax{{ forloop.counter }} optgroup[label="GST"]').show();
-            $('#tax{{ forloop.counter }} optgroup[label="IGST"]').hide();
-        } else {
-            $('#tax{{ forloop.counter }} optgroup[label="GST"]').hide();
-            $('#tax{{ forloop.counter }} optgroup[label="IGST"]').show();
-                       }
-                   });
-  test(taxamount);
+    
+
+    // Event listener for the shipping input field
+    $('#ship').on('input', function() {
+    calc(); // Call the calc() function whenever the shipping value changes
+    });
+
+    test(taxamount);
 
 }
+
 
   // Update subtotal when a row is deleted
     $(document).ready(function dlt () {
@@ -1151,6 +1161,15 @@ function test(taxamount) {
                         <input type="number" id="total_taxamount" name="totaltax" placeholder=0 step="any" value="{{ch.taxamount}}"
                         class="form-control"
                         style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
+        
+                    </div>
+                </tr>
+                <tr>
+                    <div style="margin-top: 8px;">
+                        <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Shipping Charge</label>
+                        <input type="number" id="ship" name="ship" placeholder=0 step="any" value="0" 
+                        class="form-control ship"
+                        style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"  />
         
                     </div>
                 </tr>

@@ -1700,7 +1700,7 @@ class challan(models.Model):
     
     status =models.CharField(max_length=150,choices=invoice_status,default='Draft')
     ref=models.TextField(max_length=100)
-
+    shipping=models.IntegerField()
 class challanitem(models.Model):
     product=models.TextField(max_length=255)
     quantity=models.IntegerField()
@@ -1711,6 +1711,7 @@ class challanitem(models.Model):
     rate=models.TextField(max_length=255)
     dl=models.ForeignKey(challan,on_delete=models.CASCADE)
     cid = models.ForeignKey(company, on_delete=models.CASCADE)
+    discount=models.IntegerField()
 
 
    

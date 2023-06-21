@@ -867,7 +867,9 @@ urlpatterns = [
     path('removecl', views.removecl, name='removecl'),
     path('gochallan1',views.gochallan1,name='gochallan1'),
     path('gochallan2',views.gochallan2,name='gochallan2'),
+    path('dummy',views.dummy,name='dummy'),
 
+    path('additem_challan',views.additem_challan,name='additem_challan'), 
 
 
 
