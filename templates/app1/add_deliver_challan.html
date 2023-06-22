@@ -577,7 +577,7 @@
                                             value="{{ i.name  }}">{{ i.name  }} </option>
                                 {% endif %}
                             {% endfor %}
-                            <option id="items_nms" value="${window.datast}">${window.datast}</option>
+                            <option  value="${window.datast}">${window.datast}</option>
 
                         </select>
                         
@@ -595,7 +595,7 @@
                 <input type='hidden' id='desc${RowCount}'
                         class='form-control border-0 text-black text-right desc' name='desc[]' >
                         <td style="width:10%;">
-                    <input type="text" name='discount[]' id="discount${RowCount}" class="form-control discount" />
+                    <input type="number" name='discount[]' value='0' id="discount${RowCount}" class="form-control discount" />
                             </td>
                 <td style="width: 13%;" class='text-right'> <select name='tax[]' id='tax${RowCount}'
                         class="form-control  text-black text-right border-0 tax" onclick='state()' onclick='calc()' >
@@ -909,7 +909,7 @@
                                 class='form-control border-0 text-black text-right desc' name='desc[]'
                                 >
                                 <td style='width:10%'>
-                                    <input type="text" name='discount[]' id="discount1" class="form-control discount" />
+                                    <input type="number" value='0' name='discount[]' id="discount1" class="form-control discount" />
                                 </td>
                         <td style="width: 13%;" class='text-right'> <select name="tax[]" id="tax1" class='form-control border-0 text-black text-right tax' onclick="state()" onclick="calc()"  >
                           <optgroup label="GST">

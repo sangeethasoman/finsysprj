@@ -856,7 +856,6 @@ urlpatterns = [
     path('goadd_dl_challan',views.goadd_dl_challan,name='goadd_dl_challan'),
     path('delivery_view/<int:id>',views.delivery_view,name='delivery_view'),
     path('add_cx',views.add_cx,name='add_cx'),
-    path('dl_create_item',views.dl_create_item,name="dl_create_item"),
     path('challancreate',views.challancreate,name='challancreate'),
     path('challan_add_file/<int:id>',views.challan_add_file,name='challan_add_file'),
     path('editchallan/<int:id>',views.editchallan,name='editchallan'),
@@ -867,7 +866,6 @@ urlpatterns = [
     path('removecl', views.removecl, name='removecl'),
     path('gochallan1',views.gochallan1,name='gochallan1'),
     path('gochallan2',views.gochallan2,name='gochallan2'),
-    path('dummy',views.dummy,name='dummy'),
 
     path('additem_challan',views.additem_challan,name='additem_challan'), 
 

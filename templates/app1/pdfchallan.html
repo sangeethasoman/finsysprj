@@ -107,6 +107,7 @@
                             <td>Hsn</td>
                             <td>Price</td>
                             <td>Quantity</td>
+                            <td>Discount</td>
                             <td>Tax</td>
                             <td>Total</td>
                         </tr>
@@ -127,6 +128,7 @@
                             <td style="color:black">{{j.hsn}}</td>
                             <td style="color:black">{{j.rate}}</td>
                             <td style="color:black">{{j.quantity}}</td>
+                            <td style="color:black">{{j.discount}}</td>
                             <td style="color:black">{{j.tax}} %</td>
                             <td style="color:black">{{j.total}}</td>
                         </tr>
@@ -149,46 +151,56 @@
                                 <td style="color:black; font-weight:bold">Sub Total : </td>
                                 <td style="color:black; font-weight:bold">{{estimate.subtotal}}</td>
                             </tr>
-                            {% if estimate.IGST != "" %}
+                            {% if estimate.igst != "0" %}
                             <tr>
                                 <td style="color:black; font-weight:bold">IGST : </td>
                                 <td style="color:black; font-weight:bold">{{estimate.igst}}</td>
                             </tr>
                             {% endif %}
-                            {% if estimate.CGST != "" %}
+                            {% if estimate.cgst != "0" %}
                             <tr>
                                 <td style="color:black; font-weight:bold">CGST : </td>
                                 <td style="color:black; font-weight:bold">{{estimate.cgst}}</td>
                             </tr>
                             {% endif %}
-                            {% if estimate.SGST != "" %}
+                            {% if estimate.sgst != "0" %}
                             <tr>
                                 <td style="color:black; font-weight:bold">SGST : </td>
                                 <td style="color:black; font-weight:bold">{{estimate.sgst}}</td>
                             </tr>
                             {% endif %}
-                            {% if estimate.TCS != "" %}
+                            
                             <tr style="display: none;">
-                                <td style="color:black; font-weight:bold">TCS : </td>
+                                <td style="color:black; font-weight:bold">Total Tax : </td>
                                 <td style="color:black; font-weight:bold">{{estimate.taxamount}}</td>
                             </tr>
-                            {% endif %}
+                           
+                            <tr >
+                                <td style="color:black; font-weight:bold"> shipping Charge : </td>
+                                <td style="color:black; font-weight:bold">{{estimate.shipping}}</td>
+                            </tr>
                             <tfoot>
                                 <tr>
                                     <td style="color:black; font-weight:bold">Challan Total : </td>
                                     <td style="color:black; font-weight:bold ;">{{estimate.grand}}</td>
                                 </tr>
                             </tfoot>
+                            
                         </table>
-
+                       
                       
                     </div>
                     <div class="col-8">
                         <p class="m-0 font-weight-bold" style="color:black"> Note : </p>
                         <p style="color:black">{{estimate.note}}</p>
                     </div>
+                    <div class="col-12 mt-5">
+                        <!-- <img src="signature.png" class="img-fluid" alt=""> -->
+                        <p class=" m-0 mt-5" style="color:black"> Authorised Signature </p>
+                    </div>
                 </div>
             </section>
+            
 
             <!-- Cart BG -->
             <img src="cart.jpg" class="img-fluid cart-bg" alt="">

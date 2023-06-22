@@ -1681,12 +1681,12 @@ class challan(models.Model):
     customer=models.CharField(max_length=100)
     cx_mail=models.CharField(max_length=100)
     billto=models.TextField(max_length=100)
-    taxamount=models.CharField(max_length=100)
-    igst=models.CharField(max_length=100)
-    cgst=models.CharField(max_length=100)
-    sgst=models.CharField(max_length=100)
-    subtotal=models.CharField(max_length=100)
-    grand=models.CharField(max_length=100)
+    taxamount=models.FloatField(default=0)
+    igst=models.FloatField(default=0)
+    cgst=models.FloatField(default=0)
+    sgst=models.FloatField(default=0)
+    subtotal=models.FloatField()
+    grand=models.FloatField()
     pl=models.CharField(max_length=100)
     note=models.TextField(max_length=100)
     file = models.FileField(upload_to='challan/',default="default.png")
@@ -1701,17 +1701,21 @@ class challan(models.Model):
     status =models.CharField(max_length=150,choices=invoice_status,default='Draft')
     ref=models.TextField(max_length=100)
     shipping=models.IntegerField()
+
+
+
+    
 class challanitem(models.Model):
     product=models.TextField(max_length=255)
     quantity=models.IntegerField()
     hsn=models.TextField(max_length=255)
-    tax=models.IntegerField()
+    tax=models.IntegerField(default=0)
     total=models.FloatField()
     desc=models.TextField(max_length=255)
-    rate=models.TextField(max_length=255)
+    rate=models.FloatField()
     dl=models.ForeignKey(challan,on_delete=models.CASCADE)
     cid = models.ForeignKey(company, on_delete=models.CASCADE)
-    discount=models.IntegerField()
+    discount=models.FloatField(default=0)
 
 
    

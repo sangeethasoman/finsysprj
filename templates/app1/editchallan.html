@@ -571,6 +571,8 @@
                                             value="{{ i.name  }}">{{ i.name  }} </option>
                                 {% endif %}
                             {% endfor %}
+                            <option  value="${window.datast}">${window.datast}</option>
+
                         </select></div>
                 </td>
                 <td class='text-right '>
@@ -585,9 +587,9 @@
                 <input type='hidden' id='desc${RowCount}' onchange="calc()"
                         class='form-control border-0 text-black text-right desc' name='desc[]' >
                         <td style="width:10%;">
-                    <input type="text" name='discount[]' id="discount${RowCount}" class="form-control discount" />
+                    <input type="number" name='discount[]' value='0' id="discount${RowCount}" class="form-control discount" />
                             </td>
-                <td style="width:13%" class='text-right'> <select name='tax[]' id='tax${RowCount}'onclick="calc()" onclick="state()"
+                <td style="width:13%" class='text-right'> <select name='tax[]' id='tax${RowCount}'onselect="calc()" onclick="state(this)"
                         class="form-control  text-black text-right border-0 tax">
                   <optgroup label="GST">
                     <option value="0">GST 0%</option>
@@ -637,6 +639,27 @@
         });
 
     });
+    function state() {
+    var pos = $('#plosu').val(); // Get the selected state value
+    var defaultPos = $('#plosu option[selected]').val(); // Get the value of the default selected option
+    var comp = '{{cmp1.state}}'; // Provide the comparison value
+
+    if (pos === null || pos === "") {
+        pos = defaultPos; // Use the default selected option value if no state is manually selected
+    }
+
+    for (var i = 1; i <= 10; i++) {
+        var taxElement = $('#tax' + i);
+
+        if (pos === comp) {
+            taxElement.find('optgroup[label="GST"]').show();
+            taxElement.find('optgroup[label="IGST"]').hide();
+        } else {
+            taxElement.find('optgroup[label="GST"]').hide();
+            taxElement.find('optgroup[label="IGST"]').show();
+        }
+    }
+}
     
 </script>
 
@@ -829,10 +852,12 @@
                                     value="{{ i.name  }}">{{ i.name  }} </option>
                         {% endif %}
                         {% endfor %}
+                        <option id="items_nms"></option>
+
                                 </select>
                                 <a href="#">
                                     <button type="button" class="btn btn-outline-secondary ml-1" data-target="#create_item" data-toggle="modal">+</button>
-                                </a>
+                                </a>  
                             </div>
 
                         </td>
@@ -859,20 +884,20 @@
         
                         <td class='text-right'><input type='number' id='qty{{ forloop.counter }}'
                           class='form-control border-0 text-black text-right qty' name='quantity[]'
-                          value='{{k.quantity}}' onchange="calc()"  >
+                          value='{{k.quantity}}' onclick="calc()"  >
                         </td>
         
                         <td class='text-right'><input type='number' id='rate{{ forloop.counter }}'
                                 class='form-control border-0 text-black text-right rate' name='rate[]'
-                                value='{{k.rate}}' >
+                                value='{{k.rate}}' onclick="calc()"  >
                         </td>
                          <input type='hidden' id='desc{{ forloop.counter }}'
                                 class='form-control border-0 text-black text-right desc' name='desc[]'
-                                >
+                                onclick="calc()"  >
                                 <td style='width:10%'>
-                                    <input type="text" name='discount[]' id="discount1" class="form-control discount" />
+                                    <input type="number" value='0' name='discount[]' id="discount1" class="form-control discount" onclick="calc()"  />
                                 </td>
-                        <td style="width: 13%;" class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax' onclick="calc()" onclick="state()"   >
+                        <td style="width: 13%;" class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax'  onclick="state(this)"   >
                           <option value="{{k.tax}}" selected>{{k.tax}}</option>
                             <optgroup label="GST">
                             <option value="0">GST 0%</option>
@@ -1726,408 +1751,443 @@ function test(taxamount) {
 
 
 <!-- modal item -->
+<script>
+    function create_item(){
+        
+  
+        if (document.getElementsByName('status')[0].checked) {
+            var status = document.getElementsByName('status')[0].value;
+        } else {
+            var status = document.getElementsByName('status')[1].value;
+        }
+        if (document.getElementsByName('taxref')[0].checked) {
+            var taxType = document.getElementsByName('taxref')[0].value;
+        } else {
+            var taxType = document.getElementsByName('taxref')[1].value;
+        }
+        var inter_st=document.getElementsByName('inter_st')[0].value
+        var intra_st=document.getElementsByName('intra_st')[0].value
+        
+        var name=document.getElementsByName('name')[0].value
+        var type=document.getElementsByName('type')[0].value
+        var unit=document.getElementsByName('unit')[0].value
+        var hsn=document.getElementsByName('hsn')[0].value
+        var pcost=document.getElementsByName('pcost')[0].value
+        var pur_account=document.getElementsByName('pur_account')[0].value  
+        var pur_desc=document.getElementsByName('pur_desc')[0].value
+    
+        var salesprice=document.getElementsByName('salesprice')[0].value
+        var sale_account=document.getElementsByName('sale_account')[0].value
+        var sale_desc=document.getElementsByName('sale_desc')[0].value
 
-<div class="modal fade" id="newitem">
-  <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background-color: #213b52;">
-          <div class="modal-header">
-              <h3 class="m-3">New Item</h3>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <div class="card p-3 m-3">
-                  <form action="{% url 'dl_create_item' %}" method="post" class="needs-validation" novalidate autocomplete="off">
-                      {% csrf_token %}
+        var invacc=document.getElementsByName('invacc')[0].value
+        var stock=document.getElementsByName('stock')[0].value
+        console.log('done')
 
+        console.log(name)
+        console.log(hsn)
+        console.log('done')
+        
+        $.ajax({
+          
+                type: "GET",
+                url: "{% url 'additem_challan' %}",
+                
+                data: {
+                  types:type,
+                  inters:inter_st,
+                  intras:intra_st,
+                  status:status,
+                  names:name,
+                  units:unit,
+                  sel_prices:salesprice,
+                  sel_accs:sale_account,
+                  s_descs:sale_desc,
+                  cost_prices:pcost,
+                  cost_accs:pur_account,      
+                  p_descs:pur_desc,
+                  invacc:invacc,
+                  stock:stock,
+                  hsn:hsn,
+                  taxType:taxType,
+                },
+                
+                success: function (response) {
+                    console.log(response)
+                
+                    window.datast = response.names
+                
+                    document.getElementById("items_nms").innerHTML = window.datast
+                    const id_country_option = document.getElementById("item2");
+                    
+  
+                }
+                
+            });
+            
+            
+    }
+  </script>
+<div class="modal fade" id="create_item">
+<div class="modal-dialog modal-xl">
+<div class="modal-content" style="background-color: #213b52;">
+    <div class="modal-header">
+        <h3 class="m-3">New Item</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="card p-3 m-3">
+                
+                <div class="row">
+                  <div class="col-md-12">
                       <div class="row">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-12 mx-0">
-                                    <div class="row">
-                                        <div class="col-md-6 mt-3">
-                                            <label for="validationCustom01"
-                                                   style="color: white;">Name</label>
-                                            <input type="text" name="name" class="form-control" 
-                                                      style="background-color: #2a4964; color: white;"
-                                                     autocomplete="off" required>
-                                        </div>
-                                        <div class="col-md-6 mt-3">
-                                            <label for="validationCustom01"
-                                                   style="color: white;">Type</label>
-                                            <select name="type" class="form-control" 
-                                                      style="background-color: #2a4964; color: white;"
-                                                      required>
-                                                      <option selected disabled value="">Choose...</option>
-                                                    <option value="goods">Goods</option>
-                                                <option value="services">Services</option></select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-12 mx-0">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mt-3">
-                                                            <label for="validationCustom03" style="color: white;">Unit
-                                                                </label>
-                                                            <div class="d-flex">
-                                                                <select class="custom-select" name="unit"
-                                                                        required
-                                                                        style="background-color: #2a4964; color: white;">
-                                                                        <option selected disabled value="">Choose...</option>
-                                                                        {% for a in unit %}
-                                                                        <option style="text-transform:Uppercase;">{{ a.unit_symbol}}-{{ a.name }}</option>
-                                                                        {% endfor %}
-                                                                        <option>BAG-BAGS</option>
-                                                                        <option>BAL-BALE</option>
-                                                                        <option>BDL-BUNDLES</option>
-                                                                        <option>BKL-BUCKLES</option>
-                                                                        <option>BOX-BOX</option>
-                                                                        <option>BOU-BILLIONS OF UNITS</option>
-                                                                        <option>BTL-BOTTLES</option>
-                                                                        <option>BUN-BUNCHES</option>
-                                                                        <option>CAN-CANS</option>
-                                                                        <option>CBM-CUBIC METER</option>
-                                                                        <option>CMS-CENTIMETER</option>
-                                                                        <option>CCM-CUBIC CENTIMETER</option>
-                                                                        <option>CTN-CARTONS</option>
-                                                                        <option>DOZ-DOZEN</option>
-                                                                        <option>DRM-DRUM</option>
-                                                                        <option>GGR-GREAT GROSS</option>
-                                                                        <option>GMS-GRAMS</option>
-                                                                        <option>GRS-GROSS</option>
-                                                                        <option>GYD-GROSS YARDS</option>
-                                                                        <option>KGS-KILOGRAMS</option>
-                                                                        <option>KLR-KILOLITER</option>
-                                                                        <option>KME-KILOMETRE</option>
-                                                                        <option>MTS Metric ton</option>
-                                                                        <option>MLT-MILLILITRE</option>
-                                                                        <option>MTR-METERS</option>
-                                                                        <option>NOS-NUMBER</option>
-                                                                        <option>PAC-PACKS</option>
-                                                                        <option>PCS-PIECES</option>
-                                                                        <option>PRS-PAIRS</option>
-                                                                        <option>QTL-QUINTAL</option>
-                                                                        <option>ROL-ROLLS</option>
-                                                                        <option>SQF-SQUARE FEET</option>
-                                                                        <option>SET-SETS</option>
-                                                                        <option>SQM-SQUARE METERS</option>
-                                                                        <option>SQY-SQUARE YARDS</option>
-                                                                        <option>TBS-TABLETS</option>
-                                                                        <option>TGM-TEN GROSS</option>
-                                                                        <option>THD-THOUSANDS</option>
-                                                                        <option>TON-TONNES</option>
-                                                                        <option>TUB-TUBES</option>
-                                                                        <option>UGS-US GALLONS</option>
-                                                                        <option>UNT-UNITS</option>
-                                                                        <option>YDS-YARDS</option>
-                                        
-                                                                   
-                                                                </select>
-                                                                <a href="{% url 'add_unit' %}">
-                                                                    <button type="button"
-                                                                            class="btn btn-outline-secondary ml-1">+
-                                                                    </button>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 mt-3">
-                                                            <label for="validationCustom05" style="color: white;">HSN
-                                                                Code</label>
-                                                        <input type="text" name="hsn" class="form-control" 
-                                                                   style="background-color: #2a4964; color: white;"
-                                                                  
-                                                                   placeholder="Enter a valid HSN code" required>
-                                                          
-                                                        </div>
-                                                       
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6 mt-3">
-                                                           
-                                                        </div>
-                                                       
-                                                    </div>
-                                                    
-                                    <div class="row">
-                                        <div class="col-md-3 mt-3">
-                                            <label for="validationCustom05" name style="color: white;">Tax Reference
-                                                </label>
-                                         
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-check mt-1">
-                                               
-                                                    <input class="form-check-input" name="taxref" type="checkbox" id="inclusive"
-                                                         value="taxable" checked >taxable
-                                                    <label style="color: white;">
-                                                        </label>
-                                              
-                                            </div>
-                                        </div>
-                                        <div class="form-check mt-1">
-                                            <input class="form-check-input" name="taxref" type="checkbox"
-                                                   value="non taxable" 
-                                                   id="check">
-                                            <label style="color: white;">non taxable</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mt-3">
-                                            <label for="validationCustom01"
-                                                   style="color: white;">Purchase Price</label>
-                                                <div class="row">
-                                                   <div >
-                                                   <input type="text" class="form-control" value="INR"
-                                                    style="margin-left:20px;width:60px;background-color: #2a4960; color: white;"></div>
-                                                   <div >
-                                                   <input type="number" name="pcost" class="form-control"
-                                                   id="purprice" style="width:540px;background-color: #2a4964; color: white; width:200%"
-                                                   value="0"
-                                                   >
-                                                   </div>
-                                                </div>
-
-                                        </div>
-                                        <div class="col-md-6 mt-3">
-                                            <label for="validationCustom01"
-                                                   style="color: white;">Sales Price</label>
-                                                   <div class="row">
-                                                    <div >
-                                                        <input type="text" class="form-control" value="INR"
-                                                         style="margin-left:20px;width:60px;background-color: #2a4960; color: white;"></div>
-                                                        <div >
-                                                    <div >
-                                                   <input type="text" name="salesprice" class="form-control"
-                                                   id="saleprice" style="width:540px;background-color: #2a4964; color: white; width:200%"
-                                                   value="0"
-                                                   >
-                                                    </div>
-                                                </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 mx-0">
-                                        <div class="row">
-                                            <div class="col-md-6 mt-3">
-                                                <label for="validationCustom01"
-                                                       style="color: white;">Account</label>
-                                                       <select name="pur_account" class="form-control" 
-                                                       style="background-color: #2a4964; color: white;"
-                                                       id="validationCustom01" >
-                                                       <option >Cost of Goods Sold</option>
-                                                       {% for a in acc %}
-                                                       <option value="goods">{{ a.name }}</option>
-                                                       {% endfor %}</select>
-                                            </div>
-                                            <div class="col-md-6 mt-3">
-                                                <label for="validationCustom01"
-                                                       style="color: white;">Account</label>
-                                                <select name="sale_account" class="form-control" 
-                                                          style="background-color: #2a4964; color: white;"
-                                                          id="validationCustom01" >
-                                                          <option >Sales</option>
-                                                       {% for a in acc1 %}
-                                                       <option value="goods">{{ a.name }}</option>
-                                                       {% endfor %}</select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12 mx-0">
-                                                <div class="row">
-                                                    <div class="col-md-6 mt-3">
-                                                        <label for="validationCustom01"
-                                                               style="color: white;">Description</label>
-                                                               <textarea class="form-control" name="pur_desc"
-                                                               id="validationCustom01" 
-                                                               style="background-color: #2a4964; color: white;"
-                                                               ></textarea>  
-                                                    </div>
-                                                    <div class="col-md-6 mt-3">
-                                                        <label for="validationCustom01"
-                                                               style="color: white;">Description</label>
-                                                               <textarea class="form-control" name="sale_desc"
-                                                               id="validationCustom01"
-                                                               style="background-color: #2a4964; color: white;"
-                                                               ></textarea>
-                                                    </div>
-                                                </div>
-                                    <!--<div class="row">
-                                        
-                                        <div class="col-md-12 mt-3"><center>
-                                            <label 
-                                                   style="color: white;">Tax rate</label><br>
-                                            <select  name="tax"
-                                                    id="tax" required class="form-control"
-                                                    style=" width:60%;background-color: #2a4964; color: white;">
-                                                <option selected disabled value=0>Choose...</option>
-                                                <option value="28.0% GST ">28.0% GST (28%)</option>
-                                                <option value="28.0% IGST ">28.0% IGST (28%)</option>
-                                                <option value="18.0% GST">18.0% GST (18%)</option>
-                                                <option value="18.0% IGST">18.0% IGST (18%)</option>
-                                                <option value="15.0% ST">15.0% ST (100%)</option>
-                                                <option value="14.5% ST">14.5% ST (100%)</option>
-                                                <option value="14.00% ST">14.00% ST (100%)</option>
-                                                <option value="14.0% VAT">14.0% VAT (100%)</option>
-                                                <option value="12.36% ST">12.36% ST (100%)</option>
-                                                <option value="12.0% GST">12.0% GST (12%)</option>
-                                                <option value="12.0% IGST">12.0% IGST (12%)</option>
-                                                <option value="6.0% GST">6.0% GST (6%)</option>
-                                                <option value="6.0% IGST">6.0% IGST (6%)</option>
-                                                <option value="5.0% GST">5.0% GST (5%)</option>
-                                                <option value="5.0% GST">5.0% IGST (5%)</option>
-                                                <option value="5.0% VAT">5.0% VAT (100%)</option>
-                                                <option value="4.0% VAT">4.0% VAT (100%)</option>
-                                                <option value="3.0% GST">3.0% GST (3%)</option>
-                                                <option value="3.0% IGST">3.0% IGST (3%)</option>
-                                                <option value="2.0% CST">2.0% CST (100%)</option>
-                                                <option value="0.25% GST">0.25% GST (0.25%)</option>
-                                                <option value="0.25%">0.25% IGST (0.25%)</option>
-                                                <option value="0% GST">0% GST (0%)</option>
-                                                <option value="0% IGST">0% IGST (0%)</option>
-                                                <option value="Exempt GST">Exempt GST (0%)</option>
-                                                <option value="Exempt IGST">Exempt IGST (0%)</option>
-                                                <option value="Out of Scope">Out of Scope(0%)</option>
-                                            </select></center>
-                                        </div>
-                                    </div>-->
-                                    
-                                    <div class="row">
-                                        <div class="col-md-12 mx-0">
-                                            <div class="row">
-                                                <div class="col-md-6 mt-3">
-                                                    <label for="validationCustom01"
-                                                           style="color: white;">Intra State Tax Rate</label>
-                                                           <select name="intra_st" class="form-control" 
-                                                           style="background-color: #2a4964; color: white;"
-                                                           id="validationCustom01" >
-                                                           <option >Choose...</option>
-                                                           <option value=0>GST 0 (0%)</option>
-                                                           <option value=5>GST 5 (5%)</option>
-                                                           <option value=12>GST 12 (12%)</option>
-                                                           <option value=18>GST 18 (18%)</option>
-                                                           <option value=28>GST 28 (28%)</option>
-                                                           <option value=0>Out of Scope(0%)</option>
-                                                </select>
-                                                </div>
-                                            
-                                                <div class="col-md-6 mt-3">
-                                                    <label for="validationCustom01"
-                                                           style="color: white;">Inter State Tax Rate</label>
-                                                    <select name="inter_st" class="form-control" 
-                                                              style="background-color: #2a4964; color: white;"
-                                                              id="validationCustom01" >
-                                                              <option >Choose...</option>
-                                                              <option value=0>IGST 0 (0%)</option>
-                                                           <option value=5>IGST 5 (5%)</option>
-                                                           <option value=12>IGST 12 (12%)</option>
-                                                           <option value=18>IGST 18 (18%)</option>
-                                                           <option value=28>IGST 28 (28%)</option>
-                                                           <option value=0>Out of Scope(0%)</option>
-                                                </select>
-                                                </div>
-                                            </div><br>
-                                            <div class="row" >
-                                               
-                                               
+                          <div class="col-md-12 mx-0">
+                              <div class="row">
+                                  <div class="col-md-6 mt-3">
+                                      <label for="validationCustom01"
+                                             style="color: white;">Name</label>
+                                      <input type="text" name="name" class="form-control" 
+                                                style="background-color: #2a4964; color: white;"
+                                               autocomplete="off" required>
+                                  </div>
+                                  <div class="col-md-6 mt-3">
+                                      <label for="validationCustom01"
+                                             style="color: white;">Type</label>
+                                      <select name="type" class="form-control" 
+                                                style="background-color: #2a4964; color: white;"
+                                                required>
+                                                <option selected disabled value="">Choose...</option>
+                                              <option value="goods">Goods</option>
+                                          <option value="services">Services</option></select>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="col-md-12">
+                                      <div class="row">
+                                          <div class="col-md-12 mx-0">
+                                              <div class="row">
+                                                  <div class="col-md-6 mt-3">
+                                                      <label for="validationCustom03" style="color: white;">Unit
+                                                          </label>
+                                                      <div class="d-flex">
+                                                          <select class="custom-select" name="unit"
+                                                                  required
+                                                                  style="background-color: #2a4964; color: white;">
+                                                                  <option selected disabled value="">Choose...</option>
+                                                                  {% for a in unit %}
+                                                                  <option style="text-transform:Uppercase;">{{ a.unit_symbol}}-{{ a.name }}</option>
+                                                                  {% endfor %}
+                                                                  <option>BAG-BAGS</option>
+                                                                  <option>BAL-BALE</option>
+                                                                  <option>BDL-BUNDLES</option>
+                                                                  <option>BKL-BUCKLES</option>
+                                                                  <option>BOX-BOX</option>
+                                                                  <option>BOU-BILLIONS OF UNITS</option>
+                                                                  <option>BTL-BOTTLES</option>
+                                                                  <option>BUN-BUNCHES</option>
+                                                                  <option>CAN-CANS</option>
+                                                                  <option>CBM-CUBIC METER</option>
+                                                                  <option>CMS-CENTIMETER</option>
+                                                                  <option>CCM-CUBIC CENTIMETER</option>
+                                                                  <option>CTN-CARTONS</option>
+                                                                  <option>DOZ-DOZEN</option>
+                                                                  <option>DRM-DRUM</option>
+                                                                  <option>GGR-GREAT GROSS</option>
+                                                                  <option>GMS-GRAMS</option>
+                                                                  <option>GRS-GROSS</option>
+                                                                  <option>GYD-GROSS YARDS</option>
+                                                                  <option>KGS-KILOGRAMS</option>
+                                                                  <option>KLR-KILOLITER</option>
+                                                                  <option>KME-KILOMETRE</option>
+                                                                  <option>MTS Metric ton</option>
+                                                                  <option>MLT-MILLILITRE</option>
+                                                                  <option>MTR-METERS</option>
+                                                                  <option>NOS-NUMBER</option>
+                                                                  <option>PAC-PACKS</option>
+                                                                  <option>PCS-PIECES</option>
+                                                                  <option>PRS-PAIRS</option>
+                                                                  <option>QTL-QUINTAL</option>
+                                                                  <option>ROL-ROLLS</option>
+                                                                  <option>SQF-SQUARE FEET</option>
+                                                                  <option>SET-SETS</option>
+                                                                  <option>SQM-SQUARE METERS</option>
+                                                                  <option>SQY-SQUARE YARDS</option>
+                                                                  <option>TBS-TABLETS</option>
+                                                                  <option>TGM-TEN GROSS</option>
+                                                                  <option>THD-THOUSANDS</option>
+                                                                  <option>TON-TONNES</option>
+                                                                  <option>TUB-TUBES</option>
+                                                                  <option>UGS-US GALLONS</option>
+                                                                  <option>UNT-UNITS</option>
+                                                                  <option>YDS-YARDS</option>
                                   
-                                                <div class="col-md-3">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" onclick="ShowHideDiv(this)" type="checkbox"  id="track">
-                                                        <label class="form-check-label" for="track" >
-                                                          Track Inventory
-                                                        </label>
+                                                             
+                                                          </select>
+                                                          <a href="{% url 'add_unit' %}">
+                                                              <button type="button"
+                                                                      class="btn btn-outline-secondary ml-1">+
+                                                              </button>
+                                                          </a>
                                                       </div>
+                                                  </div>
+                                                  <div class="col-md-6 mt-3">
+                                                      <label for="validationCustom05" style="color: white;">HSN
+                                                          Code</label>
+                                                  <input type="text" name="hsn" class="form-control" 
+                                                             style="background-color: #2a4964; color: white;"
+                                                            
+                                                             placeholder="Enter a valid HSN code" required>
+                                                    
+                                                  </div>
+                                                 
+                                              </div>
+                                              <div class="row">
+                                                  <div class="col-md-6 mt-3">
                                                      
-                                                </div>
-                                            
-                                            </div>
-
-                                            <div class="row" id="inventorytrack" style="display: none">
-                                                <div class="col-md-6 mt-3">
-                                                    <label for="validationCustom01"
-                                                           style="color: white;">Inventory Account</label>
-                                                           <select name="invacc" class="form-control" 
-                                                              style="background-color: #2a4964; color: white;"
-                                                              >
-                                                           <option selected disabled value="" >Choose...</option>
-                                                           <option value="Inventory Assets">Inventory Assets</option>
-                                                       
-                                                </select>
-                                                </div>
-                                                <div class="col-md-6 mt-3">
-                                                    <label for="validationCustom01"
-                                                           style="color: white;">Stock on hand</label>
-                                                           <input type="number" name="stock" class="form-control"
-                                                           style="width:540px;background-color: #2a4964; color: white;"
-                                                           value="0"
-                                                           >
-                                                </div>
-                                            </div>
-                                           
-
+                                                  </div>
+                                                 
+                                              </div>
+                                              
+                              <div class="row">
+                                  <div class="col-md-3 mt-3">
+                                      <label for="validationCustom05" name style="color: white;">Tax Reference
+                                          </label>
+                                   
+                                  </div>
+                                  <div class="col-md-3">
+                                      <div class="form-check mt-1">
+                                         
+                                              <input class="form-check-input" name="taxref" type="checkbox" id="inclusive"
+                                                   value="taxable" checked >taxable
+                                              <label style="color: white;">
+                                                  </label>
                                         
-                           
-                                            <div class="row">
-                                                <div class="col-md-6 mt-3">
-                                                   
+                                      </div>
+                                  </div>
+                                  <div class="form-check mt-1">
+                                      <input class="form-check-input" name="taxref" type="checkbox"
+                                             value="non taxable" 
+                                             id="check">
+                                      <label style="color: white;">non taxable</label>
+                                  </div>
+                              </div>
+                          </div>
+                          </div>
+                              <div class="row">
+                                  <div class="col-md-6 mt-3">
+                                      <label for="validationCustom01"
+                                             style="color: white;">Purchase Price</label>
+                                          <div class="row">
+                                             <div >
+                                             <input type="text" class="form-control" value="INR"
+                                              style="margin-left:20px;width:60px;background-color: #2a4960; color: white;"></div>
+                                             <div >
+                                             <input type="number" name="pcost" class="form-control"
+                                             id="purprice" style="width:540px;background-color: #2a4964; color: white; width:200%"
+                                             value="0"
+                                             >
+                                             </div>
+                                          </div>
+
+                                  </div>
+                                  <div class="col-md-6 mt-3">
+                                      <label for="validationCustom01"
+                                             style="color: white;">Sales Price</label>
+                                             <div class="row">
+                                              <div >
+                                                  <input type="text" class="form-control" value="INR"
+                                                   style="margin-left:20px;width:60px;background-color: #2a4960; color: white;"></div>
+                                                  <div >
+                                              <div >
+                                             <input type="text" name="salesprice" class="form-control"
+                                             id="saleprice" style="width:540px;background-color: #2a4964; color: white; width:200%"
+                                             value="0"
+                                             >
+                                              </div>
+                                          </div>
+
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-12 mx-0">
+                                  <div class="row">
+                                      <div class="col-md-6 mt-3">
+                                          <label for="validationCustom01"
+                                                 style="color: white;">Account</label>
+                                                 <select name="pur_account" class="form-control" 
+                                                 style="background-color: #2a4964; color: white;"
+                                                 id="validationCustom01" >
+                                                 <option >Cost of Goods Sold</option>
+                                                 {% for a in acc %}
+                                                 <option value="goods">{{ a.name }}</option>
+                                                 {% endfor %}</select>
+                                      </div>
+                                      <div class="col-md-6 mt-3">
+                                          <label for="validationCustom01"
+                                                 style="color: white;">Account</label>
+                                          <select name="sale_account" class="form-control" 
+                                                    style="background-color: #2a4964; color: white;"
+                                                    id="validationCustom01" >
+                                                    <option >Sales</option>
+                                                 {% for a in acc1 %}
+                                                 <option value="goods">{{ a.name }}</option>
+                                                 {% endfor %}</select>
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-md-12 mx-0">
+                                          <div class="row">
+                                              <div class="col-md-6 mt-3">
+                                                  <label for="validationCustom01"
+                                                         style="color: white;">Description</label>
+                                                         <textarea class="form-control" name="pur_desc"
+                                                         id="validationCustom01" 
+                                                         style="background-color: #2a4964; color: white;"
+                                                         ></textarea>  
+                                              </div>
+                                              <div class="col-md-6 mt-3">
+                                                  <label for="validationCustom01"
+                                                         style="color: white;">Description</label>
+                                                         <textarea class="form-control" name="sale_desc"
+                                                         id="validationCustom01"
+                                                         style="background-color: #2a4964; color: white;"
+                                                         ></textarea>
+                                              </div>
+                                          </div>
+                            
+                              
+                              <div class="row">
+                                  <div class="col-md-12 mx-0">
+                                      <div class="row">
+                                          <div class="col-md-6 mt-3">
+                                              <label for="validationCustom01"
+                                                     style="color: white;">Intra State Tax Rate</label>
+                                                     <select name="intra_st" class="form-control" 
+                                                     style="background-color: #2a4964; color: white;"
+                                                     id="validationCustom01" >
+                                                     <option >Choose...</option>
+                                                     <option value=0>GST 0 (0%)</option>
+                                                     <option value=5>GST 5 (5%)</option>
+                                                     <option value=12>GST 12 (12%)</option>
+                                                     <option value=18>GST 18 (18%)</option>
+                                                     <option value=28>GST 28 (28%)</option>
+                                                     <option value=0>Out of Scope(0%)</option>
+                                          </select>
+                                          </div>
+                                      
+                                          <div class="col-md-6 mt-3">
+                                              <label for="validationCustom01"
+                                                     style="color: white;">Inter State Tax Rate</label>
+                                              <select name="inter_st" class="form-control" 
+                                                        style="background-color: #2a4964; color: white;"
+                                                        id="validationCustom01" >
+                                                        <option >Choose...</option>
+                                                        <option value=0>IGST 0 (0%)</option>
+                                                     <option value=5>IGST 5 (5%)</option>
+                                                     <option value=12>IGST 12 (12%)</option>
+                                                     <option value=18>IGST 18 (18%)</option>
+                                                     <option value=28>IGST 28 (28%)</option>
+                                                     <option value=0>Out of Scope(0%)</option>
+                                          </select>
+                                          </div>
+                                      </div><br>
+                                      <div class="row" >
+                                         
+                                         
+                            
+                                          <div class="col-md-3">
+                                              <div class="form-check">
+                                                  <input class="form-check-input" onclick="ShowHideDiv(this)" type="checkbox"  id="track">
+                                                  <label class="form-check-label" for="track" >
+                                                    Track Inventory
+                                                  </label>
                                                 </div>
                                                
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-3 mt-3">
-                                                    <label for="validationCustom05" name style="color: white;">Active/Inactive
-                                                        </label>
+                                          </div>
+                                      
+                                      </div>
+
+                                      <div class="row" id="inventorytrack" style="display: none">
+                                          <div class="col-md-6 mt-3">
+                                              <label for="validationCustom01"
+                                                     style="color: white;">Inventory Account</label>
+                                                     <select name="invacc" class="form-control" 
+                                                        style="background-color: #2a4964; color: white;"
+                                                        >
+                                                     <option selected disabled value="" >Choose...</option>
+                                                     <option value="Inventory Assets">Inventory Assets</option>
                                                  
+                                          </select>
+                                          </div>
+                                          <div class="col-md-6 mt-3">
+                                              <label for="validationCustom01"
+                                                     style="color: white;">Stock on hand</label>
+                                                     <input type="number" name="stock" class="form-control"
+                                                     style="width:540px;background-color: #2a4964; color: white;"
+                                                     value="0"
+                                                     >
+                                          </div>
+                                      </div>
+                                     
+
+                                  
+                     
+                                      <div class="row">
+                                          <div class="col-md-6 mt-3">
+                                             
+                                          </div>
+                                         
+                                      </div>
+                                      <div class="row">
+                                          <div class="col-md-3 mt-3">
+                                              <label for="validationCustom05" name style="color: white;">Active/Inactive
+                                                  </label>
+                                           
+                                          </div>
+                                          <div class="col-md-3">
+                                              <div class="form-check">
+                                                  <input class="form-check-input" value="Active" type="radio" name="status" id="flexRadioDefault1" checked>
+                                                  <label class="form-check-label" for="flexRadioDefault1">
+                                                    Active
+                                                  </label>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" value="Active" type="radio" name="status" id="flexRadioDefault1" checked>
-                                                        <label class="form-check-label" for="flexRadioDefault1">
-                                                          Active
-                                                        </label>
-                                                      </div>
-                                                     
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" value="Inactive" type="radio" name="status" id="flexRadioDefault2" >
-                                                    <label class="form-check-label" for="flexRadioDefault2">
-                                                      Inactive
-                                                    </label>
-                                                  </div>
+                                               
+                                          </div>
+                                          <div class="form-check">
+                                              <input class="form-check-input" value="Inactive" type="radio" name="status" id="flexRadioDefault2" >
+                                              <label class="form-check-label" for="flexRadioDefault2">
+                                                Inactive
+                                              </label>
                                             </div>
-                                        </div>
-                                        </div>
-                                   
-                                    <div class="row mt-5 mb-5">
-                                        <div class="col-md-4">
-                                            <a href="{% url 'goitem' %}"class="btn btn-outline-info rounded-pill w-25 text-light"
-                                            >
-                                            BACK
-                                         </a>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button class="btn btn-outline-info rounded-pill w-100 text-light"
-                                                    type="submit">SUBMIT
-                                            </button>
-                                        </div>
-                                        <div class="col-md-4"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                                      </div>
+                                  </div>
+                                  </div>
+                             
+                              <div class="row mt-5 mb-5">
+                                  <div class="col-md-4">
+                                      <a href=""class="btn btn-outline-info rounded-pill w-25 text-light"
+                                      >
+                                      BACK
+                                   </a>
+                                  </div>
+                                  <div class="col-md-4">
+                                      <button class="btn btn-outline-info rounded-pill w-100 text-light"
+                                              type="submit"  data-dismiss="modal" onclick="create_item()" >SUBMIT
+                                      </button>
+                                  </div>
+                                  <div class="col-md-4"></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
               </div>
-          </div>
-      </div>
-  </div> 
+        </div>
+    </div>
+</div>
+</div> 
 </div> 
 
 <!-- /model -->

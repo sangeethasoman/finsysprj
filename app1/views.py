@@ -37579,52 +37579,6 @@ def add_cx(request):
 
 
 
-def dl_create_item(request):
-    if 'uid' in request.session:
-        if request.session.has_key('uid'):
-            uid = request.session['uid']
-        else:
-            return redirect('/')
-        cmp1 = company.objects.get(id=request.session['uid'])
-        if request.method == 'POST':
-            cmp1 = company.objects.get(id=request.session['uid'])
-            iname = request.POST['name']
-            itype = request.POST['type']
-            iunit = request.POST.get('unit')
-            ihsn = request.POST['hsn']
-            itax = request.POST['taxref']
-            ipcost = request.POST['pcost']
-            iscost = request.POST['salesprice']
-            #itrate = request.POST['tax']
-            ipuracc = request.POST['pur_account']
-            isalacc = request.POST['sale_account']
-            ipurdesc = request.POST['pur_desc']
-            isaledesc = request.POST['sale_desc']
-            iintra = request.POST['intra_st']
-            iinter = request.POST['inter_st']
-            iinv = request.POST.get('invacc')
-            istock = request.POST.get('stock')
-            istatus = request.POST['status']
-            item = itemtable(name=iname,item_type=itype,unit=iunit,
-                                hsn=ihsn,tax_reference=itax,
-                                purchase_cost=ipcost,
-                                sales_cost=iscost,
-                                #tax_rate=itrate,
-                                acount_pur=ipuracc,
-                                account_sal=isalacc,
-                                pur_desc=ipurdesc,
-                                sale_desc=isaledesc,
-                                intra_st=iintra,
-                                inter_st=iinter,
-                                inventry=iinv,
-                                stock=istock,
-                                status=istatus,
-                                cid=cmp1)
-            item.save()
-            return redirect('goadd_dl_challan')
-        return render(request,'app1/delivery_challan.html')
-    return redirect('/') 
-
 @login_required(login_url='regcomp')
 
 def challancreate(request):
@@ -37641,12 +37595,13 @@ def challancreate(request):
                             cid=cmp1,
                             subtotal=float(request.POST['subtotal']),
                         note = request.POST['Note'],
-                        igst = request.POST['igst'],
-                        cgst = request.POST['cgst'],
-                        sgst = request.POST['sgst'],
-                        taxamount = request.POST['totaltax'],
-                        grand=request.POST['t_total'],
+                        igst = float(request.POST['igst']),
+                        cgst = float(request.POST['cgst']),
+                        sgst = float(request.POST['sgst']),
+                        taxamount = float(request.POST['totaltax']),
+                        grand=float(request.POST['t_total']),
                         shipping=request.POST['ship'],
+                        ref=request.POST['ref'],
                         chal_no =request.POST['chal_no'],
 
                         )
@@ -37659,7 +37614,7 @@ def challancreate(request):
             desc=request.POST.getlist('desc[]')
             tax=request.POST.getlist('tax[]')
             total=request.POST.getlist('amount[]')
-            discount=request.POST.getlist('[]')
+            discount=request.POST.getlist('discount[]')
             cl_id=challan.objects.get(id=inv2.id)
             if len(product)==len(hsn)==len(quantity)==len(desc)==len(tax)==len(total)==len(rate)==len(discount):
 
@@ -37668,7 +37623,7 @@ def challancreate(request):
                 for element in mapped:
                     created = challanitem.objects.get_or_create(dl=cl_id,product=element[0],hsn=element[1],
                                             quantity=element[2],desc=element[3],tax=element[4],total=element[5],rate=element[6],cid=cmp1,discount=element[7])
-            return redirect('delivery_challan')
+                    return redirect('delivery_challan')
     
         return render(request,'app1/add_deliver_challan.html')
     except:
@@ -37676,21 +37631,32 @@ def challancreate(request):
 
 
 def editchallan(request,id):
-    cmp1 = company.objects.get(id=request.session['uid'])
-    upd = challan.objects.get(id=id, cid=cmp1)
-    item = itemtable.objects.filter(cid=cmp1).all()
-    customers = customer.objects.filter(cid=cmp1).all()
-    estitem = challanitem.objects.filter(dl_id=id)
+        customers = customer.objects.all()
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        cmp1 = company.objects.get(id=request.session['uid'])
+        inv = inventory.objects.filter(cid=cmp1)
+        bun = bundle.objects.filter(cid=cmp1)
+        noninv = noninventory.objects.filter(cid=cmp1)
+        ser = service.objects.filter(cid=cmp1)
+        item = itemtable.objects.filter(cid=cmp1).all()
 
-    context ={
-        'ch':upd,
-        'cmp1':cmp1,
-        'chitem':estitem,
-        'item':item,
-        'customers':customers,
-    }
+        unit = unittable.objects.filter(cid=cmp1)
+        acc  = accounts1.objects.filter(acctype='Cost of Goods Sold',cid=cmp1)
+        acc1  = accounts1.objects.filter(acctype='Sales',cid=cmp1)
+
+        upd = challan.objects.get(id=id, cid=cmp1)
+        estitem = challanitem.objects.filter(dl_id=id)
+
+        context = {'cmp1': cmp1, 'customers': customers, 'inv': inv, 'bun': bun, 'noninv': noninv,'item' :item,
+                   'ser': ser,
+                   'tod': tod,
+                   'unit':unit,'acc':acc,'acc1':acc1,'ch':upd,'chitem':estitem,
+                   }
     
-    return render(request,'app1/editchallan.html',context)
+
+    
+        return render(request,'app1/editchallan.html',context)
 
 def edited_challan(request,id):
     if request.method == 'POST':
@@ -37705,13 +37671,13 @@ def edited_challan(request,id):
             ch.pl=request.POST['placosupply']
             ch.subtotal=float(request.POST['subtotal'])
             ch.note = request.POST['Note']
-            ch.igst = request.POST['igst']
-            ch.cgst = request.POST['cgst']
-            ch.sgst = request.POST['sgst']
-            ch.taxamount = request.POST['totaltax']
+            ch.igst = float(request.POST['igst'])
+            ch.cgst = float(request.POST['cgst'])
+            ch.sgst = float(request.POST['sgst'])
+            ch.taxamount = float(request.POST['totaltax'])
             ch.ref=request.POST['ref']
             ch.chal_no=request.POST['chal_no']
-            ch.grand=request.POST['t_total']
+            ch.grand=float(request.POST['t_total'])
             if len(request.FILES) != 0:
                 if len(ch.file) != "default.jpg" :
                     os.remove(ch.file.path)                    
@@ -37837,30 +37803,6 @@ def gochallan2(request):
     return render(request,'app1/delivery_challan.html', context)
 
 
-def dummy(request):
-        customers = customer.objects.all()
-        toda = date.today()
-        tod = toda.strftime("%Y-%m-%d")
-        cmp1 = company.objects.get(id=request.session["uid"])
-        inv = inventory.objects.filter(cid=cmp1)
-        bun = bundle.objects.filter(cid=cmp1)
-        noninv = noninventory.objects.filter(cid=cmp1)
-        ser = service.objects.filter(cid=cmp1)
-        item = itemtable.objects.filter(cid=cmp1).all()
-
-        unit = unittable.objects.filter(cid=cmp1)
-        acc  = accounts1.objects.filter(acctype='Cost of Goods Sold',cid=cmp1)
-        acc1  = accounts1.objects.filter(acctype='Sales',cid=cmp1)
-
-
-
-        context = {'cmp1': cmp1, 'customers': customers, 'inv': inv, 'bun': bun, 'noninv': noninv,'item' :item,
-                   'ser': ser,
-                   'tod': tod,
-                   'unit':unit,'acc':acc,'acc1':acc1,
-                   }
-
-        return render(request,'app1/dummy.html',context)
 
 
 def additem_challan(request):

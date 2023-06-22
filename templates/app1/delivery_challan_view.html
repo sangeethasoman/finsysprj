@@ -723,12 +723,13 @@ function uplodfile(){
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <td>Item Description</td>
-                                        <td>Hsn</td>
-                                        <td>Price</td>
-                                        <td>Quantity</td>
-                                        <td>Tax</td>
-                                        <td>Total</td>
+                                        <td style="color:black">Item Description</td>
+                                        <td style="color:black">Hsn</td>
+                                        <td style="color:black">Price</td>
+                                        <td style="color:black">Quantity</td>
+                                        <td style="color:black">Discount</td>
+                                        <td style="color:black">Tax</td>
+                                        <td style="color:black">Total</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -747,6 +748,7 @@ function uplodfile(){
                                         <td style="color:black">{{j.hsn}}</td>
                                         <td style="color:black">{{j.rate}}</td>
                                         <td style="color:black">{{j.quantity}}</td>
+                                        <td style="color:black">{{j.discount}}</td>
                                         <td style="color:black">{{j.tax}} %</td>
                                         <td style="color:black">{{j.total}}</td>
                                     </tr>
@@ -794,6 +796,10 @@ function uplodfile(){
                                         <tr>
                                             <td style="color:black; font-weight:bold">Total Tax:</td>
                                             <td style="color:black; font-weight:bold">{{estimate.taxamount}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="color:black; font-weight:bold">Shipping Charge:</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.shipping}}</td>
                                         </tr>
                                       
                                         <tfoot>
