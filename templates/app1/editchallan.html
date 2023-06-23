@@ -895,7 +895,7 @@
                                 class='form-control border-0 text-black text-right desc' name='desc[]'
                                 onclick="calc()"  >
                                 <td style='width:10%'>
-                                    <input type="number" value='0' name='discount[]' id="discount1" class="form-control discount" onclick="calc()"  />
+                                    <input type="number" value='{{k.discount}}' name='discount[]' id="discount1" class="form-control discount" onclick="calc()"  />
                                 </td>
                         <td style="width: 13%;" class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax'  onclick="state(this)"   >
                           <option value="{{k.tax}}" selected>{{k.tax}}</option>
@@ -938,10 +938,13 @@
 
 <script>
   
- $(document).ready(function() {
+  $(document).ready(function() {
     // add event listener to trigger calc() function whenever a change is made to input fields
     $('#item_table').on('input', 'input', calc);
 });
+
+
+
 
 function calc() {
     // loop through each row in the table
@@ -955,10 +958,10 @@ function calc() {
 
         
         // calculate the tax amount and total amount for this row
-        var taxamount = (qty * rate) * (tax / 100);
         var dis = qty * rate;
-        var amount = dis - discount
-        
+        var amount = dis - discount;
+        var taxamount = (amount) * (tax / 100);
+
         // update the tax amount and total amount input fields for this row
         $(this).find('.taxamount').val(taxamount.toFixed(2));
         $(this).find('.amount').val(amount.toFixed(2));
@@ -982,12 +985,16 @@ function calc() {
     $('#total_taxamount').val(taxamount.toFixed(2));
 
     // calculate the total amount including tax and shipping charge
-    var total_with_tax = total + taxamount + shippingCharge;
+    var total_with_tax = total + taxamount;
 
-    // display the total amount including tax and shipping charge on the page
-    $('#total_with_tax').val(total_with_tax.toFixed(2));
+// check if shipping charge exists
+        if (!isNaN(shippingCharge) && shippingCharge !== 0) {
+            total_with_tax += shippingCharge;
+            $('#total_with_tax').val(total_with_tax.toFixed(2) );
+        } else {
+            $('#total_with_tax').val(total_with_tax.toFixed(2));
+        }
     
-
     // Event listener for the shipping input field
     $('#ship').on('input', function() {
     calc(); // Call the calc() function whenever the shipping value changes
@@ -996,7 +1003,6 @@ function calc() {
     test(taxamount);
 
 }
-
 
   // Update subtotal when a row is deleted
     $(document).ready(function dlt () {
@@ -1192,16 +1198,16 @@ function test(taxamount) {
                 <tr>
                     <div style="margin-top: 8px;">
                         <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Shipping Charge</label>
-                        <input type="number" id="ship" name="ship" placeholder=0 step="any" value="0" 
+                        <input type="number" id="ship" name="ship" placeholder=0 step="any" value="{{ch.shipping}}" onclick="calc()" 
                         class="form-control ship"
-                        style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"  />
+                        style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;" required />
         
                     </div>
                 </tr>
                     <tr>
                         <div style="margin-top: 8px;">
                             <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Grand Total</label>
-                            <input type="number" id="total_with_tax" name="t_total" value={{ch.grand}} step="any" 
+                            <input type="number" id="total_with_tax" name="t_total" value={{ch.grand}} step="any" onclick="calc()"
                             class="form-control"
                             style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
           
@@ -1225,7 +1231,7 @@ function test(taxamount) {
           <div class="row">
             <div class="col-md-10 mt-3"></div>
             <div class="col-md-2 mt-3">
-              <button type="submit" class="btn btn-outline-info rounded-pill w-100 text-grey pull-left">
+              <button type="submit"  class="btn btn-outline-info rounded-pill w-100 text-grey pull-left">
                 Save To Draft
               </button>
             </div>

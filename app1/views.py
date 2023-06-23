@@ -37601,6 +37601,7 @@ def challancreate(request):
                         taxamount = float(request.POST['totaltax']),
                         grand=float(request.POST['t_total']),
                         shipping=request.POST['ship'],
+                        
                         ref=request.POST['ref'],
                         chal_no =request.POST['chal_no'],
 
@@ -37677,6 +37678,7 @@ def edited_challan(request,id):
             ch.taxamount = float(request.POST['totaltax'])
             ch.ref=request.POST['ref']
             ch.chal_no=request.POST['chal_no']
+            ch.shipping=request.POST['ship']
             ch.grand=float(request.POST['t_total'])
             if len(request.FILES) != 0:
                 if len(ch.file) != "default.jpg" :

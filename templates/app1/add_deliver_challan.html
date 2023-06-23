@@ -971,10 +971,10 @@ function calc() {
 
         
         // calculate the tax amount and total amount for this row
-        var taxamount = (qty * rate) * (tax / 100);
         var dis = qty * rate;
-        var amount = dis - discount
-        
+        var amount = dis - discount;
+        var taxamount = (amount) * (tax / 100);
+
         // update the tax amount and total amount input fields for this row
         $(this).find('.taxamount').val(taxamount.toFixed(2));
         $(this).find('.amount').val(amount.toFixed(2));
@@ -998,12 +998,16 @@ function calc() {
     $('#total_taxamount').val(taxamount.toFixed(2));
 
     // calculate the total amount including tax and shipping charge
-    var total_with_tax = total + taxamount + shippingCharge;
+    var total_with_tax = total + taxamount;
 
-    // display the total amount including tax and shipping charge on the page
-    $('#total_with_tax').val(total_with_tax.toFixed(2));
+// check if shipping charge exists
+        if (!isNaN(shippingCharge) && shippingCharge !== 0) {
+            total_with_tax += shippingCharge;
+            $('#total_with_tax').val(total_with_tax.toFixed(2) );
+        } else {
+            $('#total_with_tax').val(total_with_tax.toFixed(2));
+        }
     
-
     // Event listener for the shipping input field
     $('#ship').on('input', function() {
     calc(); // Call the calc() function whenever the shipping value changes
@@ -1012,7 +1016,6 @@ function calc() {
     test(taxamount);
 
 }
-
   // Update subtotal when a row is deleted
     $(document).ready(function dlt () {
         $('#item_table').on('click', '.delete-row', function () {
@@ -1178,7 +1181,7 @@ function test(taxamount) {
                 <tr>
                     <div style="margin-top: 8px;">
                         <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Shipping Charge</label>
-                        <input type="number" id="ship" name="ship" placeholder=0 step="any" value="0" 
+                        <input type="number" id="ship" name="ship" placeholder=0 step="any" value="0" required
                         class="form-control ship"
                         style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"  />
         
