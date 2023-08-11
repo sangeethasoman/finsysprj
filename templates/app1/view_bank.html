@@ -35,7 +35,7 @@
                               
                                  <ul id="searchList" class="one radius-15" style="background-color: #213b52;">
                                     {% for a in bank %}
-                                    <a href="view_bank/{{ a.id }}"><li>{{ a.name }}</li></a>
+                                    <a href="view_item/{{ a.id }}"><li>{{ a.name }}</li></a>
                                   {% endfor %}
                              
                                  </ul>
@@ -112,7 +112,7 @@
                     </thead>
                     <tbody>
                     {% for a in bank %}
-                <tr class='clickable-row' data-href="view_bank/{{ a.id }}" >
+                <tr class='clickable-row' data-href="view_item/{{ a.id }}" >
                                 <td>{{ a.bankname }}</td>
                                 <td>{{ a.ifsccode }}</td>
                                 <td>{{ a.branchname }}</td>

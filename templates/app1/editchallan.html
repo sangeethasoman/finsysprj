@@ -600,7 +600,7 @@
                       <option value="28">GST 28%</option>
                   </optgroup>
                   <optgroup label="IGST">
-                    <option value="0">GST 0%</option>
+                    <option value="0">IGST 0%</option>
                     <option value="3">IGST 3%</option>
                       <option value="5">IGST 5%</option>
                       <option value="12">IGST 12%</option>
@@ -774,7 +774,7 @@
             <div class="col-md-3 mt-3">
               <label class="col-form-label">Place of supply</label>
               <select type="text" class="form-control " id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onclick="calc()" onclick="state">
-                <option value="{{ cmp1.state }}" selected> {{ cmp1.state }}</option>
+                <option value="{{ch.pl}}">{{ch.pl}}</option>
                 <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
                 <option value="Andhra Predhesh">Andhra Predhesh</option>
                 <option value="Arunachal Predesh">Arunachal Predesh</option>
@@ -897,7 +897,7 @@
                                 <td style='width:10%'>
                                     <input type="number" value='{{k.discount}}' name='discount[]' id="discount1" class="form-control discount" onclick="calc()"  />
                                 </td>
-                        <td style="width: 13%;" class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax'  onclick="state(this)"   >
+                        <td style="width: 13%;" class='text-right'> <select name="tax[]" id="tax{{ forloop.counter }}" class='form-control border-0 text-black text-right tax'  onclick="state(this)" onselect="calc()"   >
                           <option value="{{k.tax}}" selected>{{k.tax}}</option>
                             <optgroup label="GST">
                             <option value="0">GST 0%</option>

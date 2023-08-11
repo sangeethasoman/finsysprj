@@ -869,6 +869,9 @@ urlpatterns = [
 
     path('additem_challan',views.additem_challan,name='additem_challan'), 
 
+#muhammed ashiq 
 
+    path('crt_bank',views.crt_bank,name='crt_bank'),
+    path('view_bank/<int:id>',views.view_bank,name='view_bank'),
 
 ]

@@ -35886,14 +35886,6 @@ def demo(request):
         return render(request,'app1/demo.html',{'cmp1': cmp1,'vndr':vndr})
     return redirect('demo') 
 
-def bnnk(request):
-    cmp1 = company.objects.get(id=request.session["uid"])
-    i=accounts1.objects.filter(acctype='Bank')
-    c=accounts1.objects.filter(acctype='Cash')
-    u=accounts1.objects.filter(acctype='Undeposited Funds')
-    
-    context={'i':i,'c':c,'u':u,'cmp1':cmp1}
-    return render(request,'app1/bnk.html',context)
 
 
 @login_required(login_url='regcomp')
@@ -37850,3 +37842,47 @@ def additem_challan(request):
     print('done!!!!!!!!!!!')
 
     return JsonResponse({"status": " not", 'names': names})
+
+
+
+
+#muhammed ashiq 
+
+
+
+def bnnk(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+    cmp1 = company.objects.get(id=request.session["uid"])
+    bank = banking_G.objects.filter(cid=cmp1)
+    
+    context={'bank':bank,'cmp1':cmp1}
+    return render(request,'app1/bnk.html',context)
+
+
+def crt_bank(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session["uid"])
+    if request.method == 'POST':
+        bname = request.POST.get('bname')
+        ifsc = request.POST.get('ifsc')
+        branch = request.POST.get('branch')
+        opening_balance = request.POST.get('Opening')
+        date = request.POST.get('date')
+        bank = banking_G(bankname=bname, ifsccode=ifsc, branchname=branch, openingbalance=opening_balance, date=date,cid=cmp1)
+        bank.save()
+        
+        return redirect('bnnk')
+
+
+
+
+def view_bank(request,id):
+    return render(request,'view_bank.html')

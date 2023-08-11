@@ -1718,4 +1718,16 @@ class challanitem(models.Model):
     discount=models.FloatField(default=0)
 
 
-   
+
+#muhammed ashiq
+
+
+
+
+class banking_G(models.Model):
+    bankname = models.CharField(max_length=100)
+    ifsccode = models.CharField(max_length=20)
+    branchname = models.CharField(max_length=100)
+    openingbalance = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField()
+    cid = models.ForeignKey(company, on_delete=models.CASCADE)
