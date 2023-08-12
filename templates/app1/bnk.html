@@ -96,6 +96,7 @@
                 </div>
             </div>
             
+            
                   </div>
                 </div>
               </div>
@@ -133,7 +134,67 @@
     </div>
 </div>
 
-    
+    <!-- Modal HTML -->
+<div  class="modal fade" id="addBankModal" tabindex="-1" role="dialog" aria-labelledby="addBankModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color: #213b52;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBankModalLabel">Add Bank Modal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="bankForm" method="post" action="{% url 'crt_bank' %}">
+                    {% csrf_token %}
+                   <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="">BANK NAME</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" name="bname" >
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="">BANK IFSC CODE</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" name="ifsc" >
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="">BRANCH NAME</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" name="branch" >
+                    </div>
+                    <div class="col-md-4">
+                        <label for="">OPENING BALANCE</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" name="Opening" >
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="">DATE</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" type="date" name="date" >
+                    </div>
+                   </div>
+                   <div class="modal-footer">
+                    <button type="reset" class="btn btn-secondary" >Reset</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+                </form>
+                
+            </div>
+            
+        </div>
+    </div>
+</div>
+
 <script>
     jQuery(document).ready(function($) {
         $(".clickable-row").click(function() {

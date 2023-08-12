@@ -873,5 +873,10 @@ urlpatterns = [
 
     path('crt_bank',views.crt_bank,name='crt_bank'),
     path('view_bank/<int:id>',views.view_bank,name='view_bank'),
+    path('b_to_c',views.b_to_c,name='b_to_c'),
+    path('c_to_b',views.c_to_b,name='c_to_b'),
+    path('b_to_b',views.b_to_b,name='b_to_b'),
+    path('b_adj',views.b_adj,name='b_adj'),
+    path('search_name',views.search_name,name='search_name')
 
 ]
