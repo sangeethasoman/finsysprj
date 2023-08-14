@@ -877,6 +877,12 @@ urlpatterns = [
     path('c_to_b',views.c_to_b,name='c_to_b'),
     path('b_to_b',views.b_to_b,name='b_to_b'),
     path('b_adj',views.b_adj,name='b_adj'),
-    path('search_name',views.search_name,name='search_name')
+    path('edit_bank/<int:id>',views.edit_bank,name='edit_bank'),
+    path('delete_bank/<int:id>',views.delete,name='delete'),
+    path('cash_in_hand',views.cash_in_hand,name='cash_in_hand'),
+    path('edit_b_to_c/<int:id>', views.edit_b_to_c, name='edit_b_to_c'),
+    path('edit_account_adjustment/<int:id>', views.edit_account_adjustment, name='edit_account_adjustment'),
+
+
 
 ]

@@ -37876,8 +37876,17 @@ def crt_bank(request):
         branch = request.POST.get('branch')
         opening_balance = request.POST.get('Opening')
         date = request.POST.get('date')
-        bank = banking_G(bankname=bname, ifsccode=ifsc, branchname=branch, openingbalance=opening_balance, date=date,cid=cmp1)
+        bank = banking_G(bankname=bname, ifsccode=ifsc, branchname=branch, openingbalance=opening_balance, date=date,cid=cmp1,balance=opening_balance)
         bank.save()
+        bnk=bank_transaction(
+            from_trans=bname,
+            amount=opening_balance,
+            adj_date=date,
+            type="OPENING BAL",
+            cid=cmp1,
+            banking_id=bank.id,
+        )
+        bnk.save()
         
         return redirect('bnnk')
 
@@ -37897,22 +37906,22 @@ def view_bank(request,id):
     return render(request,'app1/view_bank.html',{"bank":bank,'bl':bank_list,'trans':trans})
 
 
+
 def b_to_c(request):
     cmp1 = company.objects.get(id=request.session["uid"])
     if request.method == 'POST':
-
         f_bank = request.POST.get('bank')
         to_trans = request.POST.get('cash')
         amount = int(request.POST.get('amount'))
         adj_date = request.POST.get('adjdate')
-        desc=request.POST.get('desc')
-        print(f_bank)
-        bank=banking_G.objects.get(id=f_bank)
-        bank.openingbalance -= amount
+        desc = request.POST.get('desc')
+
+        bank = banking_G.objects.get(id=f_bank)
+        bank.balance -= amount
         bank.save()
 
-        trans=bank_transaction(
-            from_trans=bank,
+        trans = bank_transaction(
+            from_trans=bank.bankname,
             to_trans=to_trans,
             amount=amount,
             desc=desc,
@@ -37920,147 +37929,230 @@ def b_to_c(request):
             type='CASH WITHDRAW',
             cid=cmp1,
             banking_id=bank.id
-
         )
         trans.save()
-    return redirect('bnnk')
 
+    return redirect('bnnk')
 
 def c_to_b(request):
     cmp1 = company.objects.get(id=request.session["uid"])
     if request.method == 'POST':
-
         f_bank = request.POST.get('bank')
         to_trans = request.POST.get('cash')
         amount = int(request.POST.get('amount'))
         adj_date = request.POST.get('adjdate')
-        desc=request.POST.get('desc')
-        print(f_bank)
-        bank=banking_G.objects.get(id=f_bank)
-        bank.openingbalance += amount
+        desc = request.POST.get('desc')
+
+        bank = banking_G.objects.get(id=f_bank)
+        bank.balance += amount
         bank.save()
 
-        trans=bank_transaction(
+        trans = bank_transaction(
             from_trans=to_trans,
-            to_trans=f_bank,
+            to_trans=bank.bankname,
             amount=amount,
             desc=desc,
             adj_date=adj_date,
             type='CASH DEPOSIT',
             cid=cmp1,
-            banking_id=bank.id
-
+            banking_id=bank.id,
         )
         trans.save()
+
     return redirect('bnnk')
 
+from django.shortcuts import redirect
 
 def b_to_b(request):
     cmp1 = company.objects.get(id=request.session["uid"])
     if request.method == 'POST':
-        f_bank = request.POST.get('fbank')
-        t_bank = request.POST.get('tbank')
+        f_bank_id = request.POST.get('fbank')
+        t_bank_id = request.POST.get('tbank')
         amount = int(request.POST.get('amount'))
         adj_date = request.POST.get('adjdate')
-        desc=request.POST.get('desc')
-        bank=banking_G.objects.get(id=f_bank)
-        bank.openingbalance -= amount
-        bank.save()
-        trans=bank_transaction(
-            from_trans=bank,
-            to_trans=t_bank,
+        desc = request.POST.get('desc')
+
+        from_bank = banking_G.objects.get(id=f_bank_id)
+        to_bank = banking_G.objects.get(id=t_bank_id)
+
+        # Deduct the amount from the source bank
+        from_bank.balance -= amount
+        from_bank.save()
+
+        # Create a transaction record for the withdrawal from the source bank
+        trans_withdrawal = bank_transaction(
+            from_trans=from_bank.bankname,
+            to_trans=to_bank.bankname,
             amount=amount,
             desc=desc,
             adj_date=adj_date,
-            type='CASH WITHDRAW',
+            type='FROM BANK TRANSFER',
             cid=cmp1,
-            banking_id=bank.id
-
+            banking_id=from_bank.id
         )
-        trans.save()
+        trans_withdrawal.save()
 
-        bank=banking_G.objects.get(id=t_bank)
-        bank.openingbalance += amount
-        bank.save()
+        # Deposit the amount to the target bank
+        to_bank.balance += amount
+        to_bank.save()
 
-        trans=bank_transaction(
-            from_trans=bank,
-            to_trans=t_bank,
+        # Create a transaction record for the deposit to the target bank
+        trans_deposit = bank_transaction(
+            from_trans=from_bank.bankname,
+            to_trans=to_bank.bankname,
             amount=amount,
             desc=desc,
             adj_date=adj_date,
-            type='CASH DEPOSIT',
+            type='TO BANK TRANSFER',
             cid=cmp1,
-            banking_id=bank.id
-
+            banking_id=to_bank.id
         )
-        trans.save()
-        
+        trans_deposit.save()
+
     return redirect('bnnk')
+
 
 
 def b_adj(request):
     if request.method == 'POST':
-        f_bank = request.POST.get('bank')
-        typ=request.POST.get('typ')
-        amount = request.POST.get('amount')
+        f_bank_id = request.POST.get('bank')
+        typ = request.POST.get('typ')
+        amount = int(request.POST.get('amount'))
         adj_date = request.POST.get('adjdate')
-        desc=request.POST.get('desc')
-        if typ=='Increase Balance' :
+        desc = request.POST.get('desc')
+        
+        bank = banking_G.objects.get(id=f_bank_id)
+        
+        if typ == 'Increase Balance':
             cmp1 = company.objects.get(id=request.session["uid"])
-            if request.method == 'POST':
-                f_bank = request.POST.get('bank')
-                
-                amount = int(request.POST.get('amount'))
-                adj_date = request.POST.get('adjdate')
-                desc=request.POST.get('desc')
-                bank=banking_G.objects.get(id=f_bank)
-                bank.openingbalance += amount
-                bank.save()
-                trans=bank_transaction(
-                    from_trans=bank,
-                    to_trans=bank,
-                    amount=amount,
-                    desc=desc,
-                    adj_date=adj_date,
-                    type='BANK ADJ INCREASE',
-                    cid=cmp1,
-                    banking_id=bank.id
-
-                )
-                trans.save()
-        elif typ=='Reduce Balance' :
+            bank.balance += amount
+            bank.save()
+            
+            trans = bank_transaction(
+                from_trans=bank.bankname,
+                to_trans=bank.bankname,
+                amount=amount,
+                desc=desc,
+                adj_date=adj_date,
+                type='BANK ADJ INCREASE',
+                cid=cmp1,
+                banking_id=bank.id
+            )
+            trans.save()
+            
+        elif typ == 'Reduce Balance':
             cmp1 = company.objects.get(id=request.session["uid"])
-            if request.method == 'POST':
-                f_bank = request.POST.get('bank')
-                
-                amount = int(request.POST.get('amount'))
-                adj_date = request.POST.get('adjdate')
-                desc=request.POST.get('desc')
-                bank=banking_G.objects.get(id=f_bank)
-                bank.openingbalance -= amount
-                bank.save()
-                trans=bank_transaction(
-                    from_trans=bank,
-                    to_trans=bank,
-                    amount=amount,
-                    desc=desc,
-                    adj_date=adj_date,
-                    type='BANK ADJ REDUCE',
-                    cid=cmp1,
-                    banking_id=bank.id
-
-                )
-                print('YES')
-                trans.save()
-
-
+            bank.balance -= amount
+            bank.save()
+            
+            trans = bank_transaction(
+                from_trans=bank.bankname,
+                to_trans=bank.bankname,
+                amount=amount,
+                desc=desc,
+                adj_date=adj_date,
+                type='BANK ADJ REDUCE',
+                cid=cmp1,
+                banking_id=bank.id
+            )
+            trans.save()
 
     return redirect('bnnk')
 
 
-def search_name(request):
+def edit_bank(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session["uid"])
     if request.method == 'POST':
-        res=request.POST.get('search')
-    trans=bank_transaction.objects.filter(desc=res)
-    return redirect('view_bank',{'trans':trans})
+        bname = request.POST.get('bname')
+        ifsc = request.POST.get('ifsc')
+        branch = request.POST.get('branch')
+        opening_balance = request.POST.get('Opening')
+        date = request.POST.get('date')
+        bnk=banking_G.objects.get(id=id)
+        bnk.bankname=bname
+        bnk.ifsccode=ifsc
+        bnk.branchname=branch
+        bnk.openingbalance=opening_balance
+        bnk.date=date
+        bnk.save()
+    return redirect('bnnk')
+
+
+
+def delete(request,id):
+    bk=banking_G.objects.get(id=id)
+    bk.delete()
+    return redirect('bnnk')
+
+
+def edit_b_to_c(request,id):
+    cmp1 = company.objects.get(id=request.session["uid"])
+
+    if request.method == 'POST':
+        # Get the form data
+        bank_id = request.POST.get('bank')
+        cash_value = request.POST.get('cash')
+        amount = int(request.POST.get('amount'))
+        adj_date = request.POST.get('adjdate')
+        desc = request.POST.get('desc')
+
+        # Retrieve the record to be edited
+        record = bank_transaction.objects.get(id=id)
+        
+
+        # Update the record fields
+        record.banking_id = bank_id
+        record.cash = cash_value
+        record.amount = amount
+        record.adj_date = adj_date
+        record.desc = desc
+        
+        record.save()
+        record.banking.balance -= amount
+        record.banking.save()
+
+        return redirect('bnnk')  # Redirect to a success page
+
+
+
+
+def edit_account_adjustment(request, id):
+        cmp1 = company.objects.get(id=request.session["uid"])
+
+        if request.method == 'POST':
+
+            # Retrieve the record to be edited
+
+            record = bank_transaction.objects.get(id=id)
+            # Update the record fields
+            record.banking_id = request.POST.get('bank')
+            record.type = request.POST.get('typ')
+            record.amount = request.POST.get('amount')
+            record.adj_date = request.POST.get('adjdate')
+            record.desc = request.POST.get('desc')
+
+            
+            if record.type == 'BANK ADJ INCREASE':
+                # Update balance for increase case
+                record.banking.balance += record.amount
+                record.banking.save()
+            elif record.type == 'BANK ADJ REDUCE':
+                # Update balance for reduce case
+                record.banking.balance -= record.amount
+                record.banking.save()
+            record.save()  # Save the updated bank_transaction record
+
+            return redirect('bnnk')  # Redirect to a success page
+
+        return render(request, 'edit_account_adjustment.html', {'cmp1': cmp1})
+
+   
+
+
+def cash_in_hand(request):
+    return render(request,'app1/cash_in_hand.html')

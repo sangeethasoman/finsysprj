@@ -1731,7 +1731,7 @@ class banking_G(models.Model):
     openingbalance = models.IntegerField()
     date = models.DateField()
     cid = models.ForeignKey(company, on_delete=models.CASCADE)
-
+    balance=models.IntegerField()
 
 class bank_transaction(models.Model):
     from_trans=models.TextField(max_length=100)
@@ -1742,3 +1742,4 @@ class bank_transaction(models.Model):
     type=models.TextField(max_length=100)
     banking=models.ForeignKey(banking_G, on_delete=models.CASCADE)
     cid = models.ForeignKey(company, on_delete=models.CASCADE)
+    

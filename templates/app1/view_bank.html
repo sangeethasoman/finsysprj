@@ -1,19 +1,22 @@
 {% extends 'app1/base.html' %}
 {% load static %}
 {% block body %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
 <div class="page-content">
     <div class="card radius-15 h-20 p-3">
         <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-6">
-                    <h3>BANK :{{bank.bankname}}</h3>
-                    <h4>finsys Balance: {{bank.openingbalance}}</h4>
+           
+                <div class="col-md-9">
+                    <h5>BANK : <span style="font-size: x-large;">{{bank.bankname}}</span></h5>
+                    <h5>finsys O P : <span style="font-size: x-large;">{{bank.openingbalance}}</span></h5>
                 </div>
-                <div class="col-md-6"></div>
+                <div class="col-md-3 mt-4">
+                    <h5 class="mt-1">finsys BALANCE : <span style="font-size: x-large;">{{bank.balance}}</span></h5>
+                </div>
                 
                 <hr style="width:95%">
-            </div>
+            
         </div>
     </div>
    
@@ -27,31 +30,7 @@
                 <div class="col-md-1">
                
                       </div>
-                  <div class="col">
-                    
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
-                                data-toggle="dropdown">filter by
-                        </button>
-                        <div class="dropdown-menu" style="background-color: black;">
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;" >All</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Active</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Inactive</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Purchase</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Sales</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Serives</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Goods</a>
-                        </div>
-                    </div> 
-                  </div>
-                 
+               
                   <div class="col">
                     
                     <div class="dropdown">
@@ -104,31 +83,551 @@
                 <table class="table table-responsive-md table-hover mt-4" id="tabletobe">
                     <thead>
                     <tr>
-                        <th>TYPE</th>
-                        <th>NAME</th>
-                        <th>DATE</th>
-                        <th>AMOUNT</th>
+                       <!-- Inside the <thead> section of your table -->
+                        <th>
+                            <div class="dropdown">
+                                <h6 class=" dropdown-toggle text-grey" data-toggle="dropdown"><b>TYPE</b></h6>
+                                <div class="dropdown-menu mt-5" style="background-color: black;z-index: 1;">
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">SALE</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">PURCHASE</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">EXPENSE</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">OPENING BALANCE</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">CASH DEPOSIT</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">CASH WITHDRAW</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">BANK ADJ INCREASE</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">BANK ADJ REDUCE</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">BANK TO BANK</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">CREDIT NOTE</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">DEBIT NOTE</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">SALES ORDER</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">PURCHASE ORDER</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">OTHER INCOME</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">PAYMENT IN</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">PAYMENT OUT</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">OPENING LOAN </a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">LOAN ADJUSTMENT</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">CHARGES ON LOAN</a>
+                                    <a class="dropdown-item" href="#"><input class="mr-1" type="checkbox" name="" id="">EMI PAID</a>
+
+
+
+                                    <!-- Add more options as needed -->
+                                </div>
+                            </div>
+                        </th>
+                        <!-- Inside the <thead> section of your table -->
+            <th>
+                <div class="dropdown">
+                    <h6 class=" dropdown-toggle text-grey" data-toggle="dropdown"><b>NAME</b>
+                        <i class="fas fa-search"></i>
+                    </h6>
+                    <div class="dropdown-menu " style="background-color: black;">
+                        <form class="form-inline">
+                            <input class="form-control" type="search" id="searchInput" placeholder="Search" aria-label="Search">
+                        </form>
+                    </div>
+                </div>
+            </th>
+
+            <th>
+                <div class="dropdown">
+                    <h6 class=" dropdown-toggle text-grey" data-toggle="dropdown"><b>DATE</b>
+                        <i class="fas fa-search"></i>
+                    </h6>
+                    <div class="dropdown-menu " style="background-color: black;">
+                        <form class="form-inline">
+                            <input class="form-control" type="search" id="searchDateInput" placeholder="Search" aria-label="Search">
+                        </form>
+                    </div>
+                </div>
+            </th>                     
+            <th><h6><b>AMOUNT</b></h6></th>
+            <th><h6><b>ACTION</b></h6></th>
                         
                     </tr>
                     </thead>
                     <tbody>
                   {% for a in trans %}
-                <tr class='clickable-row' data-href="view_item/{{ a.id }}" >
-                                <td>{{ a.type }}</td>
-                                <td>{{ a.desc }}</td>
-                                <td>{{ a.adj_date }}</td>
+                <tr >
+                                <td >{{ a.type }}</td>
+                                <td >{{ a.desc }}</td>
+                                <td >{{ a.adj_date }}</td>
                                 {% if a.type == 'CASH WITHDRAW' %}
-                                <td style="color: rgb(255, 0, 0);font-size: medium;">-{{ a.amount }}</td>
+                                <td style="font-size: medium;">-{{ a.amount }}</td>
                                 {% elif a.type == 'BANK ADJ INCREASE' %}
-                                <td style="color: rgb(17, 224, 17);font-size: medium;">+{{ a.amount }}</td>
+                                <td  style="font-size: medium;">{{ a.amount }}</td>
                                 {% elif a.type == 'BANK ADJ REDUCE' %}
-                                <td style="color: rgb(255, 0, 0);font-size: medium;">-{{ a.amount }}</td>
+                                <td  style="font-size: medium;">-{{ a.amount }}</td>
+                                {% elif a.type ==  'TO BANK TRANSFER' %}
+                                <td  style="font-size: medium;">{{ a.amount }}</td>
+                                {% elif a.type ==  'FROM BANK TRANSFER' %}
+                                <td style="font-size: medium;">-{{ a.amount }}</td>
+
                                 {% else %}
-                                <td style="color: rgb(17, 224, 17);font-size: medium;">+{{ a.amount }}</td>
+                                <td  style="font-size: medium;">{{ a.amount }}</td>
                                 {% endif %}
                                 </td></a>
+                                <td>
+                                    <div class="dropdown">
+                                        <i class="fa fa-ellipsis-v" style="font-size:24px" data-toggle="dropdown"></i>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item edit-item" href="#" data-toggle="modal" data-target="#editModal{{ a.id }}">Edit</a>
+                                            <a class="dropdown-item delete-item" href="#" data-toggle="modal" data-target="#deleteModal{{ a.id }}">Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
-                     {% endfor %}
+
+
+                            {% if a.type == 'CASH WITHDRAW' %}
+
+                                <!-- Edit Modal -->
+                            <div class="modal fade" id="editModal{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">WITHDRAW EDIT Item</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="bankForm" method="post" action="{% url 'edit_b_to_c' a.id %}">
+                                                {% csrf_token %}
+                                               <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <label for="">From</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <select class="form-control" name="bank" id="">
+                                                        <option value="{{a.banking.id}}" selected >{{a.from_trans}}</option>
+                                                       {% for i in bl %}
+                                                       <option value="{{i.id}}">{{i.bankname}}</option>
+                                                       {% endfor %}
+                                                    </select>
+                                                </div>
+                            
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">To</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <select class="form-control" name="cash" id="">
+                                                        <option class="form-control" selected  value="Cash">CASH</option>
+                                                    </select>
+                                                </div>
+                            
+                                
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">AMOUNT</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" type="text" value="{{a.amount}}" name="amount" >
+                                                </div>
+                            
+                                                
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">ADJUSTMENT DATE</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" type="date" value="{{a.adj_date | date:'Y-m-d' }}" name="adjdate" >
+                                                </div>
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">DESCRIPTION</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" type="text" value="{{a.desc}}" name="desc" >
+                                                </div>
+                                               </div>
+                                               <div class="modal-footer">
+                                                <button type="reset" class="btn btn-secondary" >Reset</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <input type="submit" class="btn btn-primary" value="Save">
+                                            </div>
+                                            </form>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            {% elif a.type == 'BANK ADJ INCREASE' %}
+
+                                <!-- Edit Modal -->
+                            <div class="modal fade" id="editModal{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">BANK ADJ INCREASE Item</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="bankForm" method="post" action="{% url 'edit_account_adjustment' a.id %}">
+                                                {% csrf_token %}
+                                               <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <label for="">Account Name</label>
+                                                
+                                                
+                                                    <select class="form-control" name="bank" id="">
+                                                        <option value="{{a.id}}" selected >{{a.from_trans}}</option>
+                                                        {% for i in bl %}
+                                                        <option value="{{i.id}}">{{i.bankname}}</option>
+                                                        {% endfor %}
+                                                     </select>
+                                                    </div>
+                                                    
+                                                </div>
+                            
+                                                <div class="col-md-8 mt-2">
+                                                <label for="">Type</label>
+                                                
+                                                <select class="form-control" name="typ" id="">
+                                                    <option value="{{a.type}}" selected >{{a.type}}</option>
+                                                    <option value="Increase Balance">Increase Balance</option>
+                                                    <option value="Reduce Balance">Reduce Balance</option>
+                                                    
+                                                 </select>
+                                                </div>
+                                
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">AMOUNT</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{a.amount}}" type="text" name="amount" >
+                                                </div>
+                                                
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">ADJUSTMENT DATE</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{ a.adj_date | date:'Y-m-d' }}" type="date" name="adjdate" >
+                                                </div>
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">DESCRIPTION</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{a.desc}}" type="text" name="desc" >
+                                                </div>
+                                               </div>
+                                               <div class="modal-footer">
+                                                <button type="reset" class="btn btn-secondary" >Reset</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <input type="submit" class="btn btn-primary" value="Save">
+                                            </div>
+                                            </form>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            {% elif a.type == 'BANK ADJ REDUCE' %}
+
+                                <!-- Edit Modal -->
+                            <div class="modal fade" id="editModal{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">BANK ADJ REDUCE</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="bankForm" method="post" action="{% url 'edit_account_adjustment' a.id %}">
+                                                {% csrf_token %}
+                                               <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <label for="">Account Name</label>
+                                                
+                                                
+                                                    <select class="form-control" name="bank" id="">
+                                                        <option value="{{a.id}}" selected>{{a.from_trans}}</option>
+                                                        {% for i in bl %}
+                                                        <option value="{{i.id}}">{{i.bankname}}</option>
+                                                        {% endfor %}
+                                                     </select>
+                                                    </div>
+                                                    
+                                                </div>
+                            
+                                                <div class="col-md-8 mt-2">
+                                                <label for="">Type</label>
+                                                
+                                                <select class="form-control" name="typ" id="">
+                                                    <option value="{{a.type}}" selected >{{a.type}}</option>
+                                                    <option value="BANK ADJ INCREASE">Increase Balance</option>
+                                                    <option value="BANK ADJ REDUCE">Reduce Balance</option>
+                                                    
+                                                 </select>
+                                                </div>
+                                
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">AMOUNT</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{a.amount}}" type="text" name="amount" >
+                                                </div>
+                                                
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">ADJUSTMENT DATE</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{ a.adj_date | date:'Y-m-d' }}" type="date" name="adjdate" >
+                                                </div>
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">DESCRIPTION</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{a.desc}}" type="text" name="desc" >
+                                                </div>
+                                               </div>
+                                               <div class="modal-footer">
+                                                <button type="reset" class="btn btn-secondary" >Reset</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <input type="submit" class="btn btn-primary" value="Save">
+                                            </div>
+                                            </form>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            {% elif a.type == 'TO BANK TRANSFER' %}
+
+                                <!-- Edit Modal -->
+                            <div class="modal fade" id="editModal{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">TO BANK TRANSFER</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="bankForm" method="post" action="{% url 'b_to_b' %}">
+                                                {% csrf_token %}
+                                               <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <label for="">From</label>
+                                                
+                                                
+                                                    <select class="form-control" name="fbank" id="">
+                                                        <option value="{{a.id}}">{{a.from_trans}}</option>
+                                                        {% for i in bl %}
+                                                        <option value="{{i.id}}">{{i.bankname}}</option>
+                                                        {% endfor %}
+                                                     </select>
+                                                    </div>
+                                                    
+                                                </div>
+                            
+                                                <div class="col-md-8 mt-2">
+                                                <label for="">To</label>
+                                                
+                                                <select class="form-control" name="tbank" id="">
+                                                <option value="{{a.id}}">{{a.to_trans}}</option>
+
+                                                    {% for i in bl %}
+                                                    <option value="{{i.id}}">{{i.bankname}}</option>
+                                                    {% endfor %}
+                                                 </select>
+                                                </div>
+                                
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">AMOUNT</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{a.amount}}" type="text" name="amount" >
+                                                </div>
+                                                
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">ADJUSTMENT DATE</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{ a.adj_date | date:'Y-m-d' }}" type="date" name="adjdate" >
+                                                </div>
+                                                <div class="col-md-8 mt-2">
+                                                    <label for="">DESCRIPTION</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" value="{{a.desc}}" type="text" name="desc" >
+                                                </div>
+                                               </div>
+                                               <div class="modal-footer">
+                                                <button type="reset" class="btn btn-secondary" >Reset</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <input type="submit" class="btn btn-primary" value="Save">
+                                            </div>
+                                            </form>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% elif a.type == 'FROM BANK TRANSFER' %}
+
+                            <!-- Edit Modal -->
+                        <div class="modal fade" id="editModal{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel">FROM BANK TRANSFER</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="bankForm" method="post" action="{% url 'b_to_b' %}">
+                                            {% csrf_token %}
+                                           <div class="form-group">
+                                            <div class="col-md-8">
+                                                <label for="">From</label>
+                                            
+                                            
+                                                <select class="form-control" name="fbank" id="">
+                                                    <option value="{{a.id}}">{{a.from_trans}}</option>
+
+                                                    {% for i in bl %}
+                                                    <option value="{{i.id}}">{{i.bankname}}</option>
+                                                    {% endfor %}
+                                                 </select>
+                                                </div>
+                                                
+                                            </div>
+                        
+                                            <div class="col-md-8 mt-2">
+                                            <label for="">To</label>
+                                            
+                                            <select class="form-control" name="tbank" id="">
+                                                <option value="{{a.id}}">{{a.to_trans}}</option>
+
+                                                {% for i in bl %}
+                                                <option value="{{i.id}}">{{i.bankname}}</option>
+                                                {% endfor %}
+                                             </select>
+                                            </div>
+                            
+                                            <div class="col-md-8 mt-2">
+                                                <label for="">AMOUNT</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input class="form-control" value="{{a.amount}}" type="text" name="amount" >
+                                            </div>
+                                            
+                                            <div class="col-md-8 mt-2">
+                                                <label for="">ADJUSTMENT DATE</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input class="form-control" value="{{a.adj_date | date:'Y-m-d' }} type="date" name="adjdate" >
+                                            </div>
+                                            <div class="col-md-8 mt-2">
+                                                <label for="">DESCRIPTION</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input class="form-control" value="{{a.desc}}" type="text" name="desc" >
+                                            </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                            <button type="reset" class="btn btn-secondary" >Reset</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <input type="submit" class="btn btn-primary" value="Save">
+                                        </div>
+                                        </form>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        {% else %}
+
+                            <!-- Edit Modal -->
+                        <div class="modal fade" id="editModal{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel">DEPOSIT Item</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="bankForm" method="post" action="{% url 'b_to_c' %}">
+                                            {% csrf_token %}
+                                           <div class="form-group">
+                                            <div class="col-md-8">
+                                                <label for="">From</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="bank" id="">
+                                                    <option value="{{a.id}}">{{a.from_trans}}</option>
+                                                   {% for i in bl %}
+                                                   <option value="{{i.id}}">{{i.bankname}}</option>
+                                                   {% endfor %}
+                                                </select>
+                                            </div>
+                        
+                                            <div class="col-md-8 mt-2">
+                                                <label for="">To</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="cash" id="">
+                                                    <option class="form-control" selected  value="Cash">CASH</option>
+                                                </select>
+                                            </div>
+                        
+                            
+                                            <div class="col-md-8 mt-2">
+                                                <label for="">AMOUNT</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input class="form-control" value="{{a.amount}}" type="text" name="amount" >
+                                            </div>
+                        
+                                            
+                                            <div class="col-md-8 mt-2">
+                                                <label for="">ADJUSTMENT DATE</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input class="form-control" value="{{a.adj_date | date:'Y-m-d' }}" type="date" name="adjdate" >
+                                            </div>
+                                            <div class="col-md-8 mt-2">
+                                                <label for="">DESCRIPTION</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input class="form-control" value="{{a.desc}}" type="text" name="desc" >
+                                            </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                            <button type="reset" class="btn btn-secondary" >Reset</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <input type="submit" class="btn btn-primary" value="Save">
+                                        </div>
+                                        </form>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        {% endif %}
+                            {% endfor %}
+                           
                     
                   
                   
@@ -455,26 +954,7 @@
     }
 </script>
 
-<script>
 
-    $(document).ready(function(){
-      $("#searchList li").hide();
-    
-      $("#searchInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        if (value !== '' ) {
-        $("#searchList li").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });   
-        } else {
-          $("#searchList li").hide();   
-        }    
-      });
-    });
-    
-       
-       
-     </script>
 
      <script>
         function namefilter() {
@@ -496,6 +976,47 @@
             }
         }
     </script>
+<script>
+    // Get the input element and table rows
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#tabletobe tbody tr ');
+
+    // Add an event listener to the search input
+    searchInput.addEventListener('input', function () {
+        const searchText = this.value.toLowerCase();
+
+        // Loop through each table row and hide/show based on search text
+        tableRows.forEach(row => {
+            const nameCell = row.querySelector('td:nth-child(2)');
+            const name = nameCell.textContent.toLowerCase();
+            if (name.includes(searchText)) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<script>
+    const searchDateInput = document.getElementById('searchDateInput');
+    const tableRow = document.querySelectorAll('#tabletobe tbody tr');
+
+    searchDateInput.addEventListener('input', function () {
+        const searchDate = this.value.toLowerCase();
+
+        tableRow.forEach(row => {
+            const dateCell = row.querySelector('td:nth-child(3)');
+            const date = dateCell.textContent.toLowerCase();
+            if (date.includes(searchDate)) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 
 {% endblock %}
 
