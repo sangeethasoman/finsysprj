@@ -35,47 +35,18 @@
                             </div>
                         </div>
                       </div>
-                  <div class="col">
-                    
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
-                                data-toggle="dropdown">filter by
-                        </button>
-                        <div class="dropdown-menu" style="background-color: black;">
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;" >All</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Active</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Inactive</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Purchase</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Sales</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Serives</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Goods</a>
-                        </div>
-                    </div> 
-                  </div>
+
                  
                   <div class="col">
                     <div class="dropdown">
                         <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
-                                data-toggle="dropdown">Sort by
+                                data-toggle="dropdown">Filter by
                         </button>
                         <div class="dropdown-menu" style="background-color: black;">
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Name</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Rate</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">HSN</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Import item</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Export item</a>
+                            <a class="dropdown-item" href="javascript:void(0);" onclick="sortTable('asc')"
+                               style="height: 40px; font-size: 15px; color: white;">Name Ascending</a>
+                            <a class="dropdown-item" href="javascript:void(0);" onclick="sortTable('desc')"
+                               style="height: 40px; font-size: 15px; color: white;">Name Descending</a>
                         </div>
                 </div>
             </div>
@@ -95,7 +66,7 @@
                 <table class="table table-responsive-md table-hover mt-4" id="tabletobe">
                     <thead>
                     <tr>
-                        <th>BANK NAME</th>
+                        <th id="nameList" >BANK NAME</th>
                         <th>IFSCE CODE</th>
                         <th>BRANCH NAME</th>
                         <th>OPENING BALANCE</th>
@@ -220,6 +191,29 @@
 <!-- Edit Modal -->
 
 
+<script>
+    function sortTable(order) {
+        const table = document.getElementById('tabletobe');
+        const rows = Array.from(table.getElementsByTagName('tr'));
+
+        rows.shift(); // Remove the table header row from sorting
+
+        rows.sort(function(a, b) {
+            const bankNameA = a.querySelector('td:first-child').textContent;
+            const bankNameB = b.querySelector('td:first-child').textContent;
+
+            if (order === 'asc') {
+                return bankNameA.localeCompare(bankNameB);
+            } else if (order === 'desc') {
+                return bankNameB.localeCompare(bankNameA);
+            }
+        });
+
+        rows.forEach(function(row) {
+            table.appendChild(row);
+        });
+    }
+</script>
 <script>
     $(document).ready(function () {
         $(".edit-item").on("click", function () {

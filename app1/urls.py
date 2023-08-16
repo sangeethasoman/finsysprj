@@ -882,6 +882,12 @@ urlpatterns = [
     path('cash_in_hand',views.cash_in_hand,name='cash_in_hand'),
     path('edit_b_to_c/<int:id>', views.edit_b_to_c, name='edit_b_to_c'),
     path('edit_account_adjustment/<int:id>', views.edit_account_adjustment, name='edit_account_adjustment'),
+    path('update_bank_transfer/<int:transfer_id>', views.update_bank_transfer, name='update_bank_transfer'),
+    path('update_cash_to_bank_transfer/<int:id>', views.update_cash_to_bank_transfer, name='update_cash_to_bank_transfer'),
+    path('delet_bank/<int:id>',views.delet_bank,name='delet_bank'),
+    path('bnk_statement/<int:id>',views.bnk_statement,name='bnk_statement'),
+    path('add_cash',views.add_cash,name='add_cash'),
+
 
 
 

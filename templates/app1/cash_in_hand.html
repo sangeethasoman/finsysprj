@@ -17,7 +17,9 @@
     <div class="card-body">
         <div class="container">
             <div class="row">
-                <div class="col"></div>
+                <div class="col form-inline d-flex mr-5">
+                   <p class="form-inline d-flex mt-2 " style="font-size: large;"> cash :<h3 class="form-inline">{{bank.cash_balance}}</h3> </p>
+                </div>
                 <div class="col"></div>
                 <div class="col-md-5">
                 <div class="search-bar">
@@ -36,27 +38,7 @@
                       </div>
                   <div class="col">
                     
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
-                                data-toggle="dropdown">filter by
-                        </button>
-                        <div class="dropdown-menu" style="background-color: black;">
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;" >All</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Active</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Inactive</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Purchase</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Sales</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Serives</a>
-                            <a class="dropdown-item" href=""
-                               style="height: 40px; font-size: 15px; color: white;">Goods</a>
-                        </div>
-                    </div> 
+                    
                   </div>
                  
                   <div class="col">
@@ -80,7 +62,7 @@
             <div class="col">
                 <div class="dropdown">
                     <button type="button" class="btn btn-outline-info text-grey" data-toggle="modal" data-target="#addBankModal">
-                        Add 
+                        Add Cash
                     </button>
                 </div>
             </div>
@@ -96,17 +78,26 @@
                         <th>TYPE</th>
                         <th>NAME</th>
                         <th>DATE</th>
+                        <th>DESCRIPTION</th>
                         <th>BALANCE</th>
                         <th>ACTION</th>
                     </tr>
                     </thead>
                     <tbody>
                    
-               
-
+               {% for a in cash %}
+                        <tr>
+                            {% if a.cash_adjust == 'ADD CASH' %}
+                                <td>{{a.cash_adjust}} TO {{a.from_trans}}  </td>
+                                {% endif %}
+                                <td>{{a.cash_cash}}</td>
+                                <td>{{a.cash_date}}</td>
+                                <td>{{a.cash_description}}</td>
+                                <td>{{a.cash_cash}}</td>
+                        </tr>
                            
                             
-                     
+                     {% endfor %}
                         
                   
                   
@@ -115,6 +106,53 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Cash Modal -->
+<div class="modal fade" id="addBankModal" tabindex="-1" role="dialog" aria-labelledby="addBankModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBankModalLabel">Add Cash</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Add your form elements for adding cash here -->
+                <!-- For example: -->
+                <form method="post" action="{% url 'add_cash' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="amount">Adjustment</label>
+                        <select class="form-control" name="cashadj" id="">
+                            <option value="ADD CASH">Add Cash</option>
+                            <option value="REDUCE CASH">Reduce Cash</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" class="form-control" id="" name="amount">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Adj Date </label>
+                        <input type="date" class="form-control" id="" name="date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Description</label>
+                        <input type="text" class="form-control" id="" name="desc">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Cash</button>
+                    </div>
+                </form>
+            </div>
+           
         </div>
     </div>
 </div>
