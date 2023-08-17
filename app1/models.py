@@ -1732,6 +1732,15 @@ class banking_G(models.Model):
     balance=models.IntegerField()
     cash_balance=models.IntegerField()
 
+
+class cash_hand(models.Model):
+    cash_adjust=models.TextField(max_length=100)
+    cash_cash=models.IntegerField(blank=True,null=True)
+    cash_description=models.TextField(max_length=100)
+    cash_date=models.DateField(blank=True,null=True)
+    banking=models.ForeignKey(banking_G, on_delete=models.CASCADE)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE)
+    
 class bank_transaction(models.Model):
     bank=models.TextField(max_length=100)
     from_trans=models.TextField(max_length=100)
@@ -1742,11 +1751,23 @@ class bank_transaction(models.Model):
     type=models.TextField(max_length=100)
     banking=models.ForeignKey(banking_G, on_delete=models.CASCADE)
     cid = models.ForeignKey(company, on_delete=models.CASCADE)
-    
+    cash=models.ForeignKey(cash_hand, on_delete=models.CASCADE)
 
-class cash_hand(models.Model):
-    cash_adjust=models.TextField(max_length=100)
-    cash_cash=models.IntegerField(blank=True,null=True)
-    cash_description=models.TextField(max_length=100)
-    cash_date=models.DateField(blank=True,null=True)
+
+#cheques
+class cheques(models.Model):
+    chq_type=models.TextField(max_length=100)
+    chq_name=models.TextField(max_length=100)
+    chq_ref_no=models.TextField(max_length=100)
+    chq_date=models.DateField(blank=True,null=True)
+    chq_amount = models.IntegerField(blank=True,null=True)
+    chq_status = models.CharField(max_length=100,default='Active')
+    chq_action = models.TextField(max_length=100)
+    banking=models.ForeignKey(banking_G, on_delete=models.CASCADE)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE)
+    cash=models.ForeignKey(cash_hand, on_delete=models.CASCADE)
+   
+   
+   
+
 

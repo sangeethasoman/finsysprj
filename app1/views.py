@@ -1,5 +1,5 @@
 
-from curses.ascii import HT
+#from curses.ascii import HT
 from http.client import HTTPResponse
 from multiprocessing import context
 from django.db.models import Avg,Max,Min,Sum
@@ -37916,10 +37916,21 @@ def b_to_c(request):
         adj_date = request.POST.get('adjdate')
         desc = request.POST.get('desc')
 
+        
+        
+
         bank = banking_G.objects.get(id=f_bank)
         bank.balance -= amount
+        bank.cash_balance += amount
         bank.save()
+        cash_hand=cash_hand(
+            cash_adjust='CASH WITHDRAW',
+            cash_cash=amount,
+            cash_date=adj_date,
+            cash_description=desc
 
+        )
+        cash_hand.save()
         trans = bank_transaction(
             from_trans=bank.bankname,
             to_trans=to_trans,
@@ -37929,10 +37940,13 @@ def b_to_c(request):
             type='CASH WITHDRAW',
             cid=cmp1,
             banking_id=bank.id,
-            bank='TO CASH'
+            bank='TO CASH',
+            cash=cash_hand.id
+            
+            
         )
         trans.save()
-
+        
     return redirect('bnnk')
 
 def c_to_b(request):
@@ -37946,8 +37960,16 @@ def c_to_b(request):
 
         bank = banking_G.objects.get(id=f_bank)
         bank.balance += amount
+        bank.cash_balance -= amount
         bank.save()
+        cash_hand=cash_hand(
+            cash_adjust='CASH DEPOSIT',
+            cash_cash=amount,
+            cash_date=adj_date,
+            cash_description=desc
 
+        )
+        cash_hand.save()
         trans = bank_transaction(
             from_trans=to_trans,
             to_trans=bank.bankname,
@@ -37957,7 +37979,8 @@ def c_to_b(request):
             type='CASH DEPOSIT',
             cid=cmp1,
             banking_id=bank.id,
-            bank='FROM CASH'
+            bank='FROM CASH',
+            cash=cash_hand.id
         )
         trans.save()
 
@@ -38242,6 +38265,7 @@ def delet_bank(request,id):
     
     return redirect('bnnk')
 
+
 def bnk_statement(request,id):
     cmp1 = company.objects.get(id=request.session["uid"])
     bank=banking_G.objects.get(id=id)
@@ -38263,28 +38287,64 @@ def cash_in_hand(request):
      }
     return render(request,'app1/cash_in_hand.html',context)
 
+from .models import company, banking_G, cash_hand
 
 def add_cash(request):
-    cmp1 = company.objects.get(id=request.session["uid"])
-
     if request.method == 'POST':
+        cmp1 = company.objects.get(id=request.session["uid"])
+        print(cmp1.cid)
         adj = request.POST.get('cashadj')
-        cash = request.POST.get('amount')
+        cash = int(request.POST.get('amount')) 
         date = request.POST.get('date')
         description = request.POST.get('desc')
         
-        if adj == 'add':
-            cash_amount = cash 
-        elif adj == 'reduce':
-            cash_amount = -cash  
         
+        bnk = banking_G.objects.get(cid=cmp1.cid)
+        print(bnk)
+        if adj == 'ADD CASH':
+            bnk.cash_balance += cash 
+        elif adj == 'REDUCE CASH':
+            bnk.cash_balance -= cash  
+            
+        bnk.save()
+            
         add = cash_hand(
-            adjust=adj,
-            cash=cash_amount,
-            date=date,
-            description=description,
-            cid=cmp1,
-        )
+                cash_adjust=adj,
+                cash_cash=cash,
+                cash_date=date,
+                cash_description=description,
+                banking=bnk,
+                cid=cmp1,
+            )
         add.save()
+            
+        return redirect('cash_in_hand')
+        
+    
+    return render(request, 'add_cash_form.html', context)
 
-    return redirect('cash_in_hand')
+#cheques render
+def cheques(request):
+    cmp1 = company.objects.get(id=request.session["uid"])
+    context={
+        'cmp1':cmp1,
+        
+     }
+    return render(request,'app1/cheques.html',context)
+
+def cheque_table(request):
+    cmp1 = company.objects.get(id=request.session["uid"])
+    if request.method == 'POST':
+        chq_type = request.POST.get('cheque_type')
+        chq_name = request.POST.get('cheque_name') 
+        chq_ref_no = request.POST.get('cheque_ref_no')
+        chq_date = request.POST.get('cheque_date')
+        chq_amount = int(request.POST.get('cheque_amount'))
+        chq_status = request.POST.get('cheque_status') 
+        chq_action = request.POST.get('cheque_action')
+
+        cheques.save()
+       
+
+    return redirect('cheque_table')
+

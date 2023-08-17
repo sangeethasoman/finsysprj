@@ -891,4 +891,7 @@ urlpatterns = [
 
 
 
+# cheques
+ path('cheques',views.cheques,name='cheques'),
+
 ]
