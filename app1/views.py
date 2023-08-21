@@ -38348,3 +38348,81 @@ def cheque_table(request):
 
     return redirect('cheque_table')
 
+@login_required(login_url='regcomp')
+def cashflow(request):
+        cmp1 = company.objects.get(id=request.session["uid"]) 
+
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
+        
+        
+        context = {'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
+        return render(request, 'app1/cashflow.html', context)
+
+@login_required(login_url='regcomp')
+def alltransactions(request):
+        cmp1 = company.objects.get(id=request.session["uid"]) 
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
+        
+        
+        context = {'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
+        return render(request, 'app1/alltransactions.html', context)
+
+@login_required(login_url='regcomp')
+def daybook(request):
+        cmp1 = company.objects.get(id=request.session["uid"])  
+
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
+        
+        
+        context = {'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
+        return render(request, 'app1/daybook.html', context)
+
+
+@login_required(login_url='regcomp')
+def purchase(request):
+        cmp1 = company.objects.get(id=request.session["uid"])   
+
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
+        
+        
+        context = {'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
+        return render(request, 'app1/purchase.html', context)
+
+
+@login_required(login_url='regcomp')
+def sales(request):
+        cmp1 = company.objects.get(id=request.session["uid"])   
+
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
+        
+        
+        context = {'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
+        return render(request, 'app1/sales.html', context)
+
+def alltransactions(request):
+    cmp1 = company.objects.get(id=request.session["uid"])
+    if request.method == 'POST':
+        trans_date = request.POST.get('transactions_date')
+        trans_partyname = request.POST.get('transactions_partyname') 
+        trans_type = request.POST.get('transactions_type')
+        trans_total = int(request.POST.get('transactions_total'))
+        trans_received = int(request.POST.get('transactions_received'))
+        trans_balance = int(request.POST.get('transactions_balance'))
+       
+
+        alltransactions.save()
+       
+
+    return redirect('alltransactions')
+
+

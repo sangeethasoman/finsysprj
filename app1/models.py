@@ -1766,6 +1766,16 @@ class cheques(models.Model):
     banking=models.ForeignKey(banking_G, on_delete=models.CASCADE)
     cid = models.ForeignKey(company, on_delete=models.CASCADE)
     cash=models.ForeignKey(cash_hand, on_delete=models.CASCADE)
+
+#all transactions
+class transactions(models.Model):
+    trans_date=models.DateField(blank=True,null=True)
+    trans_partyname=models.TextField(max_length=100)
+    trans_type=models.TextField(max_length=100)
+    trans_total= models.IntegerField(blank=True,null=True)
+    trans_received = models.IntegerField(blank=True,null=True)
+    trans_balance = models.IntegerField(blank=True,null=True)
+   
    
    
    
