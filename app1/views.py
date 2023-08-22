@@ -38326,8 +38326,12 @@ def add_cash(request):
 #cheques render
 def cheques(request):
     cmp1 = company.objects.get(id=request.session["uid"])
+    sales = payment.objects.filter(cid=cmp1.cid,pmethod='Cheque').all()
+    purchase = purchasepayment.objects.filter(cid=cmp1.cid,paymentmethod='Cheque').all()
     context={
         'cmp1':cmp1,
+        'sales':sales,
+        'purchase':purchase,
         
      }
     return render(request,'app1/cheques.html',context)
