@@ -70,15 +70,16 @@
                 </center>
                 <hr>
                 <div class="btn-group col-md-2" style="float: right;">
-
-                    <a class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')">Export To Excel</a>
-                </div>
-
-                <div class="btn-group col-md-2" style="float: right;">
                     <a href="" id="myBtn" class="btn btn-outline-info text-grey btn_print"
                         role="button">Print</a>
 
                 </div>
+                <div class="btn-group col-md-2" style="float: right;">
+
+                    <a class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')">Export To Excel</a>
+                </div>
+
+                
 
 
 
@@ -139,7 +140,7 @@
                 <!-- Add Cash Modal -->
 <div class="modal fade" id="chqfilterModal" tabindex="-1" role="dialog" aria-labelledby="chqfilterModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="background-color: #243e54;">
             <div class="modal-header">
                 <h5 class="modal-title" id="chqfilterModal">FILTER BY</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -168,7 +169,7 @@
                     </div>
                    
                     <div class="form-group">
-                        <label for="amount">Type your Exact Search Key</label>
+                        <label for="">Type your Exact Search Key</label>
                         <input type="text" class="form-control" id="searchkey" name="desc">
                     </div>
                     <div class="modal-footer">
@@ -218,7 +219,7 @@
                             <td>{{ chq.paymdate }}</td>
                             <td>{{ chq.amtreceived }}</td>
                             <td>{{ chq.depto }}</td>
-                            <td>{{chq.cheque_action}}</td>
+                            <td>{{ chq.cheque_action }}</td>
                            
                         </tr>
                         {% endfor %}
@@ -231,7 +232,7 @@
                             <td>{{ chq.paymentdate }}</td>
                             <td>{{ chq.paymentamount }}</td>
                             <td>{{ chq.depositeto }}</td>
-                            <td>{{chq.cheque_action}}</td>
+                            <td>{{ chq.cheque_action }}</td>
                            
                         </tr>
                         {% endfor %}
@@ -251,7 +252,7 @@
         var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
         return dl ?
             XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
-            XLSX.writeFile(wb, fn || ('Employees.' + (type || 'xlsx')));
+            XLSX.writeFile(wb, fn || ('Cheque.' + (type || 'xlsx')));
     }
 </script>
 <script>

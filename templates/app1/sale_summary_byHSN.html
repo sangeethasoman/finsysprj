@@ -66,7 +66,7 @@
         <div class="card-body">
             <div class="card-title">
                 <center>
-                    <h2 class="mb-0">ALL TRANSACTIONS</h2>
+                    <h2 class="mb-0">SALE SUMMARY BY HSN</h2>
                 </center>
                 <hr>
                 <div class="btn-group col-md-2" style="float: right;">
@@ -125,7 +125,7 @@
                         aria-label=".form-select-lg example" style="width: 40%; margin-top: 8px;" name="types"
                         onchange="types(this)">
 
-                        <option value="" selected>All Types</option>
+                        <option value="" selected>All HSN</option>
                         <option value="Sales">Sales</option>
                         <option value="Purchase">Purchase</option>
                         <option value="Credit Note">Credit Note</option>
@@ -197,10 +197,12 @@
                         <label for="filter">Filter</label>
                         <select class="form-control" name="filter" id="filterBy">
                         <option value="">All</option>
-                        <option value="Party Name">Party Name</option>
-                        <option value="Total">Total</option>
-                        <option value="Received">Received</option>
-                        <option value="Balance">Balance</option>
+                        <option value="Total Value">Total Value</option>
+                        <option value="Taxable Value">Taxable Value</option>
+                        <option value="IGST Amount">IGST Amount</option>
+                        <option value="CGST Amount">CGST Amount</option>
+                        <option value="SGST Amount">SGST Amount</option>
+                        <option value="Add CESS">Add CESS</option>
                         </select>
                     </div>
 
@@ -243,12 +245,14 @@
                 <table class="table table-responsive-md mt-4" id="tbl_exporttable_to_xls">
                     <thead>
                         <tr>
-                            <th>DATE</th>
-                            <th>PARTY NAME</th>
-                            <th>TYPE</th>
-                            <th>TOTAL</th>
-                            <th>RECEIVED</th>
-                            <th>BALANCE</th>
+                            <th>Sl.No.</th>
+                            <th>HSN</th>
+                            <th>TOTAL VALUE</th>
+                            <th>TAXABLE VALUE</th>
+                            <th>IGST AMOUNT</th>
+                            <th>CGST AMOUNT</th>
+                            <th>SGST AMOUNT</th>
+                            <th>ADD CESS</th>
                             
                            
 

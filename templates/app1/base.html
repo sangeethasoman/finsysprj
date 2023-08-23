@@ -424,38 +424,38 @@
                 <div class="menu-title">Reports</div>
               </a>
               <ul>
-               
+                <li><a href="{% url 'sale_summary_byHSN' %}"><i class="bx bx-right-arrow-alt"></i>Sale Summary By HSN</a></li>
                 <li><a href="{% url 'trial_balance' %}"><i class="bx bx-right-arrow-alt"></i>Trial Balance</a></li>
                 <li><a href="{% url 'accreceivables' %}"><i class="bx bx-right-arrow-alt"></i>Accounts Receivables</a></li>
                 <li><a href="{% url 'accpayables' %}"><i class="bx bx-right-arrow-alt"></i>Accounts Payables</a></li>
                 <li><a href="{% url 'gstr3b' %}"><i class="bx bx-right-arrow-alt"></i>GSTR-3B</a></li>
-                <ul>
-                  <li>
-                  <a href="javascript:;"  class="has-arrow">
-                    
-                    <div class="menu-title">Transaction Reports</div>
-                  </a>
-                  <ul>
-                  <li><a href="{% url 'sales' %}"><i class="bx bx-right-arrow-alt"></i>Sales
-                      </a>
-                  </li>
-                  <li><a href="{% url 'purchase' %}"><i class="bx bx-right-arrow-alt"></i>Purchase
-                      </a>
-                  </li>
-                  <li><a href="{% url 'daybook' %}"><i class="bx bx-right-arrow-alt"></i>Day Book
-                    </a>
-                 </li>
-                 <li><a href="{% url 'alltransactions' %}"><i class="bx bx-right-arrow-alt"></i>All Transactions
-                      </a>
-                  </li>
-                  <li><a href="{% url 'profitandloss' %}"><i class="bx bx-right-arrow-alt"></i>Profit and Loss</a></li>
-                  <li><a href="{% url 'balancesheet1' %}"><i class="bx bx-right-arrow-alt"></i>Balance Sheet</a></li>
-                  <li><a href="{% url 'cashflow' %}"><i class="bx bx-right-arrow-alt"></i>Cash Flow</a></li>
-                 </ul>
-                 </li>
-                </ul>
                 <li><a href="{% url 'stocksummary' %}"><i class="bx bx-right-arrow-alt"></i>Stock Summary </a></li>
                 <li><a href="{% url 'stockvaluation' %}"><i class="bx bx-right-arrow-alt"></i>Stock Valuation</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-paper-plane"></i></div>
+                <div class="menu-title">Transaction Reports</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'sales' %}"><i class="bx bx-right-arrow-alt"></i>Sales
+                </a>
+            </li>
+            <li><a href="{% url 'purchase' %}"><i class="bx bx-right-arrow-alt"></i>Purchase
+                </a>
+            </li>
+            <li><a href="{% url 'daybook' %}"><i class="bx bx-right-arrow-alt"></i>Day Book
+              </a>
+           </li>
+           <li><a href="{% url 'alltransactions' %}"><i class="bx bx-right-arrow-alt"></i>All Transactions
+                </a>
+            </li>
+            <li><a href="{% url 'profitandloss' %}"><i class="bx bx-right-arrow-alt"></i>Profit and Loss</a></li>
+            <li><a href="{% url 'balancesheet1' %}"><i class="bx bx-right-arrow-alt"></i>Balance Sheet</a></li>
+            <li><a href="{% url 'cashflow' %}"><i class="bx bx-right-arrow-alt"></i>Cash Flow</a></li>
+           
+             
               </ul>
             </li>
             <!-- <li>

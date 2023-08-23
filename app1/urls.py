@@ -894,11 +894,15 @@ urlpatterns = [
 # cheques
  path('cheques',views.cheques,name='cheques'),
 
-# Reports
+# Transaction Reportssale_summary_byHSN
 path('cashflow',views.cashflow,name='cashflow'), 
 path('alltransactions',views.alltransactions,name='alltransactions'), 
 path('daybook',views.daybook,name='daybook'), 
 path('purchase',views.purchase,name='purchase'),
 path('sales',views.sales,name='sales'),
+
+
+#sale_summary_byHSN
+path('sale_summary_byHSN',views.sale_summary_byHSN,name='sale_summary_byHSN'), 
 
 ]

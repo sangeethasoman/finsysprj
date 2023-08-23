@@ -38336,21 +38336,8 @@ def cheques(request):
      }
     return render(request,'app1/cheques.html',context)
 
-def cheque_table(request):
-    cmp1 = company.objects.get(id=request.session["uid"])
-    if request.method == 'POST':
-        chq_type = request.POST.get('cheque_type')
-        chq_name = request.POST.get('cheque_name') 
-        chq_ref_no = request.POST.get('cheque_ref_no')
-        chq_date = request.POST.get('cheque_date')
-        chq_amount = int(request.POST.get('cheque_amount'))
-        chq_status = request.POST.get('cheque_status') 
-        chq_action = request.POST.get('cheque_action')
 
-        cheques.save()
-       
-
-    return redirect('cheque_table')
+   
 
 @login_required(login_url='regcomp')
 def cashflow(request):
@@ -38364,16 +38351,7 @@ def cashflow(request):
         context = {'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/cashflow.html', context)
 
-@login_required(login_url='regcomp')
-def alltransactions(request):
-        cmp1 = company.objects.get(id=request.session["uid"]) 
-        fromdates=request.user.date_joined.date()
-        todates=date.today()
 
-        
-        
-        context = {'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
-        return render(request, 'app1/alltransactions.html', context)
 
 @login_required(login_url='regcomp')
 def daybook(request):
@@ -38413,20 +38391,33 @@ def sales(request):
         context = {'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/sales.html', context)
 
+#alltransactions render
 def alltransactions(request):
     cmp1 = company.objects.get(id=request.session["uid"])
-    if request.method == 'POST':
-        trans_date = request.POST.get('transactions_date')
-        trans_partyname = request.POST.get('transactions_partyname') 
-        trans_type = request.POST.get('transactions_type')
-        trans_total = int(request.POST.get('transactions_total'))
-        trans_received = int(request.POST.get('transactions_received'))
-        trans_balance = int(request.POST.get('transactions_balance'))
-       
+    sales = payment.objects.filter(cid=cmp1.cid).all()
+    purchase = purchasepayment.objects.filter(cid=cmp1.cid).all()
+    context={
+        'cmp1':cmp1,
+        'sales':sales,
+        'purchase':purchase,
+        
+     }
+    return render(request,'app1/alltransactions.html',context)
 
-        alltransactions.save()
-       
 
-    return redirect('alltransactions')
+#sale_summary_byHSN render
+def sale_summary_byHSN(request):
+    cmp1 = company.objects.get(id=request.session["uid"])
+    sales = payment.objects.filter(cid=cmp1.cid).all()
+    purchase = purchasepayment.objects.filter(cid=cmp1.cid).all()
+    context={
+        'cmp1':cmp1,
+        'sales':sales,
+        'purchase':purchase,
+        
+     }
+    return render(request,'app1/sale_summary_byHSN.html',context)
+
+
 
 
