@@ -265,17 +265,133 @@
                             <td>{{ trans.balance }}</td>
                         </tr>
                         {% endfor %}
+
                         {% for trans in purchase %}
                         <tr class="table-row " data-href="">
                             <td>{{ trans.paymentdate }}</td>
                             <td>{{ trans.vendor }}</td>
                             <td>Purchase</td>
                             <td>{{ trans.paymentamount }}</td>
-                           <td>{{ trans.amtreceived }}</td>
-                           <td></td>
+                            <td>{{ trans.amtreceived }}</td>
+                            <td></td>
 
                         </tr>
                         {% endfor %}
+
+                        {% for trans in estimates %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.estimatedate }}</td>
+                            <td>{{ trans.customer }}</td>
+                            <td>Estimate</td>
+                            <td>{{ trans.estimatetotal }}</td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in deliverychallan %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.challan_date }}</td>
+                            <td>{{ trans.customer }}</td>
+                            <td>Delivery Challan</td>
+                            <td>{{ trans.grand }}</td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in paymentreceived %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.paymdate }}</td>
+                            <td>{{ trans.customer }}</td>
+                            <td>Payment Received</td>
+                            <td>{{ trans.amtapply }}</td>
+                            <td>{{ trans.amtreceived }}</td>
+                            <td>{{ trans.balance }}</td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in paymentreceived %}
+                        <tr class="table-row " data-href="">
+                            <td></td>
+                            <td></td>
+                            <td>Retainer Invoice</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in invoices %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.invoicedate }}</td>
+                            <td>{{ trans.customername }}</td>
+                            <td>Invoice</td>
+                            <td>{{ trans.grandtotal }}</td>
+                            <td>{{ trans.amtrecvd }}</td>
+                            <td>{{ trans.baldue }}</td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in bill %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.date }}</td>
+                            <td>{{ trans.contact_name }}</td>
+                            <td>Bill</td>
+                            <td>{{ trans.grand_total }}</td>
+                            <td>{{ trans.amtrecvd }}</td>
+                            <td>{{ trans.balance_due }}</td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in payments %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.paymentdate }}</td>
+                            <td>{{ trans.vendor }}</td>
+                            <td>Payment</td>
+                            <td>{{ trans.paymentamount }}</td>
+                            <td>{{ trans.amtreceived }}</td>
+                            <td></td>
+
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in manualjournal %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.date }}</td>
+                            <td></td>
+                            <td>Manual Journal</td>
+                            <td>{{ trans.total_cre }}</td>
+                            <td></td>
+                            <td></td>
+
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in creditnote %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.creditdate }}</td>
+                            <td>{{ trans.customer }}</td>
+                            <td>Credit Note</td>
+                            <td>{{ trans.grandtotal }}</td>
+                            <td></td>
+                            <td></td>
+
+
+                        </tr>
+                        {% endfor %}
+
+
+
+                
                     </tbody>
                 </table>
             </div>

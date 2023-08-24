@@ -1756,14 +1756,7 @@ class bank_transaction(models.Model):
 
 
 
-#all transactions
-class transactions(models.Model):
-    trans_date=models.DateField(blank=True,null=True)
-    trans_partyname=models.TextField(max_length=100)
-    trans_type=models.TextField(max_length=100)
-    trans_total= models.IntegerField(blank=True,null=True)
-    trans_received = models.IntegerField(blank=True,null=True)
-    trans_balance = models.IntegerField(blank=True,null=True)
+
    
    
    

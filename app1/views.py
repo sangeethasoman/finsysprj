@@ -38396,10 +38396,26 @@ def alltransactions(request):
     cmp1 = company.objects.get(id=request.session["uid"])
     sales = payment.objects.filter(cid=cmp1.cid).all()
     purchase = purchasepayment.objects.filter(cid=cmp1.cid).all()
+    estimates = estimate.objects.filter(cid=cmp1.cid).all()
+    deliverychallan = challan.objects.filter(cid=cmp1.cid).all()
+    paymentreceived = payment.objects.filter(cid=cmp1.cid).all()
+    invoices = invoice.objects.filter(cid=cmp1.cid).all()
+    bill = purchasebill.objects.filter(cid=cmp1.cid).all()
+    payments = purchasepayment.objects.filter(cid=cmp1.cid).all()
+    manualjournal = mjournal.objects.filter(cid=cmp1.cid).all()
+    creditnote = salescreditnote.objects.filter(cid=cmp1.cid).all()
     context={
         'cmp1':cmp1,
         'sales':sales,
         'purchase':purchase,
+        'estimates':estimates,
+        'deliverychallan':deliverychallan,
+        'paymentreceived':paymentreceived,
+        'invoices':invoices,
+        'bill':bill,
+        'payments':payments,
+        'manualjournal':manualjournal,
+        'creditnote':creditnote,
         
      }
     return render(request,'app1/alltransactions.html',context)
