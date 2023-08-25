@@ -1753,6 +1753,31 @@ class bank_transaction(models.Model):
     cid = models.ForeignKey(company, on_delete=models.CASCADE)
     cash=models.ForeignKey(cash_hand, on_delete=models.CASCADE)
 
+#Retainer invoices
+
+class RetainerInvoices(models.Model):
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
+    customer = models.CharField(max_length=100,null=True)
+    email = models.EmailField(max_length=100,null=True)
+    billing_address = models.CharField(max_length=100,null=True)
+    invoice_date = models.DateField(null=True)
+    expiry_date = models.DateField(null=True)
+    invoice_number = models.CharField(max_length=100,null=True)
+    reference_number = models.IntegerField(null=True)
+    place_of_supply = models.CharField(max_length=100,null=True)
+    total_amount = models.FloatField(max_length=100,null=True)
+    customer_notes = models.CharField(max_length=100,null=True)
+    terms_conditions = models.CharField(max_length=100,null=True)
+    comments = models.CharField(max_length=100,null=True)
+    attachment = models.ImageField(upload_to="retainer_invoices/", null=True)
+    status = models.CharField(max_length=100,null=True)
+
+class RetainerInvoiceItems(models.Model):
+    retainer_invoice = models.ForeignKey(RetainerInvoices, on_delete=models.CASCADE,null=True)
+    description = models.CharField(max_length=200,null=True)
+    amount = models.FloatField(max_length=100,null=True)
+    
+
 
 
 

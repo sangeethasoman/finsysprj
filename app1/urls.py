@@ -888,7 +888,21 @@ urlpatterns = [
     path('bnk_statement/<int:id>',views.bnk_statement,name='bnk_statement'),
     path('add_cash',views.add_cash,name='add_cash'),
 
-
+#----------------------sumayya-----------------retainer invoices-------------------------------------------------------------------------------------
+    path('retainer_invoices_list',views.retainer_invoices_list,name='retainer_invoices_list'),
+    path('new_ret_invoice',views.new_ret_invoice,name='new_ret_invoice'),
+    path('new_customer_for_retinvoice',views.new_customer_for_retinvoice,name='new_customer_for_retinvoice'),
+    path('create_retainer_invoice',views.create_retainer_invoice,name='create_retainer_invoice'),
+    path('send_retainer_invoice',views.send_retainer_invoice,name='send_retainer_invoice'),
+    path('delete_inv/<int:id>',views.delete_inv,name='delete_inv'),
+    path('ret_invoice_slip/<int:id>',views.ret_invoice_slip,name='ret_invoice_slip'),
+    path('edit_ret_invoice/<int:id>',views.edit_ret_invoice,name='edit_ret_invoice'),
+    path('update_ret_invoice/<int:id>',views.update_ret_invoice,name='update_ret_invoice'),
+    path('add_comment_retinvoice/<int:id>',views.add_comment_retinvoice,name='add_comment_retinvoice'),
+    path('upload_file_retinvoice/<int:id>',views.upload_file_retinvoice,name='upload_file_retinvoice'),
+    path('retainer_invoice_draft',views.retainer_invoice_draft,name='retainer_invoice_draft'),
+    path('retainer_invoice_sent',views.retainer_invoice_sent,name='retainer_invoice_sent'),
+    path('search_retinvoice',views.search_retinvoice,name='search_retinvoice'),  
 
 
 # cheques

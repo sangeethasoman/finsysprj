@@ -245,7 +245,7 @@
                 <table class="table table-responsive-md mt-4" id="tbl_exporttable_to_xls">
                     <thead>
                         <tr>
-                            <th>Sl.No.</th>
+                            <th>Sl.No.</th> 
                             <th>HSN</th>
                             <th>TOTAL VALUE</th>
                             <th>TAXABLE VALUE</th>
@@ -259,27 +259,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for trans in sales %}
+                        {% for trans in item %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.paymdate }}</td>
-                            <td>{{ trans.customer }}</td>
-                            <td>Sales</td>
-                            <td>{{ trans.amtcredit }}</td>
-                            <td>{{ trans.amtreceived }}</td>
-                            <td>{{ trans.balance }}</td>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ trans.hsn }}</td>
+                            <td>{{ trans.total_price }}</td>
+                            <td>{{ trans.name }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         {% endfor %}
-                        {% for trans in purchase %}
-                        <tr class="table-row " data-href="">
-                            <td>{{ trans.paymentdate }}</td>
-                            <td>{{ trans.vendor }}</td>
-                            <td>Purchase</td>
-                            <td>{{ trans.paymentamount }}</td>
-                           <td>{{ trans.amtreceived }}</td>
-                           <td></td>
 
-                        </tr>
-                        {% endfor %}
+                      
                     </tbody>
                 </table>
             </div>

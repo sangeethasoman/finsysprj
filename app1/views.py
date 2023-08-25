@@ -38323,6 +38323,329 @@ def add_cash(request):
     
     return render(request, 'add_cash_form.html', context)
 
+#----------------------sumayya-----------------retainer invoices-------------------------------------------------------------------------------------
+
+@login_required(login_url='regcomp')
+def retainer_invoices_list(request):
+    cmp = company.objects.get(id=request.session["uid"])
+    ret_invoices = RetainerInvoices.objects.filter(cid=cmp).all().order_by('-id')
+
+    context = {
+        'cmp': cmp,
+        'ret_invoices': ret_invoices,
+    }
+    return render(request,'app1/retainerinvoiceslist.html',context)
+
+def new_ret_invoice(request):
+    cmp = company.objects.get(id=request.session["uid"])
+    customers = customer.objects.filter(cid=cmp).all()
+    count = RetainerInvoices.objects.filter(cid=cmp).count()
+    inv_no = count+1
+    context = {
+        'cmp': cmp,
+        'customers': customers,
+        'inv_no' : inv_no,
+    }
+    return render(request,'app1/createretainerinvoice.html',context)
+
+@login_required(login_url='regcomp')
+def new_customer_for_retinvoice(request):
+    try:
+        cmp1 = company.objects.get(id=request.session["uid"])
+        if request.method == "POST":
+            toda = date.today()
+            tod = toda.strftime("%Y-%m-%d")
+            firstname = request.POST['firstname']
+            lastname = request.POST['lastname']
+            if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
+                messages.info(request,
+                              f"Customer {firstname} {lastname} already exists. Please provide a different name.")
+                return redirect('gocustomers')
+            else:
+                customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
+                                     lastname=request.POST['lastname'], company=request.POST['company'],
+                                     location=request.POST['location'], gsttype=request.POST['gsttype'],
+                                     gstin=request.POST['gstin'], panno=request.POST['panno'],
+                                     email=request.POST['email'],
+                                     website=request.POST['website'], mobile=request.POST['mobile'],
+                                     street=request.POST['street'], city=request.POST['city'],
+                                     state=request.POST['state'],
+                                     pincode=request.POST['pincode'], country=request.POST['country'],
+                                     shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
+                                     shipstate=request.POST['shipstate'],
+                                     shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'],
+                                     cid=cmp1)
+
+                customer1.save()
+
+               
+                temp=request.POST['openbalance']
+                if temp != "":
+                    customer1.opening_balance = request.POST['openbalance'] 
+                    customer1.opening_balance_due = request.POST['openbalance'] 
+                    customer1.date= tod
+                    customer1.save()
+                    
+                   
+
+                
+
+                if customer1.opening_balance != "":
+
+                    add_cust_stat=cust_statment(
+
+                    customer = customer1.firstname +" "+ customer1.lastname,
+
+                    cid  = cmp1,
+
+                    
+
+                    Date = tod,
+
+                    Transactions="Customer Opening Balance",
+
+                    Amount= customer1.opening_balance,
+
+                )
+
+
+                add_cust_stat.save()
+
+
+                return redirect('new_ret_invoice')
+        customers = customer.objects.filter(cid=cmp1).all()
+        context = {'customers': customers, 'cmp1': cmp1}
+        return redirect('new_ret_invoice') 
+    except:
+        return redirect('new_ret_invoice') 
+
+def create_retainer_invoice(request):
+    if request.method == 'POST':
+        cmp = company.objects.get(id=request.session["uid"])
+        cust_name = request.POST['customer']
+        email = request.POST['email']
+        billing_address = request.POST['billingaddress']
+        invoice_date = request.POST['inv_date']
+        exp_date = request.POST['expiry_date']
+        invoice_number = request.POST['inv_no']
+        reference_number = request.POST['Ref_No']
+        place_of_supply = request.POST['placosupply']
+        total_amount = request.POST['total']
+        customer_notes = request.POST['Note']
+        terms_conditions = request.POST['terms_conditions']
+
+        if 'never_expiring' in request.POST:
+            r_inv = RetainerInvoices(cid=cmp,customer=cust_name,email=email,billing_address=billing_address,invoice_date=invoice_date,
+                                    invoice_number=invoice_number,
+                                    reference_number=reference_number,place_of_supply=place_of_supply,total_amount=total_amount,
+                                    customer_notes=customer_notes, terms_conditions=terms_conditions,status='Draft')
+            r_inv.save()
+        else:
+            r_inv = RetainerInvoices(cid=cmp,customer=cust_name,email=email,billing_address=billing_address,invoice_date=invoice_date,
+                                    expiry_date=exp_date,invoice_number=invoice_number,reference_number=reference_number,place_of_supply=place_of_supply,
+                                    total_amount=total_amount,customer_notes=customer_notes, terms_conditions=terms_conditions,status='Draft')
+            r_inv.save()
+
+        desc = request.POST.getlist("desc[]")
+        amount = request.POST.getlist("amount[]")
+        print(desc)
+        print(amount)
+
+        if len(desc)==len(amount) and desc and amount :
+                mapped=zip(desc,amount)
+                # print(mapped)
+                mapped=list(mapped)
+                print(mapped)
+                for ele in mapped:
+                    created = RetainerInvoiceItems.objects.create(description = ele[0],amount=ele[1],retainer_invoice = r_inv)
+        
+    return redirect('retainer_invoices_list')
+
+def send_retainer_invoice(request):
+    if request.method == 'POST':
+        cmp = company.objects.get(id=request.session["uid"])
+        cust_name = request.POST['customer']
+        email = request.POST['email']
+        billing_address = request.POST['billingaddress']
+        invoice_date = request.POST['inv_date']
+        exp_date = request.POST['expiry_date']
+        invoice_number = request.POST['inv_no']
+        reference_number = request.POST['Ref_No']
+        place_of_supply = request.POST['placosupply']
+        total_amount = request.POST['total']
+        customer_notes = request.POST['Note']
+        terms_conditions = request.POST['terms_conditions']
+
+        if 'never_expiring' in request.POST:
+            r_inv = RetainerInvoices(cid=cmp,customer=cust_name,email=email,billing_address=billing_address,invoice_date=invoice_date,
+                                    invoice_number=invoice_number,
+                                    reference_number=reference_number,place_of_supply=place_of_supply,total_amount=total_amount,
+                                    customer_notes=customer_notes, terms_conditions=terms_conditions,status='Sent')
+            r_inv.save()
+        else:
+            r_inv = RetainerInvoices(cid=cmp,customer=cust_name,email=email,billing_address=billing_address,invoice_date=invoice_date,
+                                    expiry_date=exp_date,invoice_number=invoice_number,reference_number=reference_number,place_of_supply=place_of_supply,
+                                    total_amount=total_amount,customer_notes=customer_notes, terms_conditions=terms_conditions,status='Sent')
+            r_inv.save()
+
+        desc = request.POST.getlist("desc[]")
+        amount = request.POST.getlist("amount[]")
+
+        if len(desc)==len(amount) and desc and amount :
+                mapped=zip(desc,amount)
+                mapped=list(mapped)
+                for ele in mapped:
+                    created = RetainerInvoiceItems.objects.create(description = ele[0],amount=ele[1],retainer_invoice = r_inv)
+        
+        words = cust_name.split()
+        first_name = words[0]
+        last_name = " ".join(words[1:]) if len(words) > 1 else ""
+
+        cust_email = customer.objects.get(cid=cmp, firstname=first_name,lastname=last_name).email
+        print(cust_email)
+        subject = 'Retainer Invoice'
+        message = 'Dear Customer,\n Your Invoice has been Saved for a total amount of: ' + total_amount
+        recipient = cust_email
+        send_mail(subject, message, settings.EMAIL_HOST_USER, [recipient])
+        
+    return redirect('retainer_invoices_list')
+
+def delete_inv(request,id):
+    invoice = RetainerInvoices.objects.get(id=id)
+    invoice.delete()
+    return redirect('retainer_invoices_list')
+
+def ret_invoice_slip(request,id):
+    ret_invoice = RetainerInvoices.objects.get(id=id)
+    cmp = company.objects.get(id=request.session["uid"])
+    inv_items = RetainerInvoiceItems.objects.filter(retainer_invoice=ret_invoice)
+    print(cmp)
+    context = {
+        'inv': ret_invoice,
+        'items': inv_items,
+        'cmp': cmp,
+    }
+    return render(request,'app1/retainerinvoiceslip.html',context)
+
+def edit_ret_invoice(request,id):
+    
+    ret_invoice = RetainerInvoices.objects.get(id=id)
+    cmp = company.objects.get(id=request.session["uid"])
+    cust = customer.objects.filter(cid=cmp).all()
+    inv_items = RetainerInvoiceItems.objects.filter(retainer_invoice=ret_invoice)
+    context = {
+        'inv': ret_invoice,
+        'items': inv_items,
+        'cmp': cmp,
+        'cust': cust,
+    }
+    return render(request,'app1/editretainerinvoice.html',context)
+
+def update_ret_invoice(request,id):
+    if request.method == 'POST':
+        cmp = company.objects.get(id=request.session["uid"])
+        ret_inv = RetainerInvoices.objects.get(id=id)
+        ret_inv.cid = cmp
+        ret_inv.customer = request.POST['customer']
+        ret_inv.email = request.POST['email']
+        ret_inv.billing_address = request.POST['billingaddress']
+        ret_inv.invoice_date = request.POST['inv_date']
+        ret_inv.invoice_number = request.POST['inv_no']
+        ret_inv.reference_number = request.POST['Ref_No']
+        ret_inv.place_of_supply = request.POST['placosupply']
+        ret_inv.total_amount = request.POST['total']
+        ret_inv.customer_notes = request.POST['Note']
+        ret_inv.terms_conditions = request.POST['terms_conditions']
+        print(ret_inv.expiry_date)
+        if 'never_expiring' in request.POST:
+            ret_inv.expiry_date = None
+        else:
+            ret_inv.expiry_date = request.POST['expiry_date']
+            print(ret_inv.expiry_date)
+        ret_inv.save()
+
+        inv_items = RetainerInvoiceItems.objects.filter(retainer_invoice=ret_inv)
+        inv_items.delete()
+
+        desc = request.POST.getlist("desc[]")
+        amount = request.POST.getlist("amount[]")
+
+        if len(desc)==len(amount) and desc and amount :
+                mapped=zip(desc,amount)
+                mapped=list(mapped)
+                for ele in mapped:
+                    created = RetainerInvoiceItems.objects.create(description = ele[0],amount=ele[1],retainer_invoice = ret_inv)
+        
+    return redirect('ret_invoice_slip',id=ret_inv.id)
+
+def add_comment_retinvoice(request,id):
+    if request.method == 'POST':
+        ret_inv = RetainerInvoices.objects.get(id=id) 
+        ret_inv.comments = request.POST['comment']
+        ret_inv.save()
+        return redirect('ret_invoice_slip',id=ret_inv.id)
+
+def upload_file_retinvoice(request,id):
+     if request.method == 'POST':
+        ret_inv = RetainerInvoices.objects.get(id=id) 
+        ret_inv.attachment = request.FILES.get('file')
+        ret_inv.save()
+        return redirect('ret_invoice_slip',id=ret_inv.id)
+
+def retainer_invoice_draft(request):
+    cmp = company.objects.get(id=request.session["uid"])
+    ret_invoices = RetainerInvoices.objects.filter(cid=cmp,status='Draft').all().order_by('-id')
+
+    context = {
+        'cmp': cmp,
+        'ret_invoices': ret_invoices,
+    }
+    return render(request,'app1/retainerinvoiceslist.html',context)
+
+def retainer_invoice_sent(request):
+    cmp = company.objects.get(id=request.session["uid"])
+    ret_invoices = RetainerInvoices.objects.filter(cid=cmp,status='Sent').all().order_by('-id')
+
+    context = {
+        'cmp': cmp,
+        'ret_invoices': ret_invoices,
+    }
+    return render(request,'app1/retainerinvoiceslist.html',context)
+
+def search_retinvoice(request):
+    if request.method == "POST":
+        cmp = company.objects.get(id=request.session["uid"])
+        search = request.POST['search']
+        cloumn = request.POST['type']
+
+        if cloumn == '1' or search  == '':
+            return redirect('retainer_invoices_list')    
+
+        else :
+            if cloumn == '2':
+                cmp = company.objects.get(id=request.session["uid"])
+                ret_invoices = RetainerInvoices.objects.filter(cid=cmp,customer=search).all()
+
+                context = {
+                            'ret_invoices' :ret_invoices,
+                            'cmp': cmp,
+                                }
+                return render(request,'app1/retainerinvoiceslist.html',context)
+            else:
+                if cloumn == '3':
+                    cmp = company.objects.get(id=request.session["uid"])
+                    ret_invoices = RetainerInvoices.objects.filter(cid=cmp,invoice_number=search).all()
+
+                    context = {
+                            'ret_invoices' :ret_invoices,
+                            'cmp': cmp
+                                }
+                    return render(request,'app1/retainerinvoiceslist.html',context)        
+   
+    
+    return redirect('retainer_invoices_list')
+    
+
 #cheques render
 def cheques(request):
     cmp1 = company.objects.get(id=request.session["uid"])
@@ -38404,6 +38727,11 @@ def alltransactions(request):
     payments = purchasepayment.objects.filter(cid=cmp1.cid).all()
     manualjournal = mjournal.objects.filter(cid=cmp1.cid).all()
     creditnote = salescreditnote.objects.filter(cid=cmp1.cid).all()
+    debitnote = purchasedebit.objects.filter(cid=cmp1.cid).all()
+    salesorders = salesorder.objects.filter(cid=cmp1.cid).all()
+    purchaseorders = purchaseorder.objects.filter(cid=cmp1.cid).all()
+    expenses = purchase_expense.objects.filter(cid=cmp1.cid).all()
+    retainerinvoices = RetainerInvoices.objects.filter(cid=cmp1.cid).all()
     context={
         'cmp1':cmp1,
         'sales':sales,
@@ -38416,6 +38744,11 @@ def alltransactions(request):
         'payments':payments,
         'manualjournal':manualjournal,
         'creditnote':creditnote,
+        'debitnote':debitnote,
+        'salesorders':salesorders,
+        'purchaseorders':purchaseorders,
+        'expenses':expenses,
+        'retainerinvoices':retainerinvoices,
         
      }
     return render(request,'app1/alltransactions.html',context)
@@ -38424,12 +38757,10 @@ def alltransactions(request):
 #sale_summary_byHSN render
 def sale_summary_byHSN(request):
     cmp1 = company.objects.get(id=request.session["uid"])
-    sales = payment.objects.filter(cid=cmp1.cid).all()
-    purchase = purchasepayment.objects.filter(cid=cmp1.cid).all()
+    item = itemtable.objects.filter(cid=cmp1.cid).values('hsn',).order_by('hsn').annotate(total_price=Sum('sales_cost'))
     context={
         'cmp1':cmp1,
-        'sales':sales,
-        'purchase':purchase,
+        'item':item,
         
      }
     return render(request,'app1/sale_summary_byHSN.html',context)

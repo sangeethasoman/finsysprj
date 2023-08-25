@@ -314,12 +314,12 @@
                         </tr>
                         {% endfor %}
 
-                        {% for trans in paymentreceived %}
+                        {% for trans in retainerinvoices %}
                         <tr class="table-row " data-href="">
-                            <td></td>
-                            <td></td>
+                            <td>{{ trans.invoice_date }}</td>
+                            <td>{{ trans.customer }}</td>
                             <td>Retainer Invoice</td>
-                            <td></td>
+                            <td>{{ trans.total_amount }}</td>
                             <td></td>
                             <td></td>
 
@@ -359,7 +359,6 @@
                             <td>{{ trans.amtreceived }}</td>
                             <td></td>
 
-
                         </tr>
                         {% endfor %}
 
@@ -371,7 +370,6 @@
                             <td>{{ trans.total_cre }}</td>
                             <td></td>
                             <td></td>
-
 
                         </tr>
                         {% endfor %}
@@ -385,6 +383,53 @@
                             <td></td>
                             <td></td>
 
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in debitnote %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.debitdate }}</td>
+                            <td>{{ trans.vendor }}</td>
+                            <td>Debit Note</td>
+                            <td>{{ trans.grandtotal }}</td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in salesorders %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.saledate }}</td>
+                            <td>{{ trans.salename }}</td>
+                            <td>Sales Order</td>
+                            <td>{{ trans.salestotal }}</td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in purchaseorders %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.date }}</td>
+                            <td>{{ trans.vendor_name }}</td>
+                            <td>Purchase Orders</td>
+                            <td>{{ trans.grand_total }}</td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% for trans in expenses %}
+                        <tr class="table-row " data-href="">
+                            <td>{{ trans.date }}</td>
+                            <td>{{ trans.vendor }}</td>
+                            <td>Expenses</td>
+                            <td>{{ trans.amount }}</td>
+                            <td></td>
+                            <td></td>
 
                         </tr>
                         {% endfor %}
