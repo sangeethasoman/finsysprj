@@ -904,6 +904,25 @@ urlpatterns = [
     path('retainer_invoice_sent',views.retainer_invoice_sent,name='retainer_invoice_sent'),
     path('search_retinvoice',views.search_retinvoice,name='search_retinvoice'),  
 
+     #recurring invoices
+    path('gorecinvoices',views.gorecinvoices,name='gorecinvoices'),
+    path('createrecinvoices',views.createrecinvoices,name='createrecinvoices'),
+    path('addrecinvoices',views.addrecinvoices,name='addrecinvoices'),
+    path('recinvoice_view/<int:id>',views.recinvoice_view,name='recinvoice_view'),
+   	path('itemdata1',views.itemdata1,name='itemdata1'),
+    path('reccreatecustomer1',views.reccreatecustomer1,name='reccreatecustomer1'),
+    path(' createrec_item1',views. createrec_item1,name='createrec_item1'),
+    # path(' itemdata_recur',views. itemdata_recur,name='itemdata_recur'),
+    path('recinvoice_add_file/<int:id>',views.recinvoice_add_file ,name='recinvoice_add_file'),
+    
+    path('editrecinvoice/<int:id>',views.editrecinvoice ,name='editrecinvoice'),
+    path('deleterecinvoice/<int:id>',views.deleterecinvoice ,name='deleterecinvoice'),
+    path('render_pdfrecinvoice_view/<int:id>',views.render_pdfrecinvoice_view,name='render_pdfrecinvoice_view'),
+    path('addewaybill1/<int:id>',views.addewaybill1,name='addewaybill1'),
+    path('goewaybill1',views.goewaybill1,name='goewaybill1'),
+    path('recinvoice_status/<int:id>',views.recinvoice_status,name='recinvoice_status'),
+    path('createrecinvoices1/<int:id>',views.createrecinvoices1,name='createrecinvoices1'),
+
 
 # cheques
  path('cheques',views.cheques,name='cheques'),

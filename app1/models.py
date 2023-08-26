@@ -1776,6 +1776,54 @@ class RetainerInvoiceItems(models.Model):
     retainer_invoice = models.ForeignKey(RetainerInvoices, on_delete=models.CASCADE,null=True)
     description = models.CharField(max_length=200,null=True)
     amount = models.FloatField(max_length=100,null=True)
+
+#recurring invoices
+class recinvoice(models.Model):
+    recinvoiceid = models.AutoField(('REC_INVOICEID'), primary_key=True)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE)
+    customername = models.CharField(max_length=100)
+    profilename = models.CharField(max_length=100)
+    recinvoiceno = models.IntegerField(default=1000)
+    terms = models.CharField(max_length=100, default='')
+    startdate = models.CharField(max_length=100, default='')
+    enddate = models.CharField(max_length=100, default='')
+    bname = models.CharField(max_length=255, default='')
+    placosupply = models.CharField(max_length=100, default='')
+    ordernumber=models.IntegerField(default=0, null=True)
+    repeate_every=models.CharField(max_length=100, default=0)
+    amtrecvd = models.IntegerField(default=0, null=True)
+    taxamount = models.IntegerField(default=0, null=True)
+    baldue = models.FloatField()
+    subtotal = models.IntegerField(default=0, null=True)
+    grandtotal = models.FloatField(default=0, null=True)
+    recinvoice_orderno = models.CharField(max_length=255, default='', null=True)
+    recinvoice_status = (
+       ('Draft','Draft'),
+        ('Approved','Approved'),
+        ('Billed','Billed'),
+    )
+    status =models.CharField(max_length=150,choices=recinvoice_status,default='Draft')
+    note = models.CharField(max_length=255,default='', null=True)
+    file = models.FileField(upload_to='invoice',default="default.jpg")
+    IGST = models.CharField(max_length=100,default=0, null=True)
+    CGST = models.CharField(max_length=100,default=0, null=True)
+    SGST = models.CharField(max_length=100,default=0, null=True)
+    TCS = models.CharField(max_length=100,default=0, null=True)
+    gsttype = models.CharField(max_length=100,null=True)
+    
+    
+class recinvoice_item(models.Model):
+    recinvoice = models.ForeignKey(recinvoice,on_delete=models.CASCADE)
+    cid = models.ForeignKey(company,on_delete=models.CASCADE)
+    product = models.CharField(max_length=100)
+    discount = models.IntegerField(default=0, null=True)
+    description = models.CharField(max_length=100, default='')
+    qty = models.IntegerField(default=0, null=True)
+    price = models.CharField(max_length=100)
+    total = models.IntegerField(default=0, null=True)
+    tax = models.CharField(max_length=100)
+    hsn = models.CharField(max_length=100)
+    items = models.CharField(max_length=100,null=True)
     
 
 

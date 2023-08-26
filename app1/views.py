@@ -38644,6 +38644,495 @@ def search_retinvoice(request):
    
     
     return redirect('retainer_invoices_list')
+
+#recuurring invoices
+def gorecinvoices(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        
+        recinvs = recinvoice.objects.filter(cid=cmp1).all()
+        print(recinvs)
+        return render(request,'app1/recinvoices.html',{'cmp1': cmp1,'recinvs':recinvs})
+    return render(request, 'app1/recinvoices.html')
+
+
+def addrecinvoices(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        itm = itemtable.objects.filter(cid=cmp1)
+        unit = unittable.objects.filter(cid=cmp1)
+        cust = customer.objects.filter(cid=cmp1)
+        cpd = creditperiod.objects.filter(cid=cmp1)
+        acc2 = accounts1.objects.filter(cid=cmp1,acctype='Sales')
+        acc1 = accounts1.objects.filter(cid=cmp1,acctype='Cost of Goods Sold')
+        context = {
+                    'cmp1': cmp1,
+                    'item':itm ,
+                    'unit':unit,
+                    'cust':cust,        
+                    'cpd':cpd ,
+                    'acc1':acc1,    
+                    'acc2':acc2      
+                }
+        return render(request,'app1/addrecinvoices.html',context)
+    return redirect('addrecinvoices')
+
+
+def createrecinvoices(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            cusname=str(request.POST.get('customername',False))
+            terms=str(request.POST.get('terms',False))
+            startdate=str(request.POST.get('startdate',False))
+            enddate=str(request.POST.get('enddate',False))
+            bname=str(request.POST.get('bname',False))
+            placosupply=request.POST['placosupply']
+            profilename=str(request.POST.get('profname',False))
+            ordernumber=request.POST.get('ordernum',False)
+            repeate_every=str(request.POST.get('reptevery',False))
+            subtotal=request.POST.get('subtotal',False)
+            note = str(request.POST.get('Note',False))
+            IGST = str(request.POST.get('IGST',False))
+            CGST = str(request.POST.get('CGST',False))
+            SGST = str(request.POST.get('SGST',False))
+            TCS = str(request.POST.get('TCS',False))
+            grandtotal=request.POST.get('grandtotal',False)
+            amtrecvd=request.POST.get('amtrecvd',False)
+            baldue=request.POST.get('baldue',False)
+           
+            rec = recinvoice(customername=cusname,profilename=profilename,baldue=baldue,recinvoiceno='1000',terms=terms,startdate=startdate,enddate=enddate,bname= bname,placosupply=placosupply,ordernumber=ordernumber,repeate_every=repeate_every,amtrecvd=amtrecvd,subtotal=subtotal,grandtotal=grandtotal,IGST=IGST,CGST=CGST,SGST=SGST,TCS=TCS,note=note,cid=cmp1)
+
+            if len(request.FILES) != 0:
+                rec.file=request.FILES['file'] 
+            rec.save()
+            rec.ordernumber = str(int(rec.ordernumber) + rec.recinvoiceid)
+            rec.save()
+
+            items = request.POST.getlist("product[]")
+            hsn = request.POST.getlist("hsn[]")
+            quantity = request.POST.getlist("qty[]")
+            rate = request.POST.getlist("price[]")
+            tax = request.POST.getlist("tax[]")
+            amount = request.POST.getlist("total[]")
+
+            placosupply=request.POST['placosupply']
+            if placosupply == cmp1.state:
+                CGST = float(request.POST['CGST'])
+                accocgst = accounts1.objects.get(name='Output CGST', cid=cmp1)
+                accocgst.balance = round(float(accocgst.balance + CGST), 2)
+                accocgst.save()
+                SGST = float(request.POST['SGST'])
+                accosgst = accounts1.objects.get(name='Output SGST', cid=cmp1)
+                accosgst.balance = round(float(accosgst.balance + SGST), 2)
+                accosgst.save()
+            else:
+                IGST = float(request.POST['IGST'])
+                accoigst = accounts1.objects.get(
+                name='Output IGST', cid=cmp1)
+                accoigst.balance = round(float(accoigst.balance + IGST), 2)
+                accoigst.save()
+            
+            recid=recinvoice.objects.get(recinvoiceid=rec.recinvoiceid)
+            recid.save()
+            if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount):
+                mapped=zip(items,hsn,quantity,rate,tax,amount)
+                mapped=list(mapped)
+                for ele in mapped:
+                    recinvAdd,created = recinvoice_item.objects.get_or_create(items = ele[0],hsn = ele[1],qty=ele[2],price=ele[3],tax=ele[4],total=ele[5],recinvoice=recid,cid=cmp1)
+                    itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
+                    if itemqty.stock != 0:
+                        temp=0
+                        temp = itemqty.stock 
+                        temp = temp-int(ele[2])
+                        itemqty.stock =temp
+                        itemqty.save()
+            return redirect('gorecinvoices')
+        return render(request,'app1/recinvoices.html',{'cmp1': cmp1})
+    return redirect('gorecinvoices') 
+
+def createrecinvoices1(request,id):
+    if request.method == 'POST':
+        recinv = recinvoice.objects.get(recinvoiceid=id)
+        cmp1 = company.objects.get(id=request.session['uid'])
+        recinv.customername=str(request.POST.get('customername',False))
+        recinv.terms=str(request.POST.get('terms',False))
+        recinv.startdate=str(request.POST.get('startdate',False))
+        recinv.enddate=str(request.POST.get('enddate',False))
+        recinv.placosupply=request.POST['placosupply']
+        recinv.profilename=str(request.POST.get('profname',False))
+        recinv.ordernumber=request.POST.get('ordernum',False)
+        recinv.repeate_every=str(request.POST.get('reptevery',False))
+        recinv.subtotal=request.POST.get('sub_total',False)
+        recinv.subtotal = request.POST['subtotal']
+        recinv.grandtotal = request.POST['grandtotal']
+       # recinv.amtrecvd = request.POST['amtrecvd']
+        #recinv.baldue = request.POST['baldue']
+        
+        recinv.note = request.POST['Note']
+        recinv.IGST = request.POST['IGST']
+        recinv.CGST = request.POST['CGST']
+        recinv.SGST = request.POST['SGST']
+        recinv.TCS = request.POST['TCS']
+
+        if len(request.FILES) != 0:
+            if len(recinv.file) != "default.jpg" :
+                os.remove(recinv.recinvoice.path)
+                
+            recinv.file = request.FILES['file'],
+
+        recinv.save()
+
+
+        if len(request.FILES) != 0:
+            recinv.file=request.FILES['file'] 
+        recinv.save()
+        recinv.ordernumber = str(int(recinv.ordernumber) + recinv.recinvoiceid)
+        recinv.save()
+
+        items = request.POST.getlist("items[]")
+        hsn = request.POST.getlist("hsn[]")
+        quantity = request.POST.getlist("quantity[]")
+        rate = request.POST.getlist("rate[]")
+        tax = request.POST.getlist("tax[]")
+        amount = request.POST.getlist("amount[]")
+        
+        recid=recinvoice.objects.get(recinvoiceid=recinv.recinvoiceid)
+        recid.save()
+        if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount):
+            mapped=zip(items,hsn,quantity,rate,tax,amount)
+            mapped=list(mapped)
+            for ele in mapped:
+                recinvAdd,created = recinvoice_item.objects.get_or_create(items = ele[0],hsn = ele[1],qty=ele[2],price=ele[3],tax=ele[4],total=ele[5],recinvoice=recid,cid=cmp1)
+
+                itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
+                if itemqty.stock != 0:
+                    temp=0
+                    temp = itemqty.stock 
+                    temp = temp-int(ele[2])
+                    itemqty.stock =temp
+                    itemqty.save()
+        return redirect('recinvoice_view',id)
+    return render(request,'app1/recinvoice_view.html')
+
+
+@login_required(login_url='regcomp')
+def recinvoice_view(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = recinvoice.objects.get(recinvoiceid=id, cid=cmp1)
+
+    recinvitem = recinvoice_item.objects.filter(recinvoice=id)
+
+    total = upd.grandtotal
+    words_total = num2words(total)
+
+    context ={
+        'recinvoice':upd,
+        'cmp1':cmp1,
+        'words_total':words_total,
+        'recinvitem':recinvitem,
+
+    }
+    return render(request,'app1/recinvoice_view.html',context)
+
+
+def createrec_item1(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            cmp1 = company.objects.get(id=request.session['uid'])
+            iname = request.POST['name']
+            itype = request.POST['type']
+            iunit = request.POST.get('unit')
+            ihsn = request.POST['hsn']
+            itax = request.POST['taxref']
+            ipcost = request.POST['pcost']
+            iscost = request.POST['salesprice']
+            #itmdate = request.POST['itmdate']
+            #itrate = request.POST['tax']
+            ipuracc = request.POST['pur_account']
+            isalacc = request.POST['sale_account']
+            ipurdesc = request.POST['pur_desc']
+            isaledesc = request.POST['sale_desc']
+            iintra = request.POST['intra_st']
+            iinter = request.POST['inter_st']
+            iinv = request.POST.get('invacc')
+            istock = request.POST.get('stock')
+            istatus = request.POST['status']
+            item = itemtable(name=iname,item_type=itype,unit=iunit,
+                                hsn=ihsn,tax_reference=itax,
+                                purchase_cost=ipcost,
+                                sales_cost=iscost,
+                                #itmdate=itmdate,
+                                #tax_rate=itrate,
+                                acount_pur=ipuracc,
+                                account_sal=isalacc,
+                                pur_desc=ipurdesc,
+                                sale_desc=isaledesc,
+                                intra_st=iintra,
+                                inter_st=iinter,
+                                inventry=iinv,
+                                stockin=istock,
+                                stock=istock,
+                                status=istatus,
+                                cid=cmp1)
+            item.save()
+            return redirect('addrecinvoices')
+        return render(request,'app1/addrecinvoices.html')
+    return redirect('/') 
+
+
+def reccreatecustomer1(request):
+    try:
+        cmp1 = company.objects.get(id=request.session["uid"])
+        if request.method == "POST":
+            toda = date.today()
+            tod = toda.strftime("%Y-%m-%d")
+            firstname = request.POST['firstname']
+            lastname = request.POST['lastname']
+            if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
+                messages.info(request,
+                              f"Customer {firstname} {lastname} already exists. Please provide a different name.")
+                return redirect('gocustomers')
+            else:
+                customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
+                                     lastname=request.POST['lastname'], company=request.POST['company'],
+                                     location=request.POST['location'], gsttype=request.POST['gsttype'],
+                                     gstin=request.POST['gstin'], panno=request.POST['panno'],
+                                     email=request.POST['email'],
+                                     website=request.POST['website'], mobile=request.POST['mobile'],
+                                     street=request.POST['street'], city=request.POST['city'],
+                                     state=request.POST['state'],
+                                     pincode=request.POST['pincode'], country=request.POST['country'],
+                                     shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
+                                     shipstate=request.POST['shipstate'],
+                                     shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'],
+                                     cid=cmp1)
+
+                customer1.save()
+
+               
+                temp=request.POST['openbalance']
+                if temp != "":
+                    customer1.opening_balance = request.POST['openbalance'] 
+                    customer1.opening_balance_due = request.POST['openbalance'] 
+                    customer1.date= tod
+                    customer1.save()
+                    
+                   
+
+                
+
+                if customer1.opening_balance != "":
+
+                    add_cust_stat=cust_statment(
+
+                    customer = customer1.firstname +" "+ customer1.lastname,
+
+                    cid  = cmp1,
+
+                    
+
+                    Date = tod,
+
+                    Transactions="Customer Opening Balance",
+
+                    Amount= customer1.opening_balance,
+
+                )
+
+
+                add_cust_stat.save()
+
+
+
+
+                return redirect('addrecinvoices')
+        customers = customer.objects.filter(cid=cmp1).all()
+        context = {'customers': customers, 'cmp1': cmp1}
+        return redirect('addrecinvoices')
+    except:
+        return redirect('addrecinvoices')
+
+
+def itemdata1(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        print(cmp1.state)
+        id = request.GET.get('id')
+        print("asdsadas")
+        print(id)
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        # to = toda.strftime("%d-%m-%Y")
+        item = itemtable.objects.get(name=id,cid=cmp1)
+        print(item)
+        hsn = item.hsn
+        qty = item.stock
+        price = item.purchase_cost
+        gst = item.intra_st
+        sgst = item.inter_st
+        places=cmp1.state
+        return JsonResponse({"status":" not",'hsn':hsn,'qty':qty,'places':places,'price':price,'gst':gst,'sgst':sgst})
+    return redirect('/')
+
+@login_required(login_url='regcomp')
+def recinvoice_add_file(request,id):
+    cmp1 = company.objects.get(id=request.session['uid'])
+    recinv = recinvoice.objects.get(recinvoiceid=id,cid=cmp1)
+
+    if request.method == 'POST':
+        
+        if len(request.FILES) != 0:
+           
+            if recinv.file != "default.jpg":
+                 os.remove(recinv.file.path)
+                
+            recinv.file=request.FILES['file']
+        
+        recinv.save()
+        return redirect('recinvoice_view',id)
+
+@login_required(login_url='regcomp')
+def editrecinvoice(request, id):
+        cmp1 = company.objects.get(id=request.session['uid'])
+        recinvo3 = recinvoice.objects.get(recinvoiceid=id, cid=cmp1)
+        inv = inventory.objects.filter(cid=cmp1).all()
+        bun = bundle.objects.filter(cid=cmp1).all()
+        noninv = noninventory.objects.filter(cid=cmp1).all()
+        ser = service.objects.filter(cid=cmp1).all()
+        item = itemtable.objects.filter(cid=cmp1).all()
+
+        recinvitem = recinvoice_item.objects.filter(recinvoice =id )
+        context = {'recinvoice': recinvo3, 'cmp1': cmp1, 'inv': inv, 'item':item,'recinvitem':recinvitem,'noninv': noninv, 'bun': bun, 'ser': ser}
+        return render(request, 'app1/editrecinvoice.html', context)
+
+
+@login_required(login_url='regcomp')
+def deleterecinvoice(request, id):
+    try:
+        cmp1 = company.objects.get(id=request.session['uid'])
+        recinoi = recinvoice.objects.get(recinvoiceid=id, cid=cmp1)
+        bls = balance_sheet.objects.all().filter(invc=id)
+        pl = profit_loss.objects.all().filter(inv=id)
+        recinoi.delete()
+        bls.delete()
+        pl.delete()
+        return redirect('gorecinvoices')
+    except:
+        return redirect('gorecinvoices')
+
+
+def render_pdfrecinvoice_view(request,id):
+    
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = recinvoice.objects.get(recinvoiceid=id, cid=cmp1)
+
+    recinvitem = recinvoice_item.objects.filter(recinvoice=id)
+
+    total = upd.grandtotal
+    words_total = num2words(total)
+    template_path = 'app1/pdfrecinvoice.html'
+    context ={
+        'recinvoice':upd,
+        'cmp1':cmp1,
+        'words_total':words_total,
+        'recinvitem':recinvitem,
+
+    }
+    fname=upd.recinvoiceno
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+
+@login_required(login_url='regcomp')
+def addewaybill1(request, id):
+    try:
+        cmp1 = company.objects.get(id=request.session['uid'])
+        recinvo3 = recinvoice.objects.get(recinvoiceid=id, cid=cmp1)
+        item = itemtable.objects.filter(cid=cmp1).all()
+        trans = etransporter.objects.filter(cid=cmp1).all()
+
+        recinvitem = recinvoice_item.objects.filter(invoice =id )
+        context = {'recinvoice': recinvo3, 'cmp1': cmp1, 'item':item, 'trans': trans,'recinvitem':recinvitem}
+        return render(request, 'app1/addeway_bill1.html', context)
+    except:
+        return redirect('goewaybill')    
+
+
+@login_required(login_url='regcomp')
+def goewaybill1(request):
+    try:
+        cmp1 = company.objects.get(id=request.session["uid"])
+        recinvoices = recinvoice.objects.filter(cid=cmp1,grandtotal__gte=50000)
+        context = {'cmp1':cmp1,'recinvoices':recinvoices}
+        return render(request, 'app1/eway_bill1.html', context)
+    except:
+        return redirect('godash')    
+
+
+@login_required(login_url='regcomp')
+def recinvoice_status(request,id):
+    cmp1 = company.objects.get(id=request.session['uid'])
+    recinoi = recinvoice.objects.get(recinvoiceid=id, cid=cmp1)
+
+    recinoi.status = 'Approved'
+    recinoi.save()
+
+    statment = cust_statment()
+    statment.customer =recinoi.customername 
+
+    statment.cid = cmp1
+    statment.recinv =recinoi
+    
+    
+    statment.Date = recinoi.startdate
+    statment.Transactions = "Invoice"
+    
+    statment.Amount = recinoi.grandtotal
+    statment.save()
+
+    return redirect(recinvoice_view,id)
+
     
 
 #cheques render
@@ -38757,10 +39246,16 @@ def alltransactions(request):
 #sale_summary_byHSN render
 def sale_summary_byHSN(request):
     cmp1 = company.objects.get(id=request.session["uid"])
-    item = itemtable.objects.filter(cid=cmp1.cid).values('hsn',).order_by('hsn').annotate(total_price=Sum('sales_cost'))
+    #recinv = recinvoice_item.objects.filter(cid=cmp1.cid).all().values('hsn',).order_by('hsn').annotate(total_price=Sum('grandtotal'))
+    #.values('hsn',).order_by('hsn').annotate(total_price=Sum('grandtotal'))  
+    distinct_hsns = recinvoice_item.objects.filter(cid=cmp1.cid).values('hsn').distinct()
+     
+    for hsn in distinct_hsns:
+       recinvoice_id = recinvoice_item.objects.filter(cid=cmp1.cid,hsn=hsn['hsn'])
+       print(recinvoice_id[0].recinvoice.recinvoiceid)  
     context={
         'cmp1':cmp1,
-        'item':item,
+        'recinv':invoices,
         
      }
     return render(request,'app1/sale_summary_byHSN.html',context)
