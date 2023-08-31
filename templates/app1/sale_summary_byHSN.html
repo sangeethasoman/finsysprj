@@ -121,27 +121,7 @@
 
                 </div>
                 <div class="col-md-4">
-                    <select class="form-control btn btn-outline-info dropdown-toggle text-grey" id="types"
-                        aria-label=".form-select-lg example" style="width: 40%; margin-top: 8px;" name="types"
-                        onchange="types(this)">
-
-                        <option value="" selected>All HSN</option>
-                        <option value="Sales">Sales</option>
-                        <option value="Purchase">Purchase</option>
-                        <option value="Credit Note">Credit Note</option>
-                        <option value="Debit Note">Debit Note</option>
-                        <option value="Sales Order">Sales Order</option>
-                        <option value="Purchase Order">Purchase Order</option>
-                        <option value="Estimate">Estimate</option>
-                        <option value="Delivery Challan">Delivery Challan</option>
-                        <option value="Payment Received">Payment Received</option>
-                        <option value="Retainer Invoices">Retainer Invoices</option>
-                        <option value="Invoice">Invoice</option>
-                        <option value="Bill">Bill</option>
-                        <option value="Expense">Expense</option>
-                        <option value="Payment">Payment</option>
-                        <option value="Manual Journal">Manual Journal</option>
-                    </select>
+                   
                 </div>
 
                  <!-- Add Date Modal -->
@@ -197,6 +177,7 @@
                         <label for="filter">Filter</label>
                         <select class="form-control" name="filter" id="filterBy">
                         <option value="">All</option>
+                        <option value="HSN">HSN</option>
                         <option value="Total Value">Total Value</option>
                         <option value="Taxable Value">Taxable Value</option>
                         <option value="IGST Amount">IGST Amount</option>
@@ -262,12 +243,12 @@
                         {% for trans in recinv %}
                         <tr class="table-row " data-href="">
                             <td>{{ forloop.counter }}</td>
-                            <td> </td>
-                            <td></td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td></td>
+                            <td>{{trans.hsn}}</td>
+                            <td>{{trans.grandtotal}}</td>
+                            <td>{{trans.subtotal}}</td>
+                            <td>{{trans.IGST}}</td>
+                            <td>{{trans.CGST}}</td>
+                            <td>{{trans.SGST}}</td>
                             <td></td>
                         </tr>
                         {% endfor %}
@@ -378,8 +359,7 @@
             // Loop through all table cells (columns) in each row
             for (j = 0; j < td.length; j++) {
                
-
-                if(filter != "" && filterBy=='Party Name' && j==1)
+                if(filter != "" && filterBy=='HSN' && j==1)
                 {
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
@@ -390,7 +370,7 @@
                     }
                 }
 
-                if(filter != "" && filterBy=='Total' && j==3)
+                if(filter != "" && filterBy=='Total Value' && j==2)
                 {
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
@@ -401,7 +381,7 @@
                     }
                 }
 
-                if(filter != "" && filterBy=='Received' && j==4)
+                if(filter != "" && filterBy=='Taxable Value' && j==3)
                 {
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
@@ -412,7 +392,7 @@
                     }
                 }
 
-                if(filter != "" && filterBy=='Balance' && j==5)
+                if(filter != "" && filterBy=='IGST Amount' && j==4)
                 {
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
@@ -422,6 +402,30 @@
                         }
                     }
                 }
+
+                if(filter != "" && filterBy=='CGST Amount' && j==5)
+                {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                            rowVisible = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(filter != "" && filterBy=='SGST Amount' && j==6)
+                {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                            rowVisible = true;
+                            break;
+                        }
+                    }
+                }
+
+                
 
 
                 if(filterBy=='')

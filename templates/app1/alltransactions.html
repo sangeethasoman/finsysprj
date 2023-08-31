@@ -257,7 +257,7 @@
                     <tbody>
                         {% for trans in sales %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.paymdate }}</td>
+                            <td>{{ trans.paymdate  | date:'Y-m-d'}}</td>
                             <td>{{ trans.customer }}</td>
                             <td>Sales</td>
                             <td>{{ trans.amtcredit }}</td>
@@ -268,7 +268,7 @@
 
                         {% for trans in purchase %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.paymentdate }}</td>
+                            <td>{{ trans.paymentdate | date:'Y-m-d' }}</td>
                             <td>{{ trans.vendor }}</td>
                             <td>Purchase</td>
                             <td>{{ trans.paymentamount }}</td>
@@ -280,7 +280,7 @@
 
                         {% for trans in estimates %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.estimatedate }}</td>
+                            <td>{{ trans.estimatedate | date:'Y-m-d' }}</td>
                             <td>{{ trans.customer }}</td>
                             <td>Estimate</td>
                             <td>{{ trans.estimatetotal }}</td>
@@ -292,7 +292,7 @@
 
                         {% for trans in deliverychallan %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.challan_date }}</td>
+                            <td>{{ trans.challan_date | date:'Y-m-d' }}</td>
                             <td>{{ trans.customer }}</td>
                             <td>Delivery Challan</td>
                             <td>{{ trans.grand }}</td>
@@ -304,7 +304,7 @@
 
                         {% for trans in paymentreceived %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.paymdate }}</td>
+                            <td>{{ trans.paymdate | date:'Y-m-d'}}</td>
                             <td>{{ trans.customer }}</td>
                             <td>Payment Received</td>
                             <td>{{ trans.amtapply }}</td>
@@ -316,7 +316,7 @@
 
                         {% for trans in retainerinvoices %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.invoice_date }}</td>
+                            <td>{{ trans.invoice_date | date:'Y-m-d'}}</td>
                             <td>{{ trans.customer }}</td>
                             <td>Retainer Invoice</td>
                             <td>{{ trans.total_amount }}</td>
@@ -328,7 +328,7 @@
 
                         {% for trans in invoices %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.invoicedate }}</td>
+                            <td>{{ trans.invoicedate  | date:'Y-m-d'}}</td>
                             <td>{{ trans.customername }}</td>
                             <td>Invoice</td>
                             <td>{{ trans.grandtotal }}</td>
@@ -340,7 +340,7 @@
 
                         {% for trans in bill %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.date }}</td>
+                            <td>{{ trans.date | date:'Y-m-d'}}</td>
                             <td>{{ trans.contact_name }}</td>
                             <td>Bill</td>
                             <td>{{ trans.grand_total }}</td>
@@ -352,7 +352,7 @@
 
                         {% for trans in payments %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.paymentdate }}</td>
+                            <td>{{ trans.paymentdate | date:'Y-m-d' }}</td>
                             <td>{{ trans.vendor }}</td>
                             <td>Payment</td>
                             <td>{{ trans.paymentamount }}</td>
@@ -376,7 +376,7 @@
 
                         {% for trans in creditnote %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.creditdate }}</td>
+                            <td>{{ trans.creditdate | date:'Y-m-d' }}</td>
                             <td>{{ trans.customer }}</td>
                             <td>Credit Note</td>
                             <td>{{ trans.grandtotal }}</td>
@@ -388,7 +388,7 @@
 
                         {% for trans in debitnote %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.debitdate }}</td>
+                            <td>{{ trans.debitdate | date:'Y-m-d' }}</td>
                             <td>{{ trans.vendor }}</td>
                             <td>Debit Note</td>
                             <td>{{ trans.grandtotal }}</td>
@@ -400,7 +400,7 @@
 
                         {% for trans in salesorders %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.saledate }}</td>
+                            <td>{{ trans.saledate | date:'Y-m-d' }}</td>
                             <td>{{ trans.salename }}</td>
                             <td>Sales Order</td>
                             <td>{{ trans.salestotal }}</td>
@@ -412,7 +412,7 @@
 
                         {% for trans in purchaseorders %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.date }}</td>
+                            <td>{{ trans.date | date:'Y-m-d' }}</td>
                             <td>{{ trans.vendor_name }}</td>
                             <td>Purchase Orders</td>
                             <td>{{ trans.grand_total }}</td>
@@ -424,7 +424,7 @@
 
                         {% for trans in expenses %}
                         <tr class="table-row " data-href="">
-                            <td>{{ trans.date }}</td>
+                            <td>{{ trans.date | date:'Y-m-d'}}</td>
                             <td>{{ trans.vendor }}</td>
                             <td>Expenses</td>
                             <td>{{ trans.amount }}</td>
@@ -555,6 +555,8 @@
                     }
                 }
 
+               
+
                 if(filter != "" && filterBy=='Total' && j==3)
                 {
                     if (td[j]) {
@@ -608,15 +610,14 @@
 </script>
 <script>
     function ApplyDateFilter() {
-        debugger
-       
-        let input, filter, table, tr, td, i, j, txtValue, filterBy, fromdate, todate; 
-        table = document.getElementById("tbl_exporttable_to_xls");
-        tr = table.getElementsByTagName("tr");
-        fromdate = document.getElementById("fromdate").value; 
-        todate = document.getElementById("todate").value; 
-        // Loop through all table rows (excluding the first row, which contains the column headers)
-        for (i = 1; i < tr.length; i++) {
+        function ApplyDateFilter(button) {
+    // Get the input values for 'from' and 'to' dates
+    var fromDate = document.getElementById('fromdate').value;
+    var toDate = document.getElementById('todate').value;
+
+    // Perform date filtering logic here, e.g., update your data display
+     // Loop through all table rows (excluding the first row, which contains the column headers)
+     for (i = 1; i < tr.length; i++) {
             let rowVisible = false;
             td = tr[i].getElementsByTagName("td");
 
@@ -646,21 +647,44 @@
                     }
                 }
 
-                if(filterBy=='')
+                if(filter != "" && filterBy=='Received' && j==4)
                 {
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
                             rowVisible = true;
                             break;
                         }
                     }
                 }
+
+                if(filter != "" && filterBy=='Balance' && j==5)
+                {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                            rowVisible = true;
+                            break;
+                        }
+                    }
+                }
+
+
             }
 
             // Show/hide the row based on the search results
             tr[i].style.display = rowVisible ? "" : "none";
         }
+    // You can replace this alert with your own logic to filter data
+    alert('Filtering data between ' + fromDate + ' and ' + toDate);
+
+    // Close the modal
+    var modal = button.closest('.modal');
+    if (modal) {
+        $(modal).modal('hide');
+    }
+}
+
     }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>

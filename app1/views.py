@@ -39248,14 +39248,36 @@ def sale_summary_byHSN(request):
     cmp1 = company.objects.get(id=request.session["uid"])
     #recinv = recinvoice_item.objects.filter(cid=cmp1.cid).all().values('hsn',).order_by('hsn').annotate(total_price=Sum('grandtotal'))
     #.values('hsn',).order_by('hsn').annotate(total_price=Sum('grandtotal'))  
-    distinct_hsns = recinvoice_item.objects.filter(cid=cmp1.cid).values('hsn').distinct()
-     
+    distinct_hsns = recinvoice_item.objects.filter(cid=cmp1.cid).values('hsn').distinct() 
+    pickup_records = []
     for hsn in distinct_hsns:
        recinvoice_id = recinvoice_item.objects.filter(cid=cmp1.cid,hsn=hsn['hsn'])
-       print(recinvoice_id[0].recinvoice.recinvoiceid)  
+       grtotal = 0.0
+       sbtotal = 0.0
+       igst = 0.0
+       cgst = 0.0
+       sgst = 0.0
+      
+       for rec in recinvoice_id:
+          print(rec.id)
+          recs = recinvoice.objects.get(cid=cmp1.cid,recinvoiceid=rec.id)
+          grtotal = float(grtotal) + float(recs.grandtotal)
+          sbtotal = float(sbtotal) + float(recs.subtotal)
+          if recs.IGST != "":
+            igst = float(igst) + float(recs.IGST)
+          if recs.CGST != "":
+            cgst = float(cgst) + float(recs.CGST)
+          if recs.SGST != "":
+            sgst = float(sgst) + float(recs.SGST)
+          
+           
+
+       record = {"hsn":hsn['hsn'],"grandtotal":grtotal,"subtotal":sbtotal, "IGST":igst,  "CGST":cgst, "SGST":sgst} 
+       pickup_records.append(record)
+    
     context={
         'cmp1':cmp1,
-        'recinv':invoices,
+        'recinv':pickup_records,
         
      }
     return render(request,'app1/sale_summary_byHSN.html',context)
