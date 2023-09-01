@@ -173,7 +173,7 @@
                         <input type="text" class="form-control" id="searchkey" name="desc">
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>
                         <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyFilter(this)">Apply</button>
                     </div> 
             </div>
@@ -324,7 +324,7 @@
 
 <script>
     function ApplyFilter() {
-        debugger
+         
          
         Equalto = document.getElementById("equalto");
 
@@ -426,6 +426,24 @@
             tr[i].style.display = rowVisible ? "" : "none";
         }
     }
+
+    function clearFilter(){ 
+    document.getElementById("filterBy").value = "";
+    document.getElementById("searchkey").value = ""; 
+    let input, filter, table, tr, td, i, j;
+    table = document.getElementById("tbl_exporttable_to_xls");
+    tr = table.getElementsByTagName("tr"); 
+    
+    for (i = 1; i < tr.length; i++) {
+            tr[i].style.display =  "";
+        } 
+
+    // Close the modal
+    var modal = button.closest('.modal');
+    if (modal) {
+        $(modal).modal('hide');
+    } 
+}
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>

@@ -156,7 +156,7 @@
                             </div>
                             <div class="modal-body"> 
                                     <div class="form-group">
-                                        <label for="Between">Between</label> &nbsp;
+                                        <label for="Between">From</label> &nbsp;
                                         <input type="date" id="fromdate">   &nbsp; 
                                         <label for="To">To</label>  &nbsp;
                                         <input type="date"  id="todate"> 
@@ -166,7 +166,7 @@
                                    
                                    
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>
                                         <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyDateFilter(this)">Apply</button>
                                     </div> 
                             </div>
@@ -216,7 +216,7 @@
                         <input type="text" class="form-control" id="searchkey" name="desc">
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>
                         <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyFilter(this)">Apply</button>
                     </div> 
             </div>
@@ -609,15 +609,14 @@
     }
 </script>
 <script>
-    function ApplyDateFilter() {
-        function ApplyDateFilter(button) {
-    // Get the input values for 'from' and 'to' dates
+    function ApplyDateFilter() { 
     var fromDate = document.getElementById('fromdate').value;
     var toDate = document.getElementById('todate').value;
-
-    // Perform date filtering logic here, e.g., update your data display
-     // Loop through all table rows (excluding the first row, which contains the column headers)
-     for (i = 1; i < tr.length; i++) {
+    let input, filter, table, tr, td, i, j;
+    table = document.getElementById("tbl_exporttable_to_xls");
+    tr = table.getElementsByTagName("tr");
+     
+    for (i = 1; i < tr.length; i++) {
             let rowVisible = false;
             td = tr[i].getElementsByTagName("td");
 
@@ -625,67 +624,66 @@
             for (j = 0; j < td.length; j++) {
                
 
-                if(filter != "" && filterBy=='Party Name' && j==1)
+                if(j==0)
                 {
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                        var check = new Date(txtValue)
+                        var from = new Date(fromDate);
+                        var to = new Date(toDate);
+                        if(check >= from && check <= to){
                             rowVisible = true;
                             break;
                         }
                     }
                 }
 
-                if(filter != "" && filterBy=='Total' && j==3)
+                
+                if(filterBy=='')
                 {
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
                             rowVisible = true;
                             break;
                         }
                     }
                 }
-
-                if(filter != "" && filterBy=='Received' && j==4)
-                {
-                    if (td[j]) {
-                        txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
-                            rowVisible = true;
-                            break;
-                        }
-                    }
-                }
-
-                if(filter != "" && filterBy=='Balance' && j==5)
-                {
-                    if (td[j]) {
-                        txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
-                            rowVisible = true;
-                            break;
-                        }
-                    }
-                }
-
-
             }
 
             // Show/hide the row based on the search results
             tr[i].style.display = rowVisible ? "" : "none";
         }
-    // You can replace this alert with your own logic to filter data
-    alert('Filtering data between ' + fromDate + ' and ' + toDate);
+
 
     // Close the modal
     var modal = button.closest('.modal');
     if (modal) {
         $(modal).modal('hide');
-    }
+    } 
 }
 
-    }
+function clearFilter(){ 
+    document.getElementById("filterBy").value = "";
+    document.getElementById("searchkey").value = "";
+    
+    document.getElementById('fromdate').value = "";
+    document.getElementById('todate').value = "";
+    let input, filter, table, tr, td, i, j;
+    table = document.getElementById("tbl_exporttable_to_xls");
+    tr = table.getElementsByTagName("tr"); 
+    
+    for (i = 1; i < tr.length; i++) {
+            tr[i].style.display =  "";
+        } 
+
+    // Close the modal
+    var modal = button.closest('.modal');
+    if (modal) {
+        $(modal).modal('hide');
+    } 
+}
+ 
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 

@@ -136,7 +136,7 @@
                             </div>
                             <div class="modal-body"> 
                                     <div class="form-group">
-                                        <label for="Between">Between</label> &nbsp;
+                                        <label for="Between">From</label> &nbsp;
                                         <input type="date" id="fromdate">   &nbsp; 
                                         <label for="To">To</label>  &nbsp;
                                         <input type="date"  id="todate"> 
@@ -146,7 +146,7 @@
                                    
                                    
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>
                                         <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyDateFilter(this)">Apply</button>
                                     </div> 
                             </div>
@@ -199,7 +199,7 @@
                         <input type="text" class="form-control" id="searchkey" name="desc">
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>
                         <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyFilter(this)">Apply</button>
                     </div> 
             </div>
@@ -240,21 +240,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for trans in recinv %}
-                        <tr class="table-row " data-href="">
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{trans.hsn}}</td>
-                            <td>{{trans.grandtotal}}</td>
-                            <td>{{trans.subtotal}}</td>
-                            <td>{{trans.IGST}}</td>
-                            <td>{{trans.CGST}}</td>
-                            <td>{{trans.SGST}}</td>
-                            <td></td>
-                        </tr>
-                        {% endfor %}
-
+                      
                     </tbody>
                 </table>
+                <div>
+                <div style="float: left;">Total : <span id="total">1000</span></div>
+                <div style="float: right;">Total Item : <span id="count">1000</span></div>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -280,6 +273,8 @@
         filter = input.value.toLowerCase();
         table = document.getElementById("tbl_exporttable_to_xls");
         tr = table.getElementsByTagName("tr");
+        var grandtotal = 0.0;
+        var count = 0;
 
         // Loop through all table rows (excluding the first row, which contains the column headers)
         for (i = 1; i < tr.length; i++) {
@@ -291,6 +286,11 @@
                 if (td[j]) {
                     txtValue = td[j].textContent || td[j].innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
+
+                        txtValue = td[2].textContent || td[2].innerText;
+                        grandtotal = grandtotal+parseFloat(txtValue);
+                        count = count+1;
+
                         rowVisible = true;
                         break;
                     }
@@ -300,6 +300,9 @@
             // Show/hide the row based on the search results
             tr[i].style.display = rowVisible ? "" : "none";
         }
+
+        document.getElementById('total').innerHTML = grandtotal;
+        document.getElementById('count').innerHTML = count;
     }
 
     // Attach the search function to the input field's "input" event
@@ -316,6 +319,9 @@
         table = document.getElementById("tbl_exporttable_to_xls");
         tr = table.getElementsByTagName("tr");
 
+        var grandtotal = 0.0;
+        var count = 0;
+
         // Loop through all table rows (excluding the first row, which contains the column headers)
         for (i = 1; i < tr.length; i++) {
             let rowVisible = false;
@@ -326,6 +332,11 @@
                 if (td[j]) {
                     txtValue = td[j].textContent || td[j].innerText;
                     if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        
+                        txtValue = td[2].textContent || td[2].innerText;
+                        grandtotal = grandtotal+parseFloat(txtValue);
+                        count = count+1;
+
                         rowVisible = true;
                         break;
                     }
@@ -335,6 +346,8 @@
             // Show/hide the row based on the search results
             tr[i].style.display = rowVisible ? "" : "none";
         }
+        document.getElementById('total').innerHTML = grandtotal;
+        document.getElementById('count').innerHTML = count;
     }
 
 </script>
@@ -351,19 +364,26 @@
         table = document.getElementById("tbl_exporttable_to_xls");
         tr = table.getElementsByTagName("tr");
         filterBy = document.getElementById("filterBy").value; 
+        var grandtotal = 0.0;
+        var count = 0;
         // Loop through all table rows (excluding the first row, which contains the column headers)
         for (i = 1; i < tr.length; i++) {
             let rowVisible = false;
             td = tr[i].getElementsByTagName("td");
 
             // Loop through all table cells (columns) in each row
-            for (j = 0; j < td.length; j++) {
+            for (j = 0; j < td.length; j++) { 
                
                 if(filter != "" && filterBy=='HSN' && j==1)
                 {
-                    if (td[j]) {
+                    if (td[j]) { 
                         txtValue = td[j].textContent || td[j].innerText;
                         if (txtValue.toLowerCase() == filter.toLowerCase()) {
+
+                            txtValue = td[2].textContent || td[2].innerText;
+                            grandtotal = grandtotal+parseFloat(txtValue);
+                            count = count+1;
+
                             rowVisible = true;
                             break;
                         }
@@ -375,6 +395,11 @@
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
                         if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                            
+                            txtValue = td[2].textContent || td[2].innerText;
+                            grandtotal = grandtotal+parseFloat(txtValue);
+                            count = count+1;
+
                             rowVisible = true;
                             break;
                         }
@@ -386,6 +411,11 @@
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
                         if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                            
+                            txtValue = td[2].textContent || td[2].innerText;
+                            grandtotal = grandtotal+parseFloat(txtValue);
+                            count = count+1;
+
                             rowVisible = true;
                             break;
                         }
@@ -397,6 +427,11 @@
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
                         if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                            
+                            txtValue = td[2].textContent || td[2].innerText;
+                            grandtotal = grandtotal+parseFloat(txtValue);
+                            count = count+1;
+
                             rowVisible = true;
                             break;
                         }
@@ -408,6 +443,11 @@
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
                         if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                            
+                            txtValue = td[2].textContent || td[2].innerText;
+                            grandtotal = grandtotal+parseFloat(txtValue);
+                            count = count+1;
+
                             rowVisible = true;
                             break;
                         }
@@ -419,6 +459,11 @@
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
                         if (txtValue.toLowerCase() == filter.toLowerCase()) {
+                            
+                            txtValue = td[2].textContent || td[2].innerText;
+                            grandtotal = grandtotal+parseFloat(txtValue);
+                            count = count+1;
+
                             rowVisible = true;
                             break;
                         }
@@ -433,6 +478,11 @@
                     if (td[j]) {
                         txtValue = td[j].textContent || td[j].innerText;
                         if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                            
+                            txtValue = td[2].textContent || td[2].innerText;
+                            grandtotal = grandtotal+parseFloat(txtValue);
+                            count = count+1;
+
                             rowVisible = true;
                             break;
                         }
@@ -443,63 +493,79 @@
             // Show/hide the row based on the search results
             tr[i].style.display = rowVisible ? "" : "none";
         }
+        document.getElementById('total').innerHTML = grandtotal;
+        document.getElementById('count').innerHTML = count;
     }
 </script>
 <script>
     function ApplyDateFilter() {
-        debugger
-       
-        let input, filter, table, tr, td, i, j, txtValue, filterBy, fromdate, todate; 
-        table = document.getElementById("tbl_exporttable_to_xls");
-        tr = table.getElementsByTagName("tr");
-        fromdate = document.getElementById("fromdate").value; 
-        todate = document.getElementById("todate").value; 
-        // Loop through all table rows (excluding the first row, which contains the column headers)
-        for (i = 1; i < tr.length; i++) {
-            let rowVisible = false;
-            td = tr[i].getElementsByTagName("td");
+        
 
-            // Loop through all table cells (columns) in each row
-            for (j = 0; j < td.length; j++) {
-               
+    var fromDate = document.getElementById('fromdate').value;
+    var toDate = document.getElementById('todate').value;
+     
+    var recinv = '{{recinv}}'; 
+        var str = recinv.replace(new RegExp("&"+"#"+"x27;", "g"), '"');
+        var jsonObj = $.parseJSON(str);
 
-                if(filter != "" && filterBy=='Party Name' && j==1)
-                {
-                    if (td[j]) {
-                        txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
-                            rowVisible = true;
-                            break;
-                        }
+        var UniqueNames= $.unique(jsonObj.map(function (d) { return d.hsn;}));
+        var final =[]
+        var grandtotal = 0.0;
+        UniqueNames.forEach(function(item) {
+            var filtered = jsonObj.filter(a => a.hsn == item);
+            var grtotal = 0.0
+            var sbtotal = 0.0
+            var igst = 0.0
+            var cgst = 0.0
+            var sgst = 0.0
+            filtered.forEach(function(item) { 
+                 
+                    var from = new Date(fromDate);
+                    var to = new Date(toDate);
+
+                    var startdate = new Date(item.startdate);
+                    var enddate = new Date(item.enddate);
+
+                    if(startdate >= from && enddate <= to)
+                    {
+                        grtotal = grtotal + parseFloat(item.grandtotal);
+                        sbtotal = sbtotal + parseFloat(item.subtotal); 
+                        igst = igst + parseFloat(item.IGST); 
+                        cgst = cgst + parseFloat(item.CGST); 
+                        sgst = sgst + parseFloat(item.SGST); 
+
+                        grtotal = isNaN(grtotal) ? 0.0 : grtotal;
+                        sbtotal = isNaN(sbtotal) ? 0.0 : sbtotal;
+                        igst = isNaN(igst) ? 0.0 : igst;
+                        cgst = isNaN(cgst) ? 0.0 : cgst;
+                        sgst = isNaN(sgst) ? 0.0 : sgst;
+
                     }
-                }
-
-                if(filter != "" && filterBy=='Total' && j==3)
-                {
-                    if (td[j]) {
-                        txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase() == filter.toLowerCase()) {
-                            rowVisible = true;
-                            break;
-                        }
-                    }
-                }
-
-                if(filterBy=='')
-                {
-                    if (td[j]) {
-                        txtValue = td[j].textContent || td[j].innerText;
-                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                            rowVisible = true;
-                            break;
-                        }
-                    }
-                }
+                    
+            });
+            if(grtotal != 0.0){
+                grandtotal=grandtotal+grtotal;
+                let row = '{"hsn":'+item+', "grandtotal": '+grtotal+', "subtotal":'+sbtotal+', "IGST": '+igst+', "CGST": '+cgst+', "SGST": '+sgst+',"CESS":0.0}';
+                final.push($.parseJSON(row))
             }
+         });
+         $("#tbl_exporttable_to_xls tbody").empty();
+         $.each(final, function (index, data) {
+            var newRow = $("<tr>");
+            newRow.append("<td>"+(parseFloat(index)+1)+"</td>");
+            newRow.append("<td>"+data.hsn+"</td>");
+            newRow.append("<td>"+data.grandtotal+"</td>");
+            newRow.append("<td>"+data.subtotal+"</td>");
+            newRow.append("<td>"+data.IGST+"</td>");
+            newRow.append("<td>"+data.CGST+"</td>");
+            newRow.append("<td>"+data.SGST+"</td>");
+            newRow.append("<td>"+data.CESS+"</td>"); 
+            $("#tbl_exporttable_to_xls tbody").append(newRow);
+         }) 
 
-            // Show/hide the row based on the search results
-            tr[i].style.display = rowVisible ? "" : "none";
-        }
+         document.getElementById('total').innerHTML = grandtotal;
+         document.getElementById('count').innerHTML = final.length;
+       
     }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
@@ -528,6 +594,81 @@
 
  
  });
+
+
+</script>
+
+<script>
+    $(document).ready(function ($) {
+        
+        TableDataBind()
+    });
+
+    function clearFilter(){ 
+    document.getElementById("filterBy").value = "";
+    document.getElementById("searchkey").value = "";
+    
+    document.getElementById('fromdate').value = "";
+    document.getElementById('todate').value = "";
+
+    TableDataBind()
+
+    // Close the modal
+    var modal = button.closest('.modal');
+    if (modal) {
+        $(modal).modal('hide');
+    } 
+}
+
+function TableDataBind(){
+    var recinv = '{{recinv}}'; 
+        var str = recinv.replace(new RegExp("&"+"#"+"x27;", "g"), '"');
+        var jsonObj = $.parseJSON(str);
+        var grandtotal = 0.0;
+        var UniqueNames= $.unique(jsonObj.map(function (d) { return d.hsn;}));
+        var final =[]
+        UniqueNames.forEach(function(item) {
+            var filtered = jsonObj.filter(a => a.hsn == item);
+            var grtotal = 0.0
+            var sbtotal = 0.0
+            var igst = 0.0
+            var cgst = 0.0
+            var sgst = 0.0
+            filtered.forEach(function(item) { 
+                    grtotal = grtotal + parseFloat(item.grandtotal);
+                    sbtotal = sbtotal + parseFloat(item.subtotal); 
+                    igst = igst + parseFloat(item.IGST); 
+                    cgst = cgst + parseFloat(item.CGST); 
+                    sgst = sgst + parseFloat(item.SGST); 
+
+                    grtotal = isNaN(grtotal) ? 0.0 : grtotal;
+                    sbtotal = isNaN(sbtotal) ? 0.0 : sbtotal;
+                    igst = isNaN(igst) ? 0.0 : igst;
+                    cgst = isNaN(cgst) ? 0.0 : cgst;
+                    sgst = isNaN(sgst) ? 0.0 : sgst;
+            });
+            grandtotal=grandtotal+grtotal;
+            let row = '{"hsn":'+item+', "grandtotal": '+grtotal+', "subtotal":'+sbtotal+', "IGST": '+igst+', "CGST": '+cgst+', "SGST": '+sgst+',"CESS":0.0}';
+            final.push($.parseJSON(row))
+         });
+         $("#tbl_exporttable_to_xls tbody").empty();
+         $.each(final, function (index, data) {
+            var newRow = $("<tr>");
+            newRow.append("<td>"+(parseFloat(index)+1)+"</td>");
+            newRow.append("<td>"+data.hsn+"</td>");
+            newRow.append("<td>"+data.grandtotal+"</td>");
+            newRow.append("<td>"+data.subtotal+"</td>");
+            newRow.append("<td>"+data.IGST+"</td>");
+            newRow.append("<td>"+data.CGST+"</td>");
+            newRow.append("<td>"+data.SGST+"</td>");
+            newRow.append("<td>"+data.CESS+"</td>"); 
+            $("#tbl_exporttable_to_xls tbody").append(newRow);
+         })
+
+         document.getElementById('total').innerHTML = grandtotal;
+         document.getElementById('count').innerHTML = final.length;
+}
+    
 </script>
  
 
