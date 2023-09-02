@@ -79,6 +79,17 @@
                     <a class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')">Export To Excel</a>
                 </div>
 
+                <div class="form-group">
+                    <label for="Between">From</label> &nbsp;
+                    <input type="date" id="fromdate">   &nbsp; 
+                    <label for="To">To</label>  &nbsp;
+                    <input type="date"  id="todate">  &nbsp;
+        
+                    <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>  &nbsp;
+                    <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyDateFilter(this)">Apply</button>
+                </div>
+            </div>
+
                 
 
 
@@ -145,7 +156,7 @@
                 </div>
 
                  <!-- Add Date Modal -->
-                 <div class="modal fade" id="datefilterModal" tabindex="-1" role="dialog" aria-labelledby="datefilterModalLabel" aria-hidden="true">
+                 <!-- <div class="modal fade" id="datefilterModal" tabindex="-1" role="dialog" aria-labelledby="datefilterModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content" style="background-color: #243e54;">
                             <div class="modal-header">
@@ -169,7 +180,7 @@
                                         <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>
                                         <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyDateFilter(this)">Apply</button>
                                     </div> 
-                            </div>
+                            </div> 
                            
                         </div>
                     </div>
@@ -181,7 +192,7 @@
                            Filter By Date
                         </button>
                     </div>
-                </div>
+                </div> -->
                 <!-- Add filter Modal -->
 <div class="modal fade" id="transfilterModal" tabindex="-1" role="dialog" aria-labelledby="transfilterModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -227,7 +238,7 @@
 
 <div class="col">
     <div class="dropdown">
-        <button type="button" class="btn btn-outline-info text-grey" style="width: 80%; margin-top: 8px;" data-toggle="modal" data-target="#transfilterModal">
+        <button type="button" class="btn btn-outline-info text-grey" style="width: 40%; margin-top: 8px;" data-toggle="modal" data-target="#transfilterModal">
            Filter
         </button>
     </div>
@@ -509,7 +520,7 @@
             for (j = 0; j < td.length; j++) {
                 if (td[j]) {
                     txtValue = td[j].textContent || td[j].innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    if (txtValue.toLowerCase() == filter.toLowerCase()) {
                         rowVisible = true;
                         break;
                     }

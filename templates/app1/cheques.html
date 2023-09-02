@@ -308,7 +308,7 @@
             for (j = 0; j < td.length; j++) {
                 if (td[j]) {
                     txtValue = td[j].textContent || td[j].innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    if (txtValue.toLowerCase() == filter.toLowerCase()) {
                         rowVisible = true;
                         break;
                     }
