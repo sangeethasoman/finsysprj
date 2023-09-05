@@ -85,8 +85,8 @@
                     <label for="To">To</label>  &nbsp;
                     <input type="date"  id="todate">  &nbsp;
         
-                    <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>  &nbsp;
-                    <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyDateFilter(this)">Apply</button>
+                    <!-- <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>  &nbsp;
+                    <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyDateFilter(this)">Apply</button> -->
                 </div>
             </div>
 
@@ -723,7 +723,12 @@ function clearFilter(){
  
  });
 </script>
- 
+<script>
+    const fromDateInput = document.getElementById("fromdate");
+    const toDateInput = document.getElementById("todate"); 
+    fromDateInput.addEventListener("change", ApplyDateFilter);
+    toDateInput.addEventListener("change", ApplyDateFilter);
+</script>
 
 {% endif %}
 {% endblock %}

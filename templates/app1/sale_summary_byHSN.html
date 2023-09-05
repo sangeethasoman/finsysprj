@@ -87,8 +87,8 @@
                     <label for="To">To</label>  &nbsp;
                     <input type="date"  id="todate">  &nbsp;
         
-                    <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>  &nbsp;
-                    <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyDateFilter(this)">Apply</button>
+                    <!-- <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="clearFilter(this)">Clear</button>  &nbsp;
+                    <button type="submit" class="btn"  data-dismiss="modal" style="background-color: #198fed;"  onclick="ApplyDateFilter(this)">Apply</button> -->
                 </div>
 
 
@@ -564,16 +564,16 @@
             var newRow = $("<tr>");
             newRow.append("<td>"+(parseFloat(index)+1)+"</td>");
             newRow.append("<td>"+data.hsn+"</td>");
-            newRow.append("<td>"+data.grandtotal+"</td>");
-            newRow.append("<td>"+data.subtotal+"</td>");
-            newRow.append("<td>"+data.IGST+"</td>");
-            newRow.append("<td>"+data.CGST+"</td>");
-            newRow.append("<td>"+data.SGST+"</td>");
-            newRow.append("<td>"+data.CESS+"</td>"); 
+            newRow.append("<td>"+data.grandtotal.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.subtotal.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.IGST.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.CGST.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.SGST.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.CESS.toFixed(2)+"</td>"); 
             $("#tbl_exporttable_to_xls tbody").append(newRow);
          }) 
 
-         document.getElementById('total').innerHTML = grandtotal;
+         document.getElementById('total').innerHTML = grandtotal.toFixed(2);
          document.getElementById('count').innerHTML = final.length;
        
     }
@@ -666,19 +666,25 @@ function TableDataBind(){
             var newRow = $("<tr>");
             newRow.append("<td>"+(parseFloat(index)+1)+"</td>");
             newRow.append("<td>"+data.hsn+"</td>");
-            newRow.append("<td>"+data.grandtotal+"</td>");
-            newRow.append("<td>"+data.subtotal+"</td>");
-            newRow.append("<td>"+data.IGST+"</td>");
-            newRow.append("<td>"+data.CGST+"</td>");
-            newRow.append("<td>"+data.SGST+"</td>");
-            newRow.append("<td>"+data.CESS+"</td>"); 
+            newRow.append("<td>"+data.grandtotal.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.subtotal.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.IGST.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.CGST.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.SGST.toFixed(2)+"</td>");
+            newRow.append("<td>"+data.CESS.toFixed(2)+"</td>"); 
             $("#tbl_exporttable_to_xls tbody").append(newRow);
          })
 
-         document.getElementById('total').innerHTML = grandtotal;
+         document.getElementById('total').innerHTML = grandtotal.toFixed(2);
          document.getElementById('count').innerHTML = final.length;
 }
     
+</script>
+<script>
+    const fromDateInput = document.getElementById("fromdate");
+    const toDateInput = document.getElementById("todate"); 
+    fromDateInput.addEventListener("change", ApplyDateFilter);
+    toDateInput.addEventListener("change", ApplyDateFilter);
 </script>
  
 
